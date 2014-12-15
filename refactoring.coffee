@@ -1258,3 +1258,1166 @@ Gc = (a, b, c) ->
         return d
     else
         return e
+
+lc = (a) ->
+    if 0 == a.indexOf(".")
+        return a.substr(1)
+    else
+        return a
+
+ic = (a) ->
+    return lc(a).split(".").length
+
+kc = (a) ->
+    if not(a)
+        return "/"
+
+    if 1 < a.length and a.lastIndexOf("/") == a.length - 1
+        a = a.substr(0, a.length - 1)
+
+    if 0 != a.indexOf("/")
+        a = "/" + a
+
+    return a
+
+jc = (a) ->
+    a = kc(a)
+
+    if "/" is a
+        return 1
+    else
+        return a.split("/").length
+
+
+Xc = (a, b, c) ->
+    if "none" == b
+        b = ""
+
+    d = []
+    e = Ca(a)
+
+    if "__utma" == a
+        a = 6
+    else
+        a = 2
+
+    for val in e
+        ca = ("" + val).split(".")
+
+        if ca.length >= a
+            d.push(
+                hash: ca[0]
+                R: val
+                O: ca
+            )
+
+    if 0 == d.length
+        return 0
+    else
+        if 1 == d.length
+            return d[0]
+        else
+            return Zc(b, d) or Zc(c, d) or Zc(null, d) or d[0]
+
+Zc = (a, b) ->
+    if null == a
+        c = 1
+        d = 1
+    else
+        c = La(a)
+
+        if La( D(a, ".") )
+            d = a.substring(1)
+        else
+            d = "." + a
+
+    for val in b
+        if val[h] is c or val[h] is d
+            return val
+
+od = new RegExp(/^https?:\/\/([^\/:]+)/)
+pd = /(.*)([?&#])(?:_ga=[^&#]*)(?:&?)(.*)/
+
+Bc = (a) ->
+    a = a.get(Q)
+    b = Ic(a, 0)
+    return "_ga=1." + K(b + "." + a)
+
+Ic = (a, b) ->
+    current_time = new Date
+    c = [
+        a,
+        d.userAgent,
+        current_time.getTimezoneOffset(),
+        current_time.getYear(),
+        current_time.getDate(),
+        current_time.getHours(),
+        current_time.getMinutes() + b
+    ]
+
+    d = window.navigator
+    e = d.plugins || []
+
+    for plugin in e
+        c.push(plugin.description)
+
+    return La(c.join("."))
+
+
+
+class Dc
+    ########################
+    ## PRIVATE PROPERTIES ##
+    ########################
+
+
+    #######################
+    ## PUBLIC PROPERTIES ##
+    #######################
+
+
+    ####################
+    ## PUBLIC METHODS ##
+    ####################
+
+    constructor: (a) ->
+        ###
+        ###
+
+        J(48)
+        @target = a
+        @T = !1
+
+    Q: (a, b) ->
+        ###
+        ###
+
+        if a.tagName
+            if "a" == a.tagName.toLowerCase()
+                a.href && Pc(a, qd(this, a.href, b))
+                return
+
+            if "form" == a.tagName.toLowerCase()
+                return rd(this, a)
+
+        if "string" == typeof a
+            return qd(this, a, b)
+
+
+    S: (a, b, c) ->
+        ###
+        ###
+
+        d = (c) ->
+            try
+                c = c or window.event
+                g = c.target or c.srcElement
+
+                d = null
+                c = 100
+                while g and c > 0
+                    if g.href && g.nodeName.match(/^a(?:rea)?$/i)
+                        d = g
+                        break
+
+                    g = g.parentNode
+
+                    c--
+                d = {}
+
+                if d.protocol is "http:" or d.protocol is "https:"
+                    if sd(a, d.hostname or "") and d.href
+                        Pc( d, qd(e, d.href, b) )
+            catch w
+                J(26)
+
+        e = @
+
+        if not @T
+            @T = !0
+            L(M, "mousedown", d, !1)
+            L(M, "touchstart", d, !1)
+            L(M, "keyup", d, !1)
+
+        if c
+            c = (b) ->
+                b = b or window.event
+                b = b.target or b.srcElement
+                if b.action
+                    foo_c = b.action[m](od)
+                    if foo_c
+                        sd(a, foo_c[1])
+                        rd(e, b)
+
+            for form in M.forms
+                L(form, "submit", c)
+
+    #####################
+    ## PRIVATE METHODS ##
+    #####################
+
+qd = (a, b, c) ->
+    d = pd.exec(b)
+    if d and 3 <= d[y]
+        b = d[1]
+        if d[3]
+            b += d[2] + d[3]
+        else
+            b += ""
+
+    a = a.target.get("linkerParam")
+    e = b.indexOf("?")
+    d = b.indexOf("#")
+
+    if c
+        if d is -1
+            b += '#' + a
+        else
+            b += '&' + a
+
+        if e is -1
+            c = '?'
+        else
+            c = '&'
+
+        if d is -1
+            b = b + (c + a)
+        else
+            b = b.substring(0, d) + c + a + b.substring(d)
+
+    return b
+
+rd = (a, b) ->
+    if b and b.action
+        c = a.target.get("linkerParam").split("=")[1]
+
+        if "get" == b.method.toLowerCase()
+            d = b.childNodes || []
+            for node in d
+                if "_ga" is node.name
+                    node.setAttribute("value", c)
+                    return
+
+            d = document.createElement("input")
+            d.setAttribute("type", "hidden")
+            d.setAttribute("name", "_ga")
+            d.setAttribute("value", c)
+            b.appendChild(d)
+        else
+            if "post" == b.method.toLowerCase()
+                b.action = qd(a, b.action)
+
+sd = (a, b) ->
+    if (b is M.location.hostname)
+        return !1
+
+    for val in a
+        if (val instanceof RegExp)
+            if val.test(b)
+                return !0
+
+        else if (0 <= b.indexOf(val))
+            return !0
+
+    return!1
+
+
+class Jd
+    ########################
+    ## PRIVATE PROPERTIES ##
+    ########################
+
+
+    #######################
+    ## PUBLIC PROPERTIES ##
+    #######################
+
+
+    ####################
+    ## PUBLIC METHODS ##
+    ####################
+
+    constructor: (a, b, c, d) ->
+        ###
+        ###
+
+        @U = b
+        @aa = c
+        # b = d # TODO: check if this is needed
+
+        if b
+            b = P(a, V)
+            if b and b != 't0'
+                if Wd[s](b)
+                    b = "_gat_" + Cc( P(a, Na) )
+                else
+                    b = "_gat_" + Cc(b)
+            else
+                b = "_gat"
+
+        @Y = b
+
+    #####################
+    ## PRIVATE METHODS ##
+    #####################
+
+Rd = (a, b) ->
+    c = b.get(Wb)
+
+    b.set(Wb, (b) ->
+        Pd(a, b)
+        d = c(b)
+        Qd(a, b)
+        return d
+    )
+
+    d = b.get(Xb)
+    b.set(Xb, (b) ->
+        c = d(b)
+        Id(a, b)
+        return c
+    )
+
+Pd = (a, b) ->
+    if b.get(a.U)
+        if "1" == Ca(a.Y)[0]
+            b.set(a.U, "", !0)
+        else
+            b.set(a.U, "" + hd(), !0)
+
+Qd = (a, b) ->
+    if b.get(a.U)
+        zc(a.Y, "1", b.get(Yb) b.get(W), b.get(Na), 600000)
+
+Id = (a, b) ->
+    if b.get(a.U)
+        c = new N
+
+        d = (a) ->
+            c.set($a(a).p, b.get(a))
+
+        d(hb)
+        d(ib)
+        d(Na)
+        d(Q)
+        d(a.U)
+        d(ld)
+        e = a.aa
+
+        c.map((a, b) ->
+            e += K(a) + "=";
+            e += K("" + b) + "&"
+        )
+
+        e += "z=" + hd()
+
+        ta(e)
+
+        b.set(a.U, "", !0)
+
+Wd = /^gtm\d+$/
+
+fd = (a, b) ->
+    c = a.b
+    if not(c.get("dcLoaded"))
+        J(29)
+
+        if window._gaq
+            J(52)
+
+        b = b || {}
+
+        if b[U]
+            d = Cc( b[U] )
+
+        d = new Jd(c, ed, "https://stats.g.doubleclick.net/collect?t=dc&aip=1&", d)
+
+        Rd(d, c)
+
+        c.set("dcLoaded", !0)
+
+Sd = (a) ->
+    if a.get("dcLoaded")
+        b = !1
+    else
+        if a.get(ac) != 'cookie'
+            b = !1
+        else
+            b = !0
+
+    if b
+        J(51)
+        b = new Jd(a, ed)
+        Pd(b, a)
+        Qd(b, a)
+
+        if a.get(b.U)
+            a.set(Md, 1, !0)
+            a.set(gd, oc() + "/r/collect", !0)
+
+
+Kd = (a, b) ->
+    c = a.b;
+    if not c.get("_rlsaLoaded")
+        J(38)
+
+        b = b || {}
+
+        if b[U]
+            d = Cc( b[U] )
+
+        d = new Jd(c, Hd, "https://www.google.com/ads/ga-audiences?t=sr&aip=1&", d)
+
+        Rd(d, c)
+
+        c.set("_rlsaLoaded", !0)
+        tc("displayfeatures", a, b)
+
+Lc = () ->
+    window.gaGlobal = window.gaGlobal or {}
+    a = window.gaGlobal
+    a.hid = a.hid or hd()
+
+    return a.hid
+
+ad = null
+bd = (a, b, c) ->
+    if not ad
+        d = M.location.hash
+        e = window.name
+        g = /^#?gaso=([^&]*)/
+
+        foo_d_bool = d and d.match(g) or e and e.match(g)
+        if foo_d_bool
+            d = d[1]
+        else
+            d = Ca("GASO")[0] or ""
+
+        e = d
+
+        if e and d.match(/^(?:!([-0-9a-z.]{1,40})!)?([-.\w]{10,1200})$/i)
+            zc("GASO", "" + d, c, b, a, 0)
+
+            if f._udo
+                f._udo = b
+
+            if f._utcp
+                f._utcp = c
+
+            a = e[1]
+            wa("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + (a ? "prefix=" + a + "&" : "") + hd(), "_gasojs")
+
+        ad = !0
+
+wb = /^(UA|YT|MO|GP)-(\d+)-(\d+)$/
+
+
+class pc
+    ########################
+    ## PRIVATE PROPERTIES ##
+    ########################
+
+
+    #######################
+    ## PUBLIC PROPERTIES ##
+    #######################
+
+
+    ####################
+    ## PUBLIC METHODS ##
+    ####################
+
+    constructor: (a) ->
+        ###
+        ###
+
+        b = (a, b_var) ->
+            d.b[q].set(a, b_var)
+
+        c = (a, foo_var) ->
+            b(a, foo_var)
+            d.filters.add(a)
+
+        d = @
+        @b = new Ya
+        @filters = new Ha
+
+        b(V, a[V])
+        b(Na, sa(a[Na]))
+        b(U, a[U])
+        b(W, a[W] || xa())
+        b(Yb, a[Yb])
+        b(Zb, a[Zb])
+        b($b, a[$b])
+        b(Wc, a[Wc])
+        b(bc, a[bc])
+        b(cc, a[cc])
+        b(Ka, a[Ka])
+        b(dc, a[dc])
+        b(ec, a[ec])
+        b(ac, a[ac])
+        b(Ad, a[Ad])
+        b(hb, 1)
+        b(ib, "j31")
+        c(Qb, Ma)
+        c(dd, cd)
+        c(Rb, Oa)
+        c(md, vb)
+        c(Sb, nc)
+        c(Uc, Yc)
+        c(Tb, Ja)
+        c(Vb, Ta)
+        c(Vc, Hc)
+        c(zd, yd)
+        c(Ld, Sd)
+        c(Wb, Pa)
+        c(Xb, Sa)
+        c( Cd, Fd(@) )
+        Jc(@b, a[Q])
+        Kc(@b)
+        @b.set( jb, Lc() )
+        bd(@b.get(Na), @b.get(W), @b.get(Yb))
+
+    get: (a) ->
+        ###
+        ###
+
+        return @b.get(a)
+
+    set: (a, b) ->
+        ###
+        ###
+
+        @b.set(a, b)
+
+    send: (a) ->
+        ###
+        ###
+
+        if not(1 > arguments.length)
+            if typeof arguments[0] is "string"
+                b = arguments[0]
+                c = [].slice.call(arguments, 1)
+            else
+                b = arguments[0] and arguments[0][Va]
+                c = arguments
+
+            if b
+                c = za(qc[b] or [], c)
+                c[Va] = b
+
+                @b.set(c, 0, !0)
+                @filters.D(this.b)
+                @b.data.m = {}
+
+                J(44)
+
+    #####################
+    ## PRIVATE METHODS ##
+    #####################
+
+
+Jc = (a, b) ->
+    if P(a, ac) is "cookie"
+        hc = !1
+
+        c = null
+
+        for foo_noop in [0]
+            d = Ca( P(a, U) )
+            if d and not(1 > d.length)
+                c = []
+
+                for val in d
+                    g = val[A](".")
+                    ca = g.shift()
+
+                    if (ca is "GA1" or ca is "1") and 1 < g.length
+                        ca = g.shift()[A]("-")
+                        if 1 == ca.length
+                            ca[1] = "1"
+
+                        ca[0] *= 1
+                        ca[1] *= 1
+                        g =
+                            r: ca
+                            s: g.join(".")
+                    else
+                        g = 0
+
+                    if g
+                        c.push(g)
+
+                if c.length is 1
+                    J(13)
+                    c = c[0].s
+                    break
+
+                if 0 == c.length
+                    J(12)
+                else
+                    J(14)
+                    d = ic(P(a, W))
+                    c = Gc(c, d, 0)
+                    if 1 == c.length
+                        c = c[0].s;
+                        break
+
+                    d = jc( P(a, Yb) )
+                    c = Gc(c, d, 1)
+                    c = c[0] and c[0].s;
+                    break
+
+            c = 0
+
+
+        if c
+            c = P(a, W)
+            d = P(a, $b) or xa()
+            c = Xc("__utma", d, c)
+
+            if c is 0
+                c = 0
+            else
+                c = c.O[1] + "." + c.O[2]
+
+            if c
+                J(10)
+        if c
+            a.data.set(Q, c)
+            hc = !0
+
+    c = a.get(cc)
+
+    if c
+        location_part = 'href'
+    else
+        location_part = 'search'
+
+    c = M.location[location_part].match("(?:&|#|\\?)" + K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + "=([^&#]*)")
+    if c and c.length is 2
+        e = c[1]
+    else
+        e = ""
+
+    if e
+        if a.get(bc)
+            c = e[t](".")
+            if c is -1
+                J(22)
+            else
+                d = e.substring(c + 1)
+
+            if "1" != e.substring(0, c)
+                J(22)
+            else
+                c = d.indexOf(".")
+                if c is -1
+                    J(22)
+                else
+                    e = d.substring(0, c)
+                    c = d.substring(c + 1)
+
+                    if e != Ic(c, 0) and e != Ic(c, -1) and e != Ic(c, -2)
+                        J(23)
+                    else
+                        J(11)
+                        a.data.set(Q, c)
+
+    else
+        J(21)
+
+    if b
+        J(9)
+        a.data.set(Q, K(b))
+
+    if a.get(Q)
+        c = window.gaGlobal && window.gaGlobal.vid
+        if not(c and c.search(/^(?:utma\.)?\d+\.\d+$/) != -1)
+            c = 0
+
+        if c
+            J(17)
+            a.data.set(Q, c)
+        else
+            J(8)
+            foo_val = n.round((new Date).getTime() / 1000)
+            a.data.set(Q, [hd() ^ Mc() & 2147483647, foo_val].join("."))
+
+    mc(a)
+
+Kc = (a) ->
+    b = window.navigator
+    c = window.screen
+    d = M.location
+
+    a.set( lb, ya( a.get(ec) ) )
+
+    if d
+        path_name = d.pathname or ""
+
+        if "/" != e.charAt(0)
+            J(31)
+            path_name = "/" + path_name
+
+        a.set(kb, d.protocol + "//" + d.hostname + path_name + d.search)
+
+    if c
+        a.set(qb, c.width + "x" + c.height)
+
+    if c
+        a.set(pb, c.colorDepth + "-bit")
+
+    c = M.documentElement
+    e = M.body
+    g = e and e.clientWidth and e.clientHeight
+    ca = []
+
+    if c and c.clientWidth and c.clientHeight
+
+        if M.compatMode is "CSS1Compat" or not g
+            ca = [c.clientWidth, c.clientHeight]
+        else
+            if g
+                ca = [e.clientWidth, e.clientHeight]
+
+    if 0 >= ca[0] or 0 >= ca[1]
+        c = ''
+    else
+        c = ca.join("x")
+
+    a.set(rb, c)
+    a.set( tb, fc() )
+    a.set(ob, M.characterSet or M.charset)
+    a.set(sb, b and "function" is typeof b.javaEnabled and b.javaEnabled() or !1)
+    a.set( nb, (b and (b.language or b.browserLanguage) or "").toLowerCase() )
+
+    b = M.location.hash
+    if d and a.get(cc) and b
+        b = b.split(/[?&#]+/)
+        d = []
+
+        for term_to_check in b
+            if  D(term_to_check, "utm_id") or
+                D(term_to_check, "utm_campaign") or
+                D(term_to_check, "utm_source") or
+                D(term_to_check, "utm_medium") or
+                D(term_to_check, "utm_term") or
+                D(term_to_check, "utm_content") or
+                D(term_to_check, "gclid") or
+                D(term_to_check, "dclid") or
+                D(term_to_check, "gclsrc")
+
+                    d.push(term_to_check)
+
+
+        if 0 < d.length
+            b = "#" + d.join("&")
+            a.set(kb, a.get(kb) + b)
+
+qc =
+    pageview: [mb]
+    event: [ub, xb, yb, zb]
+    social: [Bb, Cb, Db]
+    timing: [Mb, Nb, Pb, Ob]
+
+rc = (a) ->
+    if M.visibilityState is "prerender"
+        return !1
+
+    a()
+
+    return !0
+
+td = /^(?:(\w+)\.)?(?:(\w+):)?(\w+)$/
+
+sc = (a) ->
+    if ea( a[0] )
+        @u = a[0]
+    else
+        b = td.exec( a[0] )
+
+        if null != b or 4 is b.length
+            @c = b[1] or "t0"
+            @e = b[2] or ""
+            @d = b[3]
+            @a = [][ha][C](a, 1)
+
+            if @e
+                @A  = @d is "create"
+                @i  = @d is "require"
+                @g  = @d is "provide"
+                @ba = @d is "remove"
+
+            if @i
+                if @a.length >= 3
+                    @X = @a[1]
+                    @W = @a[2]
+                else
+                    if @a[1]
+                        if qa(@a[1])
+                            @X = @a[1]
+                        else
+                            @W = @a[1]
+
+        b = a[1]
+        a = a[2]
+
+        if not(@d)
+            throw "abort"
+
+        if @i and (not qa(b) or b is "")
+            throw "abort"
+
+        if @g and (not qa(b) or "" == b or not ea(a))
+            throw "abort"
+
+        if ud(@c) or ud(this.e)
+            throw "abort"
+
+        if @g and @c != "t0"
+            throw "abort"
+
+
+ud = (a) ->
+    return a.indexOf(".") >= 0  or a.indexOf(":") >= 0
+
+Yd = new N
+$d = new N
+Zd =
+    ec: 45,
+    ecommerce: 46,
+    linkid: 47
+
+tc = (a, b, c) ->
+    if b is $
+        J(35)
+    else
+        b.get(V)
+
+    d = Yd.get(a)
+
+    if not ea(d)
+        return !1
+
+    b.plugins_ = b.plugins_ or new N
+
+    if b.plugins_.get(a)
+        return !0
+
+    foo_val = new d(b, c or {})
+    b.plugins_.set(a, foo_val)
+
+    return !0
+
+ae = (a) ->
+    b_func = (a) ->
+        b = (a.hostname or "").split(":")[0].toLowerCase()
+
+        c = (a.protocol or "").toLowerCase()
+
+        c = a.port or ("http:" == c ? 80 : "https:" == c ? 443 : "")
+
+        a = a.pathname or ""
+
+        if D(a, "/")
+            a = "/" + a
+
+        return [b, "" + c, a]
+
+    c = M.createElement("a")
+    Pc(c, M.location.href)
+
+    protocol = (c.protocol or "").toLowerCase()
+    d = protocol
+    e = b_func(c)
+    g = c.search or ""
+
+    if e[1]
+        additional_bundle = ":" + e[1]
+    else
+        additional_bundle = ''
+
+    ca = d + "//" + e[0] + additional_bundle
+
+    if D(a, "//")
+        a = d + a
+
+    else
+        if D(a, "/")
+            a = ca + a
+        else
+            if not a or D(a, "?")
+                a = ca + e[2] + (a or g)
+            else
+                if 0 > a.split("/")[0][t](":")
+                    (a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a)
+
+    Pc(c, a)
+    d = b_func(c)
+
+    return {
+        protocol: protocol,
+        host: d[0],
+        port: d[1],
+        path: d[2],
+        G: c[ga] or "",
+        url: a or ""
+    }
+
+Z = {
+    ga: () ->
+        Z.f = []
+}
+
+Z.ga()
+
+Z.D = (a) ->
+    b = Z.J[G](Z, arguments)
+    b = Z.f.concat(b)
+    Z.f = []
+    while 0 < b.length and not Z.v(b[0]) and not(b.shift() || 0 < Z.f.length)
+        Z.f = Z.f.concat(b)
+
+Z.J = (a) ->
+    b = []
+    for arg in arguments
+        try
+            d = new sc(arg)
+
+            if d.g
+                Yd.set(d.a[0], d.a[1])
+            else
+                if d.i
+
+                    e = d
+                    g = e.a[0]
+
+                    if not ea(Yd.get(g)) and not $d.get(g)
+
+                        Zd.hasOwnProperty(g) && J(Zd[g])
+                        ca = e.X
+
+                        if not ca
+                            if Zd.hasOwnProperty(g)
+                                J(39)
+                                ca = g + ".js"
+                            else
+                                J(43)
+
+                        if ca
+                            if ca and 0 <= ca.indexOf("/")
+                                protocol = (Ba || "https:" == M.location.protocol ? "https:" : "http:")
+                                ca = "#{protocol}//www.google-analytics.com/plugins/ua/#{ca}"
+
+                            l = ae(ca)
+                            e = 0
+                            k = l.protocol
+                            w = M.location.protocol
+
+                            if "https:" is k or k is w
+                                e = !0
+                            else
+                                if "http:" != k
+                                    e = !1
+                                else
+                                    e = "http:" == w
+
+                            Xd = e
+
+                            if Xd
+                                e = l
+                                be = ae(M.location.href)
+
+                                if e.G or 0 <= e.url.indexOf("?") or 0 <= e.path.indexOf("://")
+                                    Xd = !1
+                                else if e.host is be.host and e.port == be.port
+                                    Xd = !0
+                                else
+                                    if e.protocol
+                                        ce = 80
+                                    else
+                                        ce = 443
+
+                                    if "www.google-analytics.com" is e.host and (e.port or ce) == ce and D(e.path, "/plugins/")
+                                        Xd = !0
+                                    else
+                                        Xd = !1
+
+                            if Xd
+                                wa(l.url)
+                                $d.set(g, !0)
+
+                b.push(d)
+
+        catch de
+
+    return b
+
+Z.v = (a) ->
+    try
+        if (a.u)
+            a.u[C](O, $.j("t0"))
+        else
+            if gb is a.c
+                b = $
+            else
+                b = $.j(a.c)
+
+            if a.A
+                if a.c is 't0'
+                    $.create[G]($, a.a)
+
+            else if a.ba
+                $.remove(a.c)
+
+            else if b
+                if a.i
+                    if not tc(a.a[0], b, a.W)
+                        return!0
+            else if a.e
+                c = a.d
+                d = a.a
+                e = b.plugins_.get(a.e)
+                e[c].apply(e, d)
+            else
+                b[a.d].apply(b, a.a)
+    catch g
+
+$ = (a) ->
+    J(1)
+    Z.D.apply(Z, [arguments])
+
+$.h = {}
+$.P = []
+$.L = 0
+$.answer = 42
+
+uc = [Na, W, V]
+
+$.create = (a) ->
+    b = za(uc, [][ha][C](arguments))
+
+    if b[V]
+        b[V] = "t0"
+
+    c = "" + b[V]
+
+    if $.h[c]
+        return $.h[c]
+
+    b = new pc(b)
+    $.h[c] = b
+    $.P[p](b)
+
+    return b
+
+$.remove = (a) ->
+    for val in $.P
+
+        if val.get(V) is a
+            $.P.splice(b, 1)
+            $.h[a] = null
+
+            break
+
+$.j = (a) ->
+    return $.h[a]
+
+$.K = () ->
+    return $.P.slice(0)
+
+$.N = () ->
+    if "ga" != gb
+        J(49)
+    a = window[gb]
+
+    if not a or a.answer != 42
+        $.L = a and a.l
+        $.loaded = !0
+        b = window[gb] = $
+
+        X("create", b, b.create, 3)
+        X("remove", b, b.remove)
+        X("getByName", b, b.j, 5)
+        X("getAll", b, b.K, 6)
+        b = pc.prototype
+        X("get", b, b.get, 7)
+        X("set", b, b.set, 4)
+        X("send", b, b.send, 2)
+        b = Ya.prototype
+        X("get", b, b.get)
+        X("set", b, b.set)
+
+        b = M.getElementsByTagName("script")
+        c = 0
+        while c < b.length and c < 100
+            d = b[c].src
+            if d
+                if d[t]("https://www.google-analytics.com/analytics") != 0
+                    d = !1
+                else
+                    d = !0
+            else
+                d = !1
+
+            if d
+                J(33)
+
+        if "https:" != M[B][E] && !Ba && Ed()
+            J(36)
+            Ba = !0
+
+        window.gaplugins = window.gaplugins or {}
+        window.gaplugins.Linker = Dc
+
+        b = Dc.prototype
+        Yd.set("linker", Dc)
+        X("decorate", b, b.Q, 20)
+        X("autoLink", b, b.S, 25)
+        Yd.set("displayfeatures", fd)
+        Yd.set("adfeatures", Kd)
+
+        a = a and a.q
+
+        if ka(a)
+            Z.D[G]($, a)
+        else
+            J(50)
+
+$.k = () ->
+    a = $.K()
+    for val in a
+        val.get(V)
+
+ano = () ->
+    a = $.N;
+    if not rc(a)
+        J(16);
+        b = !1
+        c = () ->
+            if not b and rc(a)
+                b = !0
+                va(M, "visibilitychange", c)
+
+        L(M, "visibilitychange", c)
+ano()
+
+La = (a) ->
+    b = 1
+    c = 0
+    if (a)
+        b = 0
+        d = a.length - 1
+
+        while d >= 0
+            c = a.charCodeAt(d)
+            b = (b << 6 & 268435455) + c + (c << 14)
+            c = b & 266338304
+
+            if c != 0
+                b = b ^ c >> 21
+
+            d--
+
+    return b
