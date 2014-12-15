@@ -1185,31 +1185,32 @@ mc = (a) ->
             if zc(b, c, d, e, ca, g)
                 hc = !0
         else
-            J(32)
-            c = []
+            for __none in [1]
+                J(32)
+                c = []
 
-            e = xa().split(".")
+                e = xa().split(".")
 
-            l = e[e.length - 1]
-            if (4 == e.length and parseInt(l, 10) == l)
-                l = ["none"]
-                break
+                l = e[e.length - 1]
+                if (4 == e.length and parseInt(l, 10) == l)
+                    l = ["none"]
+                    break
 
-            for l in e by -1
-                c.push( e.slice(l).join(".") )
+                for l in e by -1
+                    c.push( e.slice(l).join(".") )
 
-            c.push("none")
-            l = c
+                c.push("none")
+                l = c
 
-            for e in l
-                a.data.set(W, e)
-                c = nd(a)
+                for e in l
+                    a.data.set(W, e)
+                    c = nd(a)
 
-                if zc(b, c, d, e, ca, g)
-                    hc = !0
-                    return
+                    if zc(b, c, d, e, ca, g)
+                        hc = !0
+                        return
 
-            a.data.set(W, "auto")
+                a.data.set(W, "auto")
 
 nc = (a) ->
     if "cookie" == P(a, ac) and !hc and mc(a)

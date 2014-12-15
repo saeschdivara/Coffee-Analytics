@@ -1390,7 +1390,7 @@
   hc = !1;
 
   mc = function(a) {
-    var b, c, ca, d, e, g, l, _i, _j, _len;
+    var b, c, ca, d, e, g, l, __none, _i, _j, _k, _len, _len1, _ref;
     if (P(a, ac) === "cookie") {
       b = P(a, U);
       c = nd(a);
@@ -1403,30 +1403,34 @@
           return hc = !0;
         }
       } else {
-        J(32);
-        c = [];
-        e = xa().split(".");
-        l = e[e.length - 1];
-        if (4 === e.length && parseInt(l, 10) === l) {
-          l = ["none"];
-          break;
-        }
-        for (_i = e.length - 1; _i >= 0; _i += -1) {
-          l = e[_i];
-          c.push(e.slice(l).join("."));
-        }
-        c.push("none");
-        l = c;
-        for (_j = 0, _len = l.length; _j < _len; _j++) {
-          e = l[_j];
-          a.data.set(W, e);
-          c = nd(a);
-          if (zc(b, c, d, e, ca, g)) {
-            hc = !0;
-            return;
+        _ref = [1];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          __none = _ref[_i];
+          J(32);
+          c = [];
+          e = xa().split(".");
+          l = e[e.length - 1];
+          if (4 === e.length && parseInt(l, 10) === l) {
+            l = ["none"];
+            break;
           }
+          for (_j = e.length - 1; _j >= 0; _j += -1) {
+            l = e[_j];
+            c.push(e.slice(l).join("."));
+          }
+          c.push("none");
+          l = c;
+          for (_k = 0, _len1 = l.length; _k < _len1; _k++) {
+            e = l[_k];
+            a.data.set(W, e);
+            c = nd(a);
+            if (zc(b, c, d, e, ca, g)) {
+              hc = !0;
+              return;
+            }
+          }
+          a.data.set(W, "auto");
         }
-        return a.data.set(W, "auto");
       }
     }
   };
