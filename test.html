@@ -14,7 +14,8 @@
         // Window preparations
         window['GoogleAnalyticsObject'] = analytics_name;
         window[analytics_name] = window[analytics_name] || function () {
-            (window[analytics_name].q = window[analytics_name].q || []).push(arguments)
+            window[analytics_name].q = window[analytics_name].q || [];
+            window[analytics_name].q.push(arguments);
         };
         window[analytics_name].l = new Date();
 
