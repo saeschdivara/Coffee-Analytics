@@ -127,7 +127,7 @@ ka = (a) ->
 qa = (a) ->
     return 0 != a && -1 < (a.constructor + "").indexOf("String")
 
-# find ?
+# find ? starts_with
 D = (a, b) ->
     return 0 == a.indexOf(b)
 
@@ -137,10 +137,11 @@ sa = (a) ->
     else
         ""
 
+# create_spy_image
 ta = (a) ->
     b = M.createElement("img")
-    b.width = 1;
-    b.height = 1;
+    b.width = 1
+    b.height = 1
     b.src = a;
 
     return b
@@ -1048,12 +1049,12 @@ Ed = () ->
         return 0
 
 fc = () ->
-    c = O[oa]
+    c = window.navigator
     if c
         c = c.plugins
     else
         c = null
-    if c and c[y]
+    if c and c.length
         d = 0
         while d < c.length and not(b)
             e = c[d]
@@ -1084,7 +1085,7 @@ fc = () ->
 
     if b
         a = b[m](/[\d]+/g)
-        if 3 <= a[y]
+        if 3 <= a.length
             b = a[0] + "." + a[1] + " r" + a[2]
     return b or 0
 
@@ -1459,7 +1460,7 @@ class Dc
 
 qd = (a, b, c) ->
     d = pd.exec(b)
-    if d and 3 <= d[y]
+    if d and 3 <= d.length
         b = d[1]
         if d[3]
             b += d[2] + d[3]
@@ -2406,21 +2407,21 @@ ano = () ->
         L(M, "visibilitychange", c)
 ano()
 
-La = (a) ->
-    b = 1
-    c = 0
-    if (a)
-        b = 0
-        d = a.length - 1
+La = (used_string) ->
+    return_char = 1
+    character = 0
+    if (used_string)
+        return_char = 0
+        char_position = used_string.length - 1
 
-        while d >= 0
-            c = a.charCodeAt(d)
-            b = (b << 6 & 268435455) + c + (c << 14)
-            c = b & 266338304
+        while char_position >= 0
+            character = used_string.charCodeAt(char_position)
+            return_char = (return_char << 6 & 268435455) + character + (character << 14)
+            character = return_char & 266338304
 
-            if c != 0
-                b = b ^ c >> 21
+            if character != 0
+                return_char = return_char ^ character >> 21
 
-            d--
+            char_position--
 
-    return b
+    return return_char

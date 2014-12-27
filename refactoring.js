@@ -1244,13 +1244,13 @@
 
   fc = function() {
     var a, b, c, ca, d, e, g, l;
-    c = O[oa];
+    c = window.navigator;
     if (c) {
       c = c.plugins;
     } else {
       c = null;
     }
-    if (c && c[y]) {
+    if (c && c.length) {
       d = 0;
       while (d < c.length && !b) {
         e = c[d];
@@ -1288,7 +1288,7 @@
     }
     if (b) {
       a = b[m](/[\d]+/g);
-      if (3 <= a[y]) {
+      if (3 <= a.length) {
         b = a[0] + "." + a[1] + " r" + a[2];
       }
     }
@@ -1705,7 +1705,7 @@
   qd = function(a, b, c) {
     var d, e;
     d = pd.exec(b);
-    if (d && 3 <= d[y]) {
+    if (d && 3 <= d.length) {
       b = d[1];
       if (d[3]) {
         b += d[2] + d[3];
@@ -2698,24 +2698,24 @@
 
   ano();
 
-  La = function(a) {
-    var b, c, d;
-    b = 1;
-    c = 0;
-    if (a) {
-      b = 0;
-      d = a.length - 1;
-      while (d >= 0) {
-        c = a.charCodeAt(d);
-        b = (b << 6 & 268435455) + c + (c << 14);
-        c = b & 266338304;
-        if (c !== 0) {
-          b = b ^ c >> 21;
+  La = function(used_string) {
+    var char_position, character, return_char;
+    return_char = 1;
+    character = 0;
+    if (used_string) {
+      return_char = 0;
+      char_position = used_string.length - 1;
+      while (char_position >= 0) {
+        character = used_string.charCodeAt(char_position);
+        return_char = (return_char << 6 & 268435455) + character + (character << 14);
+        character = return_char & 266338304;
+        if (character !== 0) {
+          return_char = return_char ^ character >> 21;
         }
-        d--;
+        char_position--;
       }
     }
-    return b;
+    return return_char;
   };
 
 }).call(this);
