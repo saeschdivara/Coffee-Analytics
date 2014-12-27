@@ -112,17 +112,23 @@
 
       /*
        */
-      var b, c;
+      var all_allowed_characters, b, counter, divided_counter, divided_counter_rest, divided_floor_counter;
+      all_allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
       b = [];
-      c = -1;
-      while (c < a.length) {
-        c++;
-        this.a[c] && (b[n.floor(c / 6)] = b[n.floor(c / 6)] ^ 1 << c % 6);
+      counter = -1;
+      while (counter < a.length) {
+        counter++;
+        if (this.a[counter]) {
+          divided_counter = counter / 6;
+          divided_counter_rest = counter % 6;
+          divided_floor_counter = Math.floor(divided_counter);
+          b[divided_floor_counter] = b[divided_floor_counter] ^ 1 << divided_counter_rest;
+        }
       }
-      c = -1;
-      while (c < b.length) {
-        c++;
-        b[c] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".charAt(b[c] || 0);
+      counter = -1;
+      while (counter < b.length) {
+        counter++;
+        b[counter] = all_allowed_characters.charAt(b[counter] || 0);
       }
       return b.join("") + "~";
     };

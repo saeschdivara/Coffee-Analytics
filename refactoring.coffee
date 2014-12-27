@@ -7,9 +7,11 @@ f = window
 ba = setTimeout
 n = Math
 
+# set_href
 Pc = (a, b) ->
     return a.href = b
 
+# set_name
 fa = (a, b) ->
     return a.name = b
 
@@ -82,20 +84,29 @@ class FOO
 
         @a[b] = !0
 
+    # encode_base64
     M: () ->
         ###
         ###
 
-        b = []
-        c = -1
-        while c < a.length
-            c++
-            @a[c] && (b[n.floor(c / 6)] = b[n.floor(c / 6)] ^ 1 << c % 6)
+        all_allowed_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
-        c = -1
-        while c < b.length
-            c++
-            b[c] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".charAt(b[c] || 0)
+        b = []
+        counter = -1
+        while counter < a.length
+            counter++
+
+            if @a[counter]
+                divided_counter = counter / 6
+                divided_counter_rest = counter % 6
+                divided_floor_counter = Math.floor(divided_counter)
+
+                b[divided_floor_counter] = b[divided_floor_counter] ^ 1 << divided_counter_rest
+
+        counter = -1
+        while counter < b.length
+            counter++
+            b[counter] = all_allowed_characters.charAt(b[counter] || 0)
 
         return b.join("") + "~"
 
