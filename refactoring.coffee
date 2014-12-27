@@ -82,7 +82,7 @@ class FOO
         ###
         ###
 
-        @a[b] = !0
+        @a[b] = true
 
     # encode_base64
     M: () ->
@@ -180,7 +180,7 @@ L = (a, b, c, d) ->
 # remove_event_listener
 va = (a, b, c) ->
     if a.removeEventListener
-        a.removeEventListener(b, c, !1)
+        a.removeEventListener(b, c, false)
     else
         a.detachEvent && a.detachEvent("on" + b, c)
 
@@ -189,7 +189,7 @@ wa = (a, b) ->
     if (a)
         c = M.createElement("script")
         c.type = "text/javascript"
-        c.async = !0
+        c.async = true
         c.src = a
 
         if b
@@ -228,14 +228,14 @@ za = (a, b) ->
         return b[0]
 
     c = {}
-    d = n.min(a[y] + 1, b[y])
+    d = Math.min(a[y] + 1, b[y])
     e = -1
 
     while e < d
         e++
         if is_object(b[e])
             for g of b[e]
-                b[e][ra](g)
+                b[e].hasOwnProperty(g)
                 c[g] = b[e][g]
 
             break
@@ -334,15 +334,15 @@ Mc = () ->
 
 Aa = (a) ->
     b = window._gaUserPrefs;
-    if b and b.ioo and b.ioo() or a and window["ga-disable-" + a] is !0
-        return !0
+    if b and b.ioo and b.ioo() or a and window["ga-disable-" + a] is true
+        return true
     try
         c = window.external
         if c and c._gaUserPrefs and "oo" is c._gaUserPrefs
-            return !0
+            return true
     catch d
 
-    return !1
+    return false
 
 # find_all_cookie_settings ??
 Ca = (a) ->
@@ -364,15 +364,15 @@ Ca = (a) ->
 
 zc = (a, b, c, d, e, g) ->
     if Aa(e)
-        e = !1
+        e = false
     else
         if eb.test(M.location.hostname) or c is "/" && vc.test(d)
-            e = !1
+            e = false
         else
-            e = !0
+            e = true
 
     if !e
-        return!1
+        returnfalse
 
     if b && 1200 < b[y]
         b = b.substring(0, 1200)
@@ -399,9 +399,9 @@ zc = (a, b, c, d, e, g) ->
         d = 0
         for foo in a
             if b is foo
-                d = !0
+                d = true
                 break
-        d = !1
+        d = false
 
     return d
 
@@ -436,11 +436,11 @@ Ga = (a, b, c, d) ->
         if window.navigator.sendBeacon
             if window.navigator.sendBeacon(a, b)
                 d()
-                d = !0
+                d = true
             else
-                d = !1
+                d = false
         else
-            d = !1
+            d = false
 
     if not(d)
         if (2036 >= b.length)
@@ -469,7 +469,7 @@ xd = (a, b, c) ->
     d = window.XDomainRequest
 
     if not(d)
-        return !1
+        return false
 
     d = new d;
     d.open("POST", a)
@@ -481,20 +481,20 @@ xd = (a, b, c) ->
 
     d.send(b)
 
-    return !0
+    return true
 
 wd = (a, b, c) ->
     d = O.XMLHttpRequest
 
     if not(d)
-        return!1
+        returnfalse
 
     e = new d
     if not("withCredentials" in e)
-        return!1
+        returnfalse
 
-    e.open("POST", a, !0)
-    e.withCredentials = !0
+    e.open("POST", a, true)
+    e.withCredentials = true
     e.setRequestHeader("Content-Type", "text/plain")
     e.onreadystatechange = () ->
         if e.readyState is 4
@@ -503,7 +503,7 @@ wd = (a, b, c) ->
 
     e.send(b)
 
-    return!0
+    returntrue
 
 Fa = (a, b) ->
     if not(M.body)
@@ -511,7 +511,7 @@ Fa = (a, b) ->
             Fa(a, b)
         )
 
-        return !0
+        return true
     a = aa(a)
 
     try
@@ -533,13 +533,13 @@ Fa = (a, b) ->
             c.parentNode.removeChild(c)
 
     L(window, "beforeunload", g)
-    ca = !1
+    ca = false
     l = 0
     k = () ->
         if not(ca)
             try
                 if 9 < l or c.contentWindow[B][x] is M[B][x]
-                    ca = !0
+                    ca = true
                     g()
                     va(O, "beforeunload", g)
                     b()
@@ -555,7 +555,7 @@ Fa = (a, b) ->
 
     c.src = e
 
-    return !0
+    return true
 
 class Ha
     ########################
@@ -600,7 +600,7 @@ class Ha
         b = a.get(Ia)
         if b != ua
             ea(b)
-            a.set(Ia, ua, !0)
+            a.set(Ia, ua, true)
             ba(b, 10)
 
     #####################
@@ -647,12 +647,12 @@ Pa = (a) ->
     )
 
     c.push("z=" + Bd())
-    a.set(Ra, c.join("&"), !0)
+    a.set(Ra, c.join("&"), true)
 
 Sa = (a) ->
     b = P(a, gd) or oc() + "/collect"
     Ga(b, P(a, Ra), a.get(Ia), a.get(Vd))
-    a.set(Ia, ua, !0)
+    a.set(Ia, ua, true)
 
 Hc = (a) ->
     b = window.gaData
@@ -669,7 +669,7 @@ cd = () ->
 yd = (a) ->
     b = window.gaDevIds;
     if ka(b) and b.length != 0
-        a.set("&did", b.join(","), !0)
+        a.set("&did", b.join(","), true)
 
 vb = (a) ->
     if not( a.get(Na) )
@@ -845,7 +845,7 @@ T = (a, b, c) ->
 db = () ->
 
 gb = qa(f.GoogleAnalyticsObject) and sa(f.GoogleAnalyticsObject) or "ga"
-Ba = !1
+Ba = false
 hb = T("apiVersion", "v")
 ib = T("clientVersion", "_v")
 
@@ -859,7 +859,7 @@ Ra = S("hitPayload")
 S("nonInteraction", "ni")
 S("currencyCode", "cu")
 
-Vd = S("useBeacon", 0, !1)
+Vd = S("useBeacon", 0, false)
 
 S("dataSource", "ds")
 S("sessionControl", "sc", "")
@@ -1000,13 +1000,13 @@ W = T("cookieDomain")
 Yb = T("cookiePath", 0, "/")
 Zb = T("cookieExpires", 0, 63072000)
 $b = T("legacyCookieDomain")
-Wc = T("legacyHistoryImport", 0, !0)
+Wc = T("legacyHistoryImport", 0, true)
 ac = T("storage", 0, "cookie")
-bc = T("allowLinker", 0, !1)
-cc = T("allowAnchor", 0, !0)
+bc = T("allowLinker", 0, false)
+cc = T("allowAnchor", 0, true)
 Ka = T("sampleRate", "sf", 100)
 dc = T("siteSpeedSampleRate", 0, 1)
-ec = T("alwaysSendReferrer", 0, !1)
+ec = T("alwaysSendReferrer", 0, false)
 gd = S("transportUrl")
 Md = S("_r", "_r")
 
@@ -1037,7 +1037,7 @@ X = (a, b, c, d) ->
 Od = () ->
     @V = 10000
     @fa = 0
-    @$ = !1
+    @$ = false
     @ea = 1
 
 Ed = () ->
@@ -1046,7 +1046,7 @@ Ed = () ->
     if a.fa and a.$
         return 0
 
-    a.$ = !0
+    a.$ = true
 
     if a.V is 0
         return 0
@@ -1121,18 +1121,18 @@ gc = (a, b) ->
             else
                 L(window, "load", () ->
                     gc(a, b)
-                , !1)
+                , false)
 
 Ec = (a) ->
     b = window.performance || window.webkitPerformance
     b = b and b.timing
     if not(b)
-        return !1
+        return false
 
     c = b.navigationStart
 
     if (0 == c)
-        return !1
+        return false
 
     a[Eb] = b.loadEventStart - c
     a[Gb] = b.domainLookupEnd - b.domainLookupStart
@@ -1143,11 +1143,11 @@ Ec = (a) ->
     a[Kb] = b.domInteractive - c
     a[Lb] = b.domContentLoadedEventStart - c
 
-    return !0
+    return true
 
 Fc = (a) ->
     if (window.top != window)
-        return!1;
+        returnfalse;
 
     b = window.external
     c = b and b.onloadT
@@ -1163,11 +1163,11 @@ Fc = (a) ->
         b.setPageReadyTime();
 
     if (0 == c)
-        return !1
+        return false
 
     a[Eb] = c
 
-    return !0
+    return true
 
 Y = (a, b) ->
     c = a[b]
@@ -1177,12 +1177,12 @@ Y = (a, b) ->
 Fd = (a) ->
     return (b) ->
         if b.get(Va) != 'pageview' or a.I
-            a.I = !0
+            a.I = true
             gc(b, (b) ->
                 a[xc]("timing", b)
             )
 
-hc = !1
+hc = false
 mc = (a) ->
     if P(a, ac) is "cookie"
 
@@ -1195,7 +1195,7 @@ mc = (a) ->
 
         if e != "auto"
             if zc(b, c, d, e, ca, g)
-                hc = !0
+                hc = true
         else
             for __none in [1]
                 J(32)
@@ -1219,7 +1219,7 @@ mc = (a) ->
                     c = nd(a)
 
                     if zc(b, c, d, e, ca, g)
-                        hc = !0
+                        hc = true
                         return
 
                 a.data.set(W, "auto")
@@ -1236,7 +1236,7 @@ Yc = (a) ->
 
         if d
             J(19)
-            a.set(Tc, (new Date).getTime(), !0)
+            a.set(Tc, (new Date).getTime(), true)
             a.set(Rc, d.R)
             b = Xc("__utmz", c, b)
 
@@ -1399,7 +1399,7 @@ class Dc
 
         J(48)
         @target = a
-        @T = !1
+        @T = false
 
     Q: (a, b) ->
         ###
@@ -1447,10 +1447,10 @@ class Dc
         e = @
 
         if not @T
-            @T = !0
-            L(M, "mousedown", d, !1)
-            L(M, "touchstart", d, !1)
-            L(M, "keyup", d, !1)
+            @T = true
+            L(M, "mousedown", d, false)
+            L(M, "touchstart", d, false)
+            L(M, "keyup", d, false)
 
         if c
             c = (b) ->
@@ -1522,17 +1522,17 @@ rd = (a, b) ->
 
 sd = (a, b) ->
     if (b is M.location.hostname)
-        return !1
+        return false
 
     for val in a
         if (val instanceof RegExp)
             if val.test(b)
-                return !0
+                return true
 
         else if (0 <= b.indexOf(val))
-            return !0
+            return true
 
-    return!1
+    returnfalse
 
 
 class Jd
@@ -1594,9 +1594,9 @@ Rd = (a, b) ->
 Pd = (a, b) ->
     if b.get(a.U)
         if "1" == Ca(a.Y)[0]
-            b.set(a.U, "", !0)
+            b.set(a.U, "", true)
         else
-            b.set(a.U, "" + hd(), !0)
+            b.set(a.U, "" + hd(), true)
 
 Qd = (a, b) ->
     if b.get(a.U)
@@ -1626,7 +1626,7 @@ Id = (a, b) ->
 
         ta(e)
 
-        b.set(a.U, "", !0)
+        b.set(a.U, "", true)
 
 Wd = /^gtm\d+$/
 
@@ -1647,16 +1647,16 @@ fd = (a, b) ->
 
         Rd(d, c)
 
-        c.set("dcLoaded", !0)
+        c.set("dcLoaded", true)
 
 Sd = (a) ->
     if a.get("dcLoaded")
-        b = !1
+        b = false
     else
         if a.get(ac) != 'cookie'
-            b = !1
+            b = false
         else
-            b = !0
+            b = true
 
     if b
         J(51)
@@ -1665,8 +1665,8 @@ Sd = (a) ->
         Qd(b, a)
 
         if a.get(b.U)
-            a.set(Md, 1, !0)
-            a.set(gd, oc() + "/r/collect", !0)
+            a.set(Md, 1, true)
+            a.set(gd, oc() + "/r/collect", true)
 
 
 Kd = (a, b) ->
@@ -1683,7 +1683,7 @@ Kd = (a, b) ->
 
         Rd(d, c)
 
-        c.set("_rlsaLoaded", !0)
+        c.set("_rlsaLoaded", true)
         tc("displayfeatures", a, b)
 
 Lc = () ->
@@ -1720,7 +1720,7 @@ bd = (a, b, c) ->
             a = e[1]
             wa("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + (a ? "prefix=" + a + "&" : "") + hd(), "_gasojs")
 
-        ad = !0
+        ad = true
 
 wb = /^(UA|YT|MO|GP)-(\d+)-(\d+)$/
 
@@ -1819,7 +1819,7 @@ class pc
                 c = za(qc[b] or [], c)
                 c[Va] = b
 
-                @b.set(c, 0, !0)
+                @b.set(c, 0, true)
                 @filters.D(this.b)
                 @b.data.m = {}
 
@@ -1832,7 +1832,7 @@ class pc
 
 Jc = (a, b) ->
     if P(a, ac) is "cookie"
-        hc = !1
+        hc = false
 
         c = null
 
@@ -1898,7 +1898,7 @@ Jc = (a, b) ->
                 J(10)
         if c
             a.data.set(Q, c)
-            hc = !0
+            hc = true
 
     c = a.get(cc)
 
@@ -2002,7 +2002,7 @@ Kc = (a) ->
     a.set(rb, c)
     a.set( tb, fc() )
     a.set(ob, M.characterSet or M.charset)
-    a.set(sb, b and "function" is typeof b.javaEnabled and b.javaEnabled() or !1)
+    a.set(sb, b and "function" is typeof b.javaEnabled and b.javaEnabled() or false)
     a.set( nb, (b and (b.language or b.browserLanguage) or "").toLowerCase() )
 
     b = M.location.hash
@@ -2036,11 +2036,11 @@ qc =
 
 rc = (a) ->
     if M.visibilityState is "prerender"
-        return !1
+        return false
 
     a()
 
-    return !0
+    return true
 
 td = /^(?:(\w+)\.)?(?:(\w+):)?(\w+)$/
 
@@ -2111,17 +2111,17 @@ tc = (a, b, c) ->
     d = Yd.get(a)
 
     if not ea(d)
-        return !1
+        return false
 
     b.plugins_ = b.plugins_ or new N
 
     if b.plugins_.get(a)
-        return !0
+        return true
 
     foo_val = new d(b, c or {})
     b.plugins_.set(a, foo_val)
 
-    return !0
+    return true
 
 ae = (a) ->
     b_func = (a) ->
@@ -2229,10 +2229,10 @@ Z.J = (a) ->
                             w = M.location.protocol
 
                             if "https:" is k or k is w
-                                e = !0
+                                e = true
                             else
                                 if "http:" != k
-                                    e = !1
+                                    e = false
                                 else
                                     e = "http:" == w
 
@@ -2243,9 +2243,9 @@ Z.J = (a) ->
                                 be = ae(M.location.href)
 
                                 if e.G or 0 <= e.url.indexOf("?") or 0 <= e.path.indexOf("://")
-                                    Xd = !1
+                                    Xd = false
                                 else if e.host is be.host and e.port == be.port
-                                    Xd = !0
+                                    Xd = true
                                 else
                                     if e.protocol
                                         ce = 80
@@ -2253,13 +2253,13 @@ Z.J = (a) ->
                                         ce = 443
 
                                     if "www.google-analytics.com" is e.host and (e.port or ce) == ce and D(e.path, "/plugins/")
-                                        Xd = !0
+                                        Xd = true
                                     else
-                                        Xd = !1
+                                        Xd = false
 
                             if Xd
                                 wa(l.url)
-                                $d.set(g, !0)
+                                $d.set(g, true)
 
                 b.push(d)
 
@@ -2287,7 +2287,7 @@ Z.v = (a) ->
             else if b
                 if a.i
                     if not tc(a.a[0], b, a.W)
-                        return!0
+                        returntrue
             else if a.e
                 c = a.d
                 d = a.a
@@ -2347,7 +2347,7 @@ $.N = () ->
 
     if not a or a.answer != 42
         $.L = a and a.l
-        $.loaded = !0
+        $.loaded = true
         b = window[gb] = $
 
         X("create", b, b.create, 3)
@@ -2368,11 +2368,11 @@ $.N = () ->
             d = b[c].src
             if d
                 if d[t]("https://www.google-analytics.com/analytics") != 0
-                    d = !1
+                    d = false
                 else
-                    d = !0
+                    d = true
             else
-                d = !1
+                d = false
 
             if d
                 J(33)
@@ -2381,7 +2381,7 @@ $.N = () ->
 
         if "https:" != M[B][E] && !Ba && Ed()
             J(36)
-            Ba = !0
+            Ba = true
 
         window.gaplugins = window.gaplugins or {}
         window.gaplugins.Linker = Dc
@@ -2409,10 +2409,10 @@ ano = () ->
     a = $.N;
     if not rc(a)
         J(16);
-        b = !1
+        b = false
         c = () ->
             if not b and rc(a)
-                b = !0
+                b = true
                 va(M, "visibilitychange", c)
 
         L(M, "visibilitychange", c)
