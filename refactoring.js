@@ -2425,7 +2425,7 @@
 
   Z.D = function(a) {
     var b, _results;
-    b = Z.J[G](Z, arguments);
+    b = Z.J.apply(Z, arguments);
     b = Z.f.concat(b);
     Z.f = [];
     _results = [];
@@ -2529,7 +2529,7 @@
         }
         if (a.A) {
           if (a.c === 't0') {
-            return $.create[G]($, a.a);
+            return $.create.apply($, a.a);
           }
         } else if (a.ba) {
           return $.remove(a.c);
@@ -2662,7 +2662,7 @@
       Yd.set("adfeatures", Kd);
       a = a && a.q;
       if (ka(a)) {
-        return Z.D[G]($, a);
+        return Z.D.apply($, a);
       } else {
         return J(50);
       }

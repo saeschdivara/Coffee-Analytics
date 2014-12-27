@@ -2175,7 +2175,7 @@ Z = {
 Z.ga()
 
 Z.D = (a) ->
-    b = Z.J[G](Z, arguments)
+    b = Z.J.apply(Z, arguments)
     b = Z.f.concat(b)
     Z.f = []
     while 0 < b.length and not Z.v(b[0]) and not(b.shift() || 0 < Z.f.length)
@@ -2268,7 +2268,7 @@ Z.v = (a) ->
 
             if a.A
                 if a.c is 't0'
-                    $.create[G]($, a.a)
+                    $.create.apply($, a.a)
 
             else if a.ba
                 $.remove(a.c)
@@ -2385,7 +2385,7 @@ $.N = () ->
         a = a and a.q
 
         if ka(a)
-            Z.D[G]($, a)
+            Z.D.apply($, a)
         else
             J(50)
 
