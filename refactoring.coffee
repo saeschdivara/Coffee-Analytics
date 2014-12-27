@@ -138,9 +138,9 @@ ka = (a) ->
 qa = (a) ->
     return 0 != a && -1 < (a.constructor + "").indexOf("String")
 
-# find ? starts_with
+# find ? starts_with ?
 D = (a, b) ->
-    return 0 == a.indexOf(b)
+    return a.indexOf(b) == 0
 
 sa = (a) ->
     if a
@@ -150,7 +150,7 @@ sa = (a) ->
 
 # create_spy_image
 ta = (a) ->
-    b = M.createElement("img")
+    b = document.createElement("img")
     b.width = 1
     b.height = 1
     b.src = a;
@@ -185,46 +185,54 @@ va = (a, b, c) ->
         a.detachEvent && a.detachEvent("on" + b, c)
 
 # insert_script_element
-wa = (a, b) ->
-    if (a)
-        c = M.createElement("script")
-        c.type = "text/javascript"
-        c.async = true
-        c.src = a
+wa = (script_url, element_id) ->
+    if (script_url)
+        script_element = document.createElement("script")
+        script_element.type = "text/javascript"
+        script_element.async = true
+        script_element.src = script_url
 
-        if b
-            c.id = b
+        if element_id
+            script_element.id = element_id
 
-        d = M.getElementsByTagName("script")[0]
-        d.parentNode.insertBefore(c, d)
+        first_script_element = document.getElementsByTagName("script")[0]
+        first_script_element.parentNode.insertBefore(script_element, first_script_element)
 
         return
 
 # get_clean_host_name ?
 xa = () ->
-    a = "" + M.location.hostname
-    if 0 == a.indexOf("www.")
-        return a.substring(4)
+    hostname = "" + document.location.hostname
+    ##
+#    if hostname.indexOf("www.") == 0
+    if D(hostname, 'www.')
+        return hostname.substring(4)
     else
-        retunr a
+        return hostname
 
+# get_referrer
 ya = (a) ->
-    b = M.referrer;
-    if /^https?:\/\//i.test(b)
-        if a
-            return b
-        a = "//" + M.location.hostname
-        c = b.indexOf(a)
+    referrer = document.referrer
 
-        if (5 == c || 6 == c)
-            a = b.charAt(c + a.length)
-            if "/" == a or "?" == a or "" == a or ":" == a
+    if /^https?:\/\//i.test(referrer)
+
+        if a
+            return referrer
+
+        a = "//" + document.location.hostname
+        c = referrer.indexOf(a)
+
+        if c == 5 or c == 6
+
+            a = referrer.charAt(c + a.length)
+
+            if a == "/" or a == "?" or a == "" or a == ":"
                 return
 
-        return b
+        return referrer
 
 za = (a, b) ->
-    if 1 == b.length and null != b[0] and is_object(b[0])
+    if b.length == 1 and b[0] != null and is_object(b[0])
         return b[0]
 
     c = {}
@@ -241,7 +249,7 @@ za = (a, b) ->
             break
         else
             if e < a[y]
-                c[a[e]] = b[e]
+                c[ a[e] ] = b[e]
 
     return c
 
@@ -333,12 +341,12 @@ Mc = () ->
     return La(a)
 
 Aa = (a) ->
-    b = window._gaUserPrefs;
-    if b and b.ioo and b.ioo() or a and window["ga-disable-" + a] is true
+    ga_user_preferences = window._gaUserPrefs;
+    if ga_user_preferences and ga_user_preferences.ioo and ga_user_preferences.ioo() or a and window["ga-disable-" + a] is true
         return true
     try
-        c = window.external
-        if c and c._gaUserPrefs and "oo" is c._gaUserPrefs
+        window_external = window.external
+        if window_external and window_external._gaUserPrefs and "oo" is window_external._gaUserPrefs
             return true
     catch d
 
@@ -428,13 +436,13 @@ Ea = (a) ->
     fa(@, "ff2post");
     @message = a + "-2036"
 
-Ga = (a, b, c, d) ->
+Ga = (url_string, data, c, d) ->
     c = c or ua
 
     if d
         d = c
         if window.navigator.sendBeacon
-            if window.navigator.sendBeacon(a, b)
+            if window.navigator.sendBeacon(url_string, data)
                 d()
                 d = true
             else
@@ -443,67 +451,74 @@ Ga = (a, b, c, d) ->
             d = false
 
     if not(d)
-        if (2036 >= b.length)
-            wc(a, b, c)
+        if (2036 >= data.length)
+            wc(url_string, data, c)
 
-        else if (8192 >= b.length)
+        else if (8192 >= data.length)
 
             if (0 <= window.navigator.userAgent.indexOf("Firefox") and ![].reduce)
-                throw new Ea(b.length)
+                throw new Ea(data.length)
 
-            wd(a, b, c) or xd(a, b, c) or Fa(b, c) or c()
+            wd(url_string, data, c) or xd(url_string, data, c) or Fa(data, c) or c()
 
         else
-            throw new Da(b.length)
+            throw new Da(data.length)
 
-wc = (a, b, c) ->
+wc = (a, b, onload_callback) ->
     # create spy image element
     d = ta("#{a}?#{b}")
 
     d.onload = d.onerror = () ->
-        d.onload = null;
-        d.onerror = null;
-        c()
+        d.onload = null
+        d.onerror = null
+        onload_callback()
 
-xd = (a, b, c) ->
-    d = window.XDomainRequest
+# send_cross_domain_request
+xd = (url_string, data, callback) ->
 
-    if not(d)
+    # This can only be used for internet explorer
+
+    cross_domain_request = window.XDomainRequest
+
+    if not(cross_domain_request)
         return false
 
-    d = new d;
-    d.open("POST", a)
+    cross_domain_request = new cross_domain_request
+    cross_domain_request.open("POST", url_string)
 
-    d.onerror = () ->
-        c()
+    cross_domain_request.onerror = () ->
+        callback()
 
-    d.onload = c
+    cross_domain_request.onload = callback
 
-    d.send(b)
+    cross_domain_request.send(data)
 
     return true
 
-wd = (a, b, c) ->
-    d = O.XMLHttpRequest
+# send_request
+wd = (url_string, data, callback) ->
+    xml_http_request = window.XMLHttpRequest
 
-    if not(d)
-        returnfalse
+    if not(xml_http_request)
+        return false
 
-    e = new d
-    if not("withCredentials" in e)
-        returnfalse
+    request_sender = new xml_http_request
+    if not("withCredentials" in request_sender)
+        return false
 
-    e.open("POST", a, true)
-    e.withCredentials = true
-    e.setRequestHeader("Content-Type", "text/plain")
-    e.onreadystatechange = () ->
-        if e.readyState is 4
-            c()
-            e = null
+    request_sender.open("POST", url_string, true)
+    request_sender.withCredentials = true
+    request_sender.setRequestHeader("Content-Type", "text/plain")
 
-    e.send(b)
+    request_sender.onreadystatechange = () ->
+        
+        if request_sender.readyState is 4
+            callback()
+            request_sender = null
 
-    returntrue
+    request_sender.send(data)
+
+    return true
 
 Fa = (a, b) ->
     if not(document.body)
@@ -515,22 +530,22 @@ Fa = (a, b) ->
     a = aa(a)
 
     try
-        c = document.createElement('<iframe name="' + a + '"></iframe>')
+        iframe_element = document.createElement('<iframe name="' + a + '"></iframe>')
     catch d
-        c = document.createElement("iframe")
-        fa(c, a)
+        iframe_element = document.createElement("iframe")
+        fa(iframe_element, a)
 
-    c.height = "0"
-    c.width = "0"
-    c.style.display = "none"
-    c.style.visibility = "hidden"
+    iframe_element.height = "0"
+    iframe_element.width = "0"
+    iframe_element.style.display = "none"
+    iframe_element.style.visibility = "hidden"
 
     e = document.location
     e = oc() + "/analytics_iframe.html#" + encodeURIComponent("#{e.protocol}//#{e.host}/favicon.ico")
     g = () ->
-        c.src = ""
-        if c.parentNode
-            c.parentNode.removeChild(c)
+        iframe_element.src = ""
+        if iframe_element.parentNode
+            iframe_element.parentNode.removeChild(iframe_element)
 
     L(window, "beforeunload", g)
     ca = false
@@ -538,7 +553,7 @@ Fa = (a, b) ->
     k = () ->
         if not(ca)
             try
-                if 9 < l or c.contentWindow[B][x] is M[B][x]
+                if 9 < l or iframe_element.contentWindow[B][x] is M[B][x]
                     ca = true
                     g()
                     va(O, "beforeunload", g)
@@ -550,10 +565,10 @@ Fa = (a, b) ->
             l++
             ba(k, 200)
 
-    L(c, "load", k)
-    document.body.appendChild(c)
+    L(iframe_element, "load", k)
+    document.body.appendChild(iframe_element)
 
-    c.src = e
+    iframe_element.src = e
 
     return true
 
@@ -615,15 +630,16 @@ Ma = (a) ->
     if Aa( P(a, Na) )
         throw"abort"
 
+# check_protocol
 Oa = () ->
-    a = document.location.protocol
-    if a != "http:" and a != "https:"
+    protocol = document.location.protocol
+    if protocol != "http:" and protocol != "https:"
         throw "abort"
 
 Pa = (a) ->
     try
         if window.XMLHttpRequest
-            if "withCredentials" in new O.XMLHttpRequest
+            if "withCredentials" in new window.XMLHttpRequest
                 J(40)
             else
                 if window.XDomainRequest
@@ -655,29 +671,36 @@ Sa = (a) ->
     a.set(Ia, ua, true)
 
 Hc = (a) ->
-    b = window.gaData
-    if b
-        if b.expId
-            a.set(Nc, b.expId)
-        if b.expVar
-            a.set(Oc, b.expVar)
+    ga_data = window.gaData
 
+    if ga_data
+
+        if ga_data.expId
+            a.set(Nc, ga_data.expId)
+
+        if ga_data.expVar
+            a.set(Oc, ga_data.expVar)
+
+# abort_on_preview ?
 cd = () ->
-    if window.navigator and "preview" is window.navigator.loadPurpose
+    if window.navigator and window.navigator.loadPurpose is "preview"
         throw "abort"
 
 yd = (a) ->
-    b = window.gaDevIds;
-    if ka(b) and b.length != 0
-        a.set("&did", b.join(","), true)
+    ga_dev_ids = window.gaDevIds
+
+    if ka(ga_dev_ids) and ga_dev_ids.length != 0
+        a.set("&did", ga_dev_ids.join(","), true)
 
 vb = (a) ->
     if not( a.get(Na) )
         throw "abort"
 
+# get_random_?
 hd = () ->
     return Math.round(2147483647 * Math.random())
 
+# get_real_random_?
 Bd = () ->
     try
         a = new Uint32Array(1)
@@ -695,19 +718,20 @@ Ta = (a) ->
 
     c = P(a, Va)
 
-    if "transaction" != c and "item" != c
+    if c != "transaction" and c != "item"
         c = R(a, Wa)
-        d = (new Date).getTime()
+        # Returns the number of milliseconds between midnight, January 1, 1970
+        current_miliseconds = (new Date).getTime()
         e = R(a, Xa)
 
         if 0 is e
-            a.set(Xa, d);
+            a.set(Xa, current_miliseconds);
 
-        e = Math.round(2 * (d - e) / 1000)
+        e = Math.round(2 * (current_miliseconds - e) / 1000)
 
         if 0 < e
             c = Math.min(c + e, 20)
-            a.set(Xa, d)
+            a.set(Xa, current_miliseconds)
 
         if 0 >= c
             throw "abort"
@@ -1017,6 +1041,7 @@ X = (a, b, c, d) ->
                 J(d)
 
             return c.apply(@, arguments)
+            
         catch b
             g = b and b.name
             if not(1 <= 100 * Math.random() or Aa("?"))
@@ -1060,27 +1085,31 @@ Ed = () ->
         return 0
 
 fc = () ->
-    c = window.navigator
-    if c
-        c = c.plugins
-    else
-        c = null
-    if c and c.length
-        d = 0
-        while d < c.length and not(b)
-            e = c[d]
-            if -1 < e.name.indexOf("Shockwave Flash")
-                b = e.description
+    navigator = window.navigator
 
-            d++
+    plugin_list = null
 
-    if not(b)
+    if navigator
+        plugin_list = navigator.plugins
+
+    if plugin_list and plugin_list.length
+        plugin_counter = 0
+
+        while plugin_counter < plugin_list.length and not(flash_plugin)
+            plugin = plugin_list[plugin_counter]
+            
+            if -1 < plugin.name.indexOf("Shockwave Flash")
+                flash_plugin = plugin.description
+
+            plugin_counter++
+
+    if not(flash_plugin)
         try
             a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7")
             b = a.GetVariable("$version")
         catch g
 
-    if not(b)
+    if not(flash_plugin)
         try
             a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6")
             b = "WIN 6,0,21,0"
@@ -1088,17 +1117,17 @@ fc = () ->
             b = a.GetVariable("$version")
         catch ca
 
-    if not(b)
+    if not(flash_plugin)
         try
             a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash")
             b = a.GetVariable("$version")
         catch l
 
-    if b
-        a = b[m](/[\d]+/g)
+    if flash_plugin
+        a = flash_plugin.match(/[\d]+/g)
         if 3 <= a.length
             b = a[0] + "." + a[1] + " r" + a[2]
-    return b or 0
+    return flash_plugin or 0
 
 gc = (a, b) ->
     c = Math.min( R(a, dc), 100 )
@@ -1179,7 +1208,7 @@ Fd = (a) ->
         if b.get(Va) != 'pageview' or a.I
             a.I = true
             gc(b, (b) ->
-                a[xc]("timing", b)
+                a.send("timing", b)
             )
 
 hc = false
@@ -1696,20 +1725,18 @@ Lc = () ->
 ad = null
 bd = (a, b, c) ->
     if not ad
-        d = document.location.hash
-        e = window.name
-        g = /^#?gaso=([^&]*)/
+        location_hash = document.location.hash
+        window_name = window.name
+        gaso_regex = /^#?gaso=([^&]*)/
 
-        foo_d_bool = d and d.match(g) or e and e.match(g)
+        foo_d_bool = location_hash and location_hash.match(gaso_regex) or window_name and window_name.match(gaso_regex)
         if foo_d_bool
-            d = d[1]
+            location_hash = location_hash[1]
         else
-            d = Ca("GASO")[0] or ""
+            location_hash = Ca("GASO")[0] or ""
 
-        e = d
-
-        if e and d.match(/^(?:!([-0-9a-z.]{1,40})!)?([-.\w]{10,1200})$/i)
-            zc("GASO", "" + d, c, b, a, 0)
+        if location_hash and location_hash.match(/^(?:!([-0-9a-z.]{1,40})!)?([-.\w]{10,1200})$/i)
+            zc("GASO", "" + location_hash, c, b, a, 0)
 
             if f._udo
                 f._udo = b
@@ -1717,8 +1744,14 @@ bd = (a, b, c) ->
             if f._utcp
                 f._utcp = c
 
-            a = e[1]
-            wa("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + (a ? "prefix=" + a + "&" : "") + hd(), "_gasojs")
+            a = location_hash[1]
+
+            if a
+                inpage_parameters = "prefix=" + a + "&"
+            else
+                inpage_parameters = ''
+                
+            wa("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + inpage_parameters + hd(), "_gasojs")
 
         ad = true
 
@@ -1744,12 +1777,12 @@ class pc
         ###
         ###
 
-        b = (a, b_var) ->
-            d.b[q].set(a, b_var)
+        b = (a, b_var) =>
+            @b.data.set(a, b_var)
 
-        c = (a, foo_var) ->
+        c = (a, foo_var) =>
             b(a, foo_var)
-            d.filters.add(a)
+            @filters.add(a)
 
         d = @
         @b = new Ya
@@ -1758,7 +1791,7 @@ class pc
         b(V, a[V])
         b(Na, sa(a[Na]))
         b(U, a[U])
-        b(W, a[W] || xa())
+        b(W, a[W] or xa())
         b(Yb, a[Yb])
         b(Zb, a[Zb])
         b($b, a[$b])
@@ -1786,6 +1819,7 @@ class pc
         c(Wb, Pa)
         c(Xb, Sa)
         c( Cd, Fd(@) )
+
         Jc(@b, a[Q])
         Kc(@b)
         @b.set( jb, Lc() )

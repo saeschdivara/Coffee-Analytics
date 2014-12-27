@@ -164,7 +164,7 @@
   };
 
   D = function(a, b) {
-    return 0 === a.indexOf(b);
+    return a.indexOf(b) === 0;
   };
 
   sa = function(a) {
@@ -177,7 +177,7 @@
 
   ta = function(a) {
     var b;
-    b = M.createElement("img");
+    b = document.createElement("img");
     b.width = 1;
     b.height = 1;
     b.src = a;
@@ -216,53 +216,53 @@
     }
   };
 
-  wa = function(a, b) {
-    var c, d;
-    if (a) {
-      c = M.createElement("script");
-      c.type = "text/javascript";
-      c.async = true;
-      c.src = a;
-      if (b) {
-        c.id = b;
+  wa = function(script_url, element_id) {
+    var first_script_element, script_element;
+    if (script_url) {
+      script_element = document.createElement("script");
+      script_element.type = "text/javascript";
+      script_element.async = true;
+      script_element.src = script_url;
+      if (element_id) {
+        script_element.id = element_id;
       }
-      d = M.getElementsByTagName("script")[0];
-      d.parentNode.insertBefore(c, d);
+      first_script_element = document.getElementsByTagName("script")[0];
+      first_script_element.parentNode.insertBefore(script_element, first_script_element);
     }
   };
 
   xa = function() {
-    var a;
-    a = "" + M.location.hostname;
-    if (0 === a.indexOf("www.")) {
-      return a.substring(4);
+    var hostname;
+    hostname = "" + document.location.hostname;
+    if (D(hostname, 'www.')) {
+      return hostname.substring(4);
     } else {
-      return retunr(a);
+      return hostname;
     }
   };
 
   ya = function(a) {
-    var b, c;
-    b = M.referrer;
-    if (/^https?:\/\//i.test(b)) {
+    var c, referrer;
+    referrer = document.referrer;
+    if (/^https?:\/\//i.test(referrer)) {
       if (a) {
-        return b;
+        return referrer;
       }
-      a = "//" + M.location.hostname;
-      c = b.indexOf(a);
-      if (5 === c || 6 === c) {
-        a = b.charAt(c + a.length);
-        if ("/" === a || "?" === a || "" === a || ":" === a) {
+      a = "//" + document.location.hostname;
+      c = referrer.indexOf(a);
+      if (c === 5 || c === 6) {
+        a = referrer.charAt(c + a.length);
+        if (a === "/" || a === "?" || a === "" || a === ":") {
           return;
         }
       }
-      return b;
+      return referrer;
     }
   };
 
   za = function(a, b) {
     var c, d, e, g;
-    if (1 === b.length && null !== b[0] && is_object(b[0])) {
+    if (b.length === 1 && b[0] !== null && is_object(b[0])) {
       return b[0];
     }
     c = {};
@@ -372,14 +372,14 @@
   };
 
   Aa = function(a) {
-    var b, c, d;
-    b = window._gaUserPrefs;
-    if (b && b.ioo && b.ioo() || a && window["ga-disable-" + a] === true) {
+    var d, ga_user_preferences, window_external;
+    ga_user_preferences = window._gaUserPrefs;
+    if (ga_user_preferences && ga_user_preferences.ioo && ga_user_preferences.ioo() || a && window["ga-disable-" + a] === true) {
       return true;
     }
     try {
-      c = window.external;
-      if (c && c._gaUserPrefs && "oo" === c._gaUserPrefs) {
+      window_external = window.external;
+      if (window_external && window_external._gaUserPrefs && "oo" === window_external._gaUserPrefs) {
         return true;
       }
     } catch (_error) {
@@ -478,12 +478,12 @@
     return this.message = a + "-2036";
   };
 
-  Ga = function(a, b, c, d) {
+  Ga = function(url_string, data, c, d) {
     c = c || ua;
     if (d) {
       d = c;
       if (window.navigator.sendBeacon) {
-        if (window.navigator.sendBeacon(a, b)) {
+        if (window.navigator.sendBeacon(url_string, data)) {
           d();
           d = true;
         } else {
@@ -494,70 +494,70 @@
       }
     }
     if (!d) {
-      if (2036 >= b.length) {
-        return wc(a, b, c);
-      } else if (8192 >= b.length) {
+      if (2036 >= data.length) {
+        return wc(url_string, data, c);
+      } else if (8192 >= data.length) {
         if (0 <= window.navigator.userAgent.indexOf("Firefox") && ![].reduce) {
-          throw new Ea(b.length);
+          throw new Ea(data.length);
         }
-        return wd(a, b, c) || xd(a, b, c) || Fa(b, c) || c();
+        return wd(url_string, data, c) || xd(url_string, data, c) || Fa(data, c) || c();
       } else {
-        throw new Da(b.length);
+        throw new Da(data.length);
       }
     }
   };
 
-  wc = function(a, b, c) {
+  wc = function(a, b, onload_callback) {
     var d;
     d = ta("" + a + "?" + b);
     return d.onload = d.onerror = function() {
       d.onload = null;
       d.onerror = null;
-      return c();
+      return onload_callback();
     };
   };
 
-  xd = function(a, b, c) {
-    var d;
-    d = window.XDomainRequest;
-    if (!d) {
+  xd = function(url_string, data, callback) {
+    var cross_domain_request;
+    cross_domain_request = window.XDomainRequest;
+    if (!cross_domain_request) {
       return false;
     }
-    d = new d;
-    d.open("POST", a);
-    d.onerror = function() {
-      return c();
+    cross_domain_request = new cross_domain_request;
+    cross_domain_request.open("POST", url_string);
+    cross_domain_request.onerror = function() {
+      return callback();
     };
-    d.onload = c;
-    d.send(b);
+    cross_domain_request.onload = callback;
+    cross_domain_request.send(data);
     return true;
   };
 
-  wd = function(a, b, c) {
-    var d, e;
-    d = O.XMLHttpRequest;
-    if (!d) {
-      returnfalse;
+  wd = function(url_string, data, callback) {
+    var request_sender, xml_http_request;
+    xml_http_request = window.XMLHttpRequest;
+    if (!xml_http_request) {
+      return false;
     }
-    e = new d;
-    if (!(__indexOf.call(e, "withCredentials") >= 0)) {
-      returnfalse;
+    request_sender = new xml_http_request;
+    if (!(__indexOf.call(request_sender, "withCredentials") >= 0)) {
+      return false;
     }
-    e.open("POST", a, true);
-    e.withCredentials = true;
-    e.setRequestHeader("Content-Type", "text/plain");
-    e.onreadystatechange = function() {
-      if (e.readyState === 4) {
-        c();
-        return e = null;
+    request_sender.open("POST", url_string, true);
+    request_sender.withCredentials = true;
+    request_sender.setRequestHeader("Content-Type", "text/plain");
+    request_sender.onreadystatechange = function() {
+      if (request_sender.readyState === 4) {
+        callback();
+        return request_sender = null;
       }
     };
-    e.send(b);
-    return returntrue;
+    request_sender.send(data);
+    return true;
   };
 
   Fa = function(a, b) {
-    var c, ca, d, e, g, k, l;
+    var ca, d, e, g, iframe_element, k, l;
     if (!document.body) {
       fb(function() {
         return Fa(a, b);
@@ -566,22 +566,22 @@
     }
     a = aa(a);
     try {
-      c = document.createElement('<iframe name="' + a + '"></iframe>');
+      iframe_element = document.createElement('<iframe name="' + a + '"></iframe>');
     } catch (_error) {
       d = _error;
-      c = document.createElement("iframe");
-      fa(c, a);
+      iframe_element = document.createElement("iframe");
+      fa(iframe_element, a);
     }
-    c.height = "0";
-    c.width = "0";
-    c.style.display = "none";
-    c.style.visibility = "hidden";
+    iframe_element.height = "0";
+    iframe_element.width = "0";
+    iframe_element.style.display = "none";
+    iframe_element.style.visibility = "hidden";
     e = document.location;
     e = oc() + "/analytics_iframe.html#" + encodeURIComponent("" + e.protocol + "//" + e.host + "/favicon.ico");
     g = function() {
-      c.src = "";
-      if (c.parentNode) {
-        return c.parentNode.removeChild(c);
+      iframe_element.src = "";
+      if (iframe_element.parentNode) {
+        return iframe_element.parentNode.removeChild(iframe_element);
       }
     };
     L(window, "beforeunload", g);
@@ -590,7 +590,7 @@
     k = function() {
       if (!ca) {
         try {
-          if (9 < l || c.contentWindow[B][x] === M[B][x]) {
+          if (9 < l || iframe_element.contentWindow[B][x] === M[B][x]) {
             ca = true;
             g();
             va(O, "beforeunload", g);
@@ -604,9 +604,9 @@
         return ba(k, 200);
       }
     };
-    L(c, "load", k);
-    document.body.appendChild(c);
-    c.src = e;
+    L(iframe_element, "load", k);
+    document.body.appendChild(iframe_element);
+    iframe_element.src = e;
     return true;
   };
 
@@ -668,9 +668,9 @@
   };
 
   Oa = function() {
-    var a;
-    a = document.location.protocol;
-    if (a !== "http:" && a !== "https:") {
+    var protocol;
+    protocol = document.location.protocol;
+    if (protocol !== "http:" && protocol !== "https:") {
       throw "abort";
     }
   };
@@ -679,7 +679,7 @@
     var b, c;
     try {
       if (window.XMLHttpRequest) {
-        if (__indexOf.call(new O.XMLHttpRequest, "withCredentials") >= 0) {
+        if (__indexOf.call(new window.XMLHttpRequest, "withCredentials") >= 0) {
           J(40);
         } else {
           if (window.XDomainRequest) {
@@ -719,29 +719,29 @@
   };
 
   Hc = function(a) {
-    var b;
-    b = window.gaData;
-    if (b) {
-      if (b.expId) {
-        a.set(Nc, b.expId);
+    var ga_data;
+    ga_data = window.gaData;
+    if (ga_data) {
+      if (ga_data.expId) {
+        a.set(Nc, ga_data.expId);
       }
-      if (b.expVar) {
-        return a.set(Oc, b.expVar);
+      if (ga_data.expVar) {
+        return a.set(Oc, ga_data.expVar);
       }
     }
   };
 
   cd = function() {
-    if (window.navigator && "preview" === window.navigator.loadPurpose) {
+    if (window.navigator && window.navigator.loadPurpose === "preview") {
       throw "abort";
     }
   };
 
   yd = function(a) {
-    var b;
-    b = window.gaDevIds;
-    if (ka(b) && b.length !== 0) {
-      return a.set("&did", b.join(","), true);
+    var ga_dev_ids;
+    ga_dev_ids = window.gaDevIds;
+    if (ka(ga_dev_ids) && ga_dev_ids.length !== 0) {
+      return a.set("&did", ga_dev_ids.join(","), true);
     }
   };
 
@@ -768,23 +768,23 @@
   };
 
   Ta = function(a) {
-    var b, c, d, e;
+    var b, c, current_miliseconds, e;
     b = R(a, Ua);
     if (500 <= b) {
       J(15);
     }
     c = P(a, Va);
-    if ("transaction" !== c && "item" !== c) {
+    if (c !== "transaction" && c !== "item") {
       c = R(a, Wa);
-      d = (new Date).getTime();
+      current_miliseconds = (new Date).getTime();
       e = R(a, Xa);
       if (0 === e) {
-        a.set(Xa, d);
+        a.set(Xa, current_miliseconds);
       }
-      e = Math.round(2 * (d - e) / 1000);
+      e = Math.round(2 * (current_miliseconds - e) / 1000);
       if (0 < e) {
         c = Math.min(c + e, 20);
-        a.set(Xa, d);
+        a.set(Xa, current_miliseconds);
       }
       if (0 >= c) {
         throw "abort";
@@ -1249,24 +1249,23 @@
   };
 
   fc = function() {
-    var a, b, c, ca, d, e, g, l;
-    c = window.navigator;
-    if (c) {
-      c = c.plugins;
-    } else {
-      c = null;
+    var a, b, ca, flash_plugin, g, l, navigator, plugin, plugin_counter, plugin_list;
+    navigator = window.navigator;
+    plugin_list = null;
+    if (navigator) {
+      plugin_list = navigator.plugins;
     }
-    if (c && c.length) {
-      d = 0;
-      while (d < c.length && !b) {
-        e = c[d];
-        if (-1 < e.name.indexOf("Shockwave Flash")) {
-          b = e.description;
+    if (plugin_list && plugin_list.length) {
+      plugin_counter = 0;
+      while (plugin_counter < plugin_list.length && !flash_plugin) {
+        plugin = plugin_list[plugin_counter];
+        if (-1 < plugin.name.indexOf("Shockwave Flash")) {
+          flash_plugin = plugin.description;
         }
-        d++;
+        plugin_counter++;
       }
     }
-    if (!b) {
+    if (!flash_plugin) {
       try {
         a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
         b = a.GetVariable("$version");
@@ -1274,7 +1273,7 @@
         g = _error;
       }
     }
-    if (!b) {
+    if (!flash_plugin) {
       try {
         a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
         b = "WIN 6,0,21,0";
@@ -1284,7 +1283,7 @@
         ca = _error;
       }
     }
-    if (!b) {
+    if (!flash_plugin) {
       try {
         a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
         b = a.GetVariable("$version");
@@ -1292,13 +1291,13 @@
         l = _error;
       }
     }
-    if (b) {
-      a = b[m](/[\d]+/g);
+    if (flash_plugin) {
+      a = flash_plugin.match(/[\d]+/g);
       if (3 <= a.length) {
         b = a[0] + "." + a[1] + " r" + a[2];
       }
     }
-    return b || 0;
+    return flash_plugin || 0;
   };
 
   gc = function(a, b) {
@@ -1387,7 +1386,7 @@
       if (b.get(Va) !== 'pageview' || a.I) {
         a.I = true;
         return gc(b, function(b) {
-          return a[xc]("timing", b);
+          return a.send("timing", b);
         });
       }
     };
@@ -1940,30 +1939,32 @@
   ad = null;
 
   bd = function(a, b, c) {
-    var d, e, foo_d_bool, g;
+    var foo_d_bool, gaso_regex, inpage_parameters, location_hash, window_name;
     if (!ad) {
-      d = document.location.hash;
-      e = window.name;
-      g = /^#?gaso=([^&]*)/;
-      foo_d_bool = d && d.match(g) || e && e.match(g);
+      location_hash = document.location.hash;
+      window_name = window.name;
+      gaso_regex = /^#?gaso=([^&]*)/;
+      foo_d_bool = location_hash && location_hash.match(gaso_regex) || window_name && window_name.match(gaso_regex);
       if (foo_d_bool) {
-        d = d[1];
+        location_hash = location_hash[1];
       } else {
-        d = Ca("GASO")[0] || "";
+        location_hash = Ca("GASO")[0] || "";
       }
-      e = d;
-      if (e && d.match(/^(?:!([-0-9a-z.]{1,40})!)?([-.\w]{10,1200})$/i)) {
-        zc("GASO", "" + d, c, b, a, 0);
+      if (location_hash && location_hash.match(/^(?:!([-0-9a-z.]{1,40})!)?([-.\w]{10,1200})$/i)) {
+        zc("GASO", "" + location_hash, c, b, a, 0);
         if (f._udo) {
           f._udo = b;
         }
         if (f._utcp) {
           f._utcp = c;
         }
-        a = e[1];
-        wa("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + (a != null ? a : "prefix=" + a + {
-          "&": ""
-        }) + hd(), "_gasojs");
+        a = location_hash[1];
+        if (a) {
+          inpage_parameters = "prefix=" + a + "&";
+        } else {
+          inpage_parameters = '';
+        }
+        wa("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + inpage_parameters + hd(), "_gasojs");
       }
       return ad = true;
     }
@@ -1977,13 +1978,17 @@
       /*
        */
       var b, c, d;
-      b = function(a, b_var) {
-        return d.b[q].set(a, b_var);
-      };
-      c = function(a, foo_var) {
-        b(a, foo_var);
-        return d.filters.add(a);
-      };
+      b = (function(_this) {
+        return function(a, b_var) {
+          return _this.b.data.set(a, b_var);
+        };
+      })(this);
+      c = (function(_this) {
+        return function(a, foo_var) {
+          b(a, foo_var);
+          return _this.filters.add(a);
+        };
+      })(this);
       d = this;
       this.b = new Ya;
       this.filters = new Ha;
