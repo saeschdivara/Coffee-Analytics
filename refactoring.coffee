@@ -224,11 +224,11 @@ ya = (a) ->
         return b
 
 za = (a, b) ->
-    if 1 == b[y] and null != b[0] and is_object(b[0])
+    if 1 == b.length and null != b[0] and is_object(b[0])
         return b[0]
 
     c = {}
-    d = Math.min(a[y] + 1, b[y])
+    d = Math.min(a.length + 1, b.length)
     e = -1
 
     while e < d
@@ -319,8 +319,8 @@ Mc = () ->
     else
         cookie = ''
 
-    if M.referrer
-        referrer = M.referrer
+    if document.referrer
+        referrer = document.referrer
     else
         referrer = ''
 
@@ -347,7 +347,7 @@ Aa = (a) ->
 # find_all_cookie_settings ??
 Ca = (a) ->
     b = []
-    c = M.cookie.split(";")
+    c = document.cookie.split(";")
     custom_regex = new RegExp("^\\s*" + a + "=\\s*(.*?)\\s*$")
 
     d = 0
@@ -366,7 +366,7 @@ zc = (a, b, c, d, e, g) ->
     if Aa(e)
         e = false
     else
-        if eb.test(M.location.hostname) or c is "/" && vc.test(d)
+        if eb.test(document.location.hostname) or c is "/" && vc.test(d)
             e = false
         else
             e = true
@@ -387,11 +387,11 @@ zc = (a, b, c, d, e, g) ->
     if d and d != "none"
         c += "domain=#{d};"
 
-    d = M.cookie
+    d = document.cookie
 
-    M.cookie = c
+    document.cookie = c
 
-    d = (d != M.cookie)
+    d = (d != document.cookie)
     if not(d)
         t
     else
@@ -413,7 +413,7 @@ eb = /(^|\.)doubleclick\.net$/i
 
 # get_analytics_address
 oc = () ->
-    if Ba or "https:" is M.location.protocol
+    if Ba or "https:" is document.location.protocol
         protocol = "https:"
     else
         protocol = "http:"
@@ -448,7 +448,7 @@ Ga = (a, b, c, d) ->
 
         else if (8192 >= b.length)
 
-            if (0 <= window.navigator.userAgent[t]("Firefox") and ![].reduce)
+            if (0 <= window.navigator.userAgent.indexOf("Firefox") and ![].reduce)
                 throw new Ea(b.length)
 
             wd(a, b, c) or xd(a, b, c) or Fa(b, c) or c()
@@ -506,7 +506,7 @@ wd = (a, b, c) ->
     returntrue
 
 Fa = (a, b) ->
-    if not(M.body)
+    if not(document.body)
         fb(() ->
             Fa(a, b)
         )
@@ -515,9 +515,9 @@ Fa = (a, b) ->
     a = aa(a)
 
     try
-        c = M.createElement('<iframe name="' + a + '"></iframe>')
+        c = document.createElement('<iframe name="' + a + '"></iframe>')
     catch d
-        c = M.createElement("iframe")
+        c = document.createElement("iframe")
         fa(c, a)
 
     c.height = "0"
@@ -525,7 +525,7 @@ Fa = (a, b) ->
     c.style.display = "none"
     c.style.visibility = "hidden"
 
-    e = M.location
+    e = document.location
     e = oc() + "/analytics_iframe.html#" + encodeURIComponent("#{e.protocol}//#{e.host}/favicon.ico")
     g = () ->
         c.src = ""
@@ -551,7 +551,7 @@ Fa = (a, b) ->
             ba(k, 200)
 
     L(c, "load", k)
-    M.body.appendChild(c)
+    document.body.appendChild(c)
 
     c.src = e
 
@@ -616,7 +616,7 @@ Ma = (a) ->
         throw"abort"
 
 Oa = () ->
-    a = M.location.protocol
+    a = document.location.protocol
     if a != "http:" and a != "https:"
         throw "abort"
 
@@ -703,10 +703,10 @@ Ta = (a) ->
         if 0 is e
             a.set(Xa, d);
 
-        e = n.round(2 * (d - e) / 1000)
+        e = Math.round(2 * (d - e) / 1000)
 
         if 0 < e
-            c = n.min(c + e, 20)
+            c = Math.min(c + e, 20)
             a.set(Xa, d)
 
         if 0 >= c
@@ -880,7 +880,7 @@ nb = S("language", "ul")
 ob = S("encoding", "de")
 
 S("title", "dt", () ->
-    return M.title or 0
+    return document.title or 0
 )
 
 cb("contentGroup([0-9]+)", (a) ->
@@ -1069,7 +1069,7 @@ fc = () ->
         d = 0
         while d < c.length and not(b)
             e = c[d]
-            if -1 < e[v][t]("Shockwave Flash")
+            if -1 < e.name.indexOf("Shockwave Flash")
                 b = e.description
 
             d++
@@ -1124,30 +1124,30 @@ gc = (a, b) ->
                 , false)
 
 Ec = (a) ->
-    b = window.performance || window.webkitPerformance
-    b = b and b.timing
-    if not(b)
+    performance_timing = window.performance or window.webkitPerformance
+    performance_timing = performance_timing and performance_timing.timing
+    if not(performance_timing)
         return false
 
-    c = b.navigationStart
+    navigation_start = performance_timing.navigationStart
 
-    if (0 == c)
+    if navigation_start == 0
         return false
 
-    a[Eb] = b.loadEventStart - c
-    a[Gb] = b.domainLookupEnd - b.domainLookupStart
-    a[Jb] = b.connectEnd - b.connectStart
-    a[Ib] = b.responseStart - b.requestStart
-    a[Fb] = b.responseEnd - b.responseStart
-    a[Hb] = b.fetchStart - c
-    a[Kb] = b.domInteractive - c
-    a[Lb] = b.domContentLoadedEventStart - c
+    a[Eb] = performance_timing.loadEventStart - navigation_start
+    a[Gb] = performance_timing.domainLookupEnd - performance_timing.domainLookupStart
+    a[Jb] = performance_timing.connectEnd - performance_timing.connectStart
+    a[Ib] = performance_timing.responseStart - performance_timing.requestStart
+    a[Fb] = performance_timing.responseEnd - performance_timing.responseStart
+    a[Hb] = performance_timing.fetchStart - navigation_start
+    a[Kb] = performance_timing.domInteractive - navigation_start
+    a[Lb] = performance_timing.domContentLoadedEventStart - navigation_start
 
     return true
 
 Fc = (a) ->
     if (window.top != window)
-        returnfalse;
+        return false
 
     b = window.external
     c = b and b.onloadT
@@ -1462,7 +1462,7 @@ class Dc
                         sd(a, foo_c[1])
                         rd(e, b)
 
-            for form in M.forms
+            for form in document.forms
                 L(form, "submit", c)
 
     #####################
@@ -1521,7 +1521,7 @@ rd = (a, b) ->
                 b.action = qd(a, b.action)
 
 sd = (a, b) ->
-    if (b is M.location.hostname)
+    if (b is document.location.hostname)
         return false
 
     for val in a
@@ -1696,7 +1696,7 @@ Lc = () ->
 ad = null
 bd = (a, b, c) ->
     if not ad
-        d = M.location.hash
+        d = document.location.hash
         e = window.name
         g = /^#?gaso=([^&]*)/
 
@@ -1907,7 +1907,7 @@ Jc = (a, b) ->
     else
         location_part = 'search'
 
-    c = M.location[location_part].match("(?:&|#|\\?)" + K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + "=([^&#]*)")
+    c = document.location[location_part].match("(?:&|#|\\?)" + K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + "=([^&#]*)")
     if c and c.length is 2
         e = c[1]
     else
@@ -1915,7 +1915,7 @@ Jc = (a, b) ->
 
     if e
         if a.get(bc)
-            c = e[t](".")
+            c = e.indexOf(".")
             if c is -1
                 J(22)
             else
@@ -1954,7 +1954,7 @@ Jc = (a, b) ->
             a.data.set(Q, c)
         else
             J(8)
-            foo_val = n.round((new Date).getTime() / 1000)
+            foo_val = Math.round((new Date).getTime() / 1000)
             a.data.set(Q, [hd() ^ Mc() & 2147483647, foo_val].join("."))
 
     mc(a)
@@ -1962,7 +1962,7 @@ Jc = (a, b) ->
 Kc = (a) ->
     b = window.navigator
     c = window.screen
-    d = M.location
+    d = document.location
 
     a.set( lb, ya( a.get(ec) ) )
 
@@ -1981,14 +1981,14 @@ Kc = (a) ->
     if c
         a.set(pb, c.colorDepth + "-bit")
 
-    c = M.documentElement
-    e = M.body
+    c = document.documentElement
+    e = document.body
     g = e and e.clientWidth and e.clientHeight
     ca = []
 
     if c and c.clientWidth and c.clientHeight
 
-        if M.compatMode is "CSS1Compat" or not g
+        if document.compatMode is "CSS1Compat" or not g
             ca = [c.clientWidth, c.clientHeight]
         else
             if g
@@ -2001,11 +2001,11 @@ Kc = (a) ->
 
     a.set(rb, c)
     a.set( tb, fc() )
-    a.set(ob, M.characterSet or M.charset)
+    a.set(ob, document.characterSet or document.charset)
     a.set(sb, b and "function" is typeof b.javaEnabled and b.javaEnabled() or false)
     a.set( nb, (b and (b.language or b.browserLanguage) or "").toLowerCase() )
 
-    b = M.location.hash
+    b = document.location.hash
     if d and a.get(cc) and b
         b = b.split(/[?&#]+/)
         d = []
@@ -2035,7 +2035,7 @@ qc =
     timing: [Mb, Nb, Pb, Ob]
 
 rc = (a) ->
-    if M.visibilityState is "prerender"
+    if document.visibilityState is "prerender"
         return false
 
     a()
@@ -2138,8 +2138,8 @@ ae = (a) ->
 
         return [b, "" + c, a]
 
-    c = M.createElement("a")
-    Pc(c, M.location.href)
+    c = document.createElement("a")
+    Pc(c, document.location.href)
 
     protocol = (c.protocol or "").toLowerCase()
     d = protocol
@@ -2163,7 +2163,7 @@ ae = (a) ->
             if not a or D(a, "?")
                 a = ca + e[2] + (a or g)
             else
-                if 0 > a.split("/")[0][t](":")
+                if 0 > a.split("/")[0].indexOf(":")
                     (a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a)
 
     Pc(c, a)
@@ -2220,13 +2220,13 @@ Z.J = (a) ->
 
                         if ca
                             if ca and 0 <= ca.indexOf("/")
-                                protocol = (Ba || "https:" == M.location.protocol ? "https:" : "http:")
+                                protocol = (Ba || "https:" == document.location.protocol ? "https:" : "http:")
                                 ca = "#{protocol}//www.google-analytics.com/plugins/ua/#{ca}"
 
                             l = ae(ca)
                             e = 0
                             k = l.protocol
-                            w = M.location.protocol
+                            w = document.location.protocol
 
                             if "https:" is k or k is w
                                 e = true
@@ -2240,7 +2240,7 @@ Z.J = (a) ->
 
                             if Xd
                                 e = l
-                                be = ae(M.location.href)
+                                be = ae(document.location.href)
 
                                 if e.G or 0 <= e.url.indexOf("?") or 0 <= e.path.indexOf("://")
                                     Xd = false
@@ -2362,12 +2362,12 @@ $.N = () ->
         X("get", b, b.get)
         X("set", b, b.set)
 
-        b = M.getElementsByTagName("script")
+        b = document.getElementsByTagName("script")
         c = 0
         while c < b.length and c < 100
             d = b[c].src
             if d
-                if d[t]("https://www.google-analytics.com/analytics") != 0
+                if d.indexOf("https://www.google-analytics.com/analytics") != 0
                     d = false
                 else
                     d = true

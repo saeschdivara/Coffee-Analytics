@@ -262,11 +262,11 @@
 
   za = function(a, b) {
     var c, d, e, g;
-    if (1 === b[y] && null !== b[0] && is_object(b[0])) {
+    if (1 === b.length && null !== b[0] && is_object(b[0])) {
       return b[0];
     }
     c = {};
-    d = Math.min(a[y] + 1, b[y]);
+    d = Math.min(a.length + 1, b.length);
     e = -1;
     while (e < d) {
       e++;
@@ -356,8 +356,8 @@
     } else {
       cookie = '';
     }
-    if (M.referrer) {
-      referrer = M.referrer;
+    if (document.referrer) {
+      referrer = document.referrer;
     } else {
       referrer = '';
     }
@@ -391,7 +391,7 @@
   Ca = function(a) {
     var b, c, custom_regex, d, e;
     b = [];
-    c = M.cookie.split(";");
+    c = document.cookie.split(";");
     custom_regex = new RegExp("^\\s*" + a + "=\\s*(.*?)\\s*$");
     d = 0;
     while (d < c.length) {
@@ -409,7 +409,7 @@
     if (Aa(e)) {
       e = false;
     } else {
-      if (eb.test(M.location.hostname) || c === "/" && vc.test(d)) {
+      if (eb.test(document.location.hostname) || c === "/" && vc.test(d)) {
         e = false;
       } else {
         e = true;
@@ -430,9 +430,9 @@
     if (d && d !== "none") {
       c += "domain=" + d + ";";
     }
-    d = M.cookie;
-    M.cookie = c;
-    d = d !== M.cookie;
+    d = document.cookie;
+    document.cookie = c;
+    d = d !== document.cookie;
     if (!d) {
       t;
     } else {
@@ -460,7 +460,7 @@
 
   oc = function() {
     var protocol;
-    if (Ba || "https:" === M.location.protocol) {
+    if (Ba || "https:" === document.location.protocol) {
       protocol = "https:";
     } else {
       protocol = "http:";
@@ -497,7 +497,7 @@
       if (2036 >= b.length) {
         return wc(a, b, c);
       } else if (8192 >= b.length) {
-        if (0 <= window.navigator.userAgent[t]("Firefox") && ![].reduce) {
+        if (0 <= window.navigator.userAgent.indexOf("Firefox") && ![].reduce) {
           throw new Ea(b.length);
         }
         return wd(a, b, c) || xd(a, b, c) || Fa(b, c) || c();
@@ -558,7 +558,7 @@
 
   Fa = function(a, b) {
     var c, ca, d, e, g, k, l;
-    if (!M.body) {
+    if (!document.body) {
       fb(function() {
         return Fa(a, b);
       });
@@ -566,17 +566,17 @@
     }
     a = aa(a);
     try {
-      c = M.createElement('<iframe name="' + a + '"></iframe>');
+      c = document.createElement('<iframe name="' + a + '"></iframe>');
     } catch (_error) {
       d = _error;
-      c = M.createElement("iframe");
+      c = document.createElement("iframe");
       fa(c, a);
     }
     c.height = "0";
     c.width = "0";
     c.style.display = "none";
     c.style.visibility = "hidden";
-    e = M.location;
+    e = document.location;
     e = oc() + "/analytics_iframe.html#" + encodeURIComponent("" + e.protocol + "//" + e.host + "/favicon.ico");
     g = function() {
       c.src = "";
@@ -605,7 +605,7 @@
       }
     };
     L(c, "load", k);
-    M.body.appendChild(c);
+    document.body.appendChild(c);
     c.src = e;
     return true;
   };
@@ -669,7 +669,7 @@
 
   Oa = function() {
     var a;
-    a = M.location.protocol;
+    a = document.location.protocol;
     if (a !== "http:" && a !== "https:") {
       throw "abort";
     }
@@ -781,9 +781,9 @@
       if (0 === e) {
         a.set(Xa, d);
       }
-      e = n.round(2 * (d - e) / 1000);
+      e = Math.round(2 * (d - e) / 1000);
       if (0 < e) {
-        c = n.min(c + e, 20);
+        c = Math.min(c + e, 20);
         a.set(Xa, d);
       }
       if (0 >= c) {
@@ -993,7 +993,7 @@
   ob = S("encoding", "de");
 
   S("title", "dt", function() {
-    return M.title || 0;
+    return document.title || 0;
   });
 
   cb("contentGroup([0-9]+)", function(a) {
@@ -1260,7 +1260,7 @@
       d = 0;
       while (d < c.length && !b) {
         e = c[d];
-        if (-1 < e[v][t]("Shockwave Flash")) {
+        if (-1 < e.name.indexOf("Shockwave Flash")) {
           b = e.description;
         }
         d++;
@@ -1328,31 +1328,31 @@
   };
 
   Ec = function(a) {
-    var b, c;
-    b = window.performance || window.webkitPerformance;
-    b = b && b.timing;
-    if (!b) {
+    var navigation_start, performance_timing;
+    performance_timing = window.performance || window.webkitPerformance;
+    performance_timing = performance_timing && performance_timing.timing;
+    if (!performance_timing) {
       return false;
     }
-    c = b.navigationStart;
-    if (0 === c) {
+    navigation_start = performance_timing.navigationStart;
+    if (navigation_start === 0) {
       return false;
     }
-    a[Eb] = b.loadEventStart - c;
-    a[Gb] = b.domainLookupEnd - b.domainLookupStart;
-    a[Jb] = b.connectEnd - b.connectStart;
-    a[Ib] = b.responseStart - b.requestStart;
-    a[Fb] = b.responseEnd - b.responseStart;
-    a[Hb] = b.fetchStart - c;
-    a[Kb] = b.domInteractive - c;
-    a[Lb] = b.domContentLoadedEventStart - c;
+    a[Eb] = performance_timing.loadEventStart - navigation_start;
+    a[Gb] = performance_timing.domainLookupEnd - performance_timing.domainLookupStart;
+    a[Jb] = performance_timing.connectEnd - performance_timing.connectStart;
+    a[Ib] = performance_timing.responseStart - performance_timing.requestStart;
+    a[Fb] = performance_timing.responseEnd - performance_timing.responseStart;
+    a[Hb] = performance_timing.fetchStart - navigation_start;
+    a[Kb] = performance_timing.domInteractive - navigation_start;
+    a[Lb] = performance_timing.domContentLoadedEventStart - navigation_start;
     return true;
   };
 
   Fc = function(a) {
     var b, c;
     if (window.top !== window) {
-      returnfalse;
+      return false;
     }
     b = window.external;
     c = b && b.onloadT;
@@ -1694,7 +1694,7 @@
             }
           }
         };
-        _ref = M.forms;
+        _ref = document.forms;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           form = _ref[_i];
@@ -1770,7 +1770,7 @@
 
   sd = function(a, b) {
     var val, _i, _len;
-    if (b === M.location.hostname) {
+    if (b === document.location.hostname) {
       return false;
     }
     for (_i = 0, _len = a.length; _i < _len; _i++) {
@@ -1942,7 +1942,7 @@
   bd = function(a, b, c) {
     var d, e, foo_d_bool, g;
     if (!ad) {
-      d = M.location.hash;
+      d = document.location.hash;
       e = window.name;
       g = /^#?gaso=([^&]*)/;
       foo_d_bool = d && d.match(g) || e && e.match(g);
@@ -2146,7 +2146,7 @@
     } else {
       location_part = 'search';
     }
-    c = M.location[location_part].match("(?:&|#|\\?)" + K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + "=([^&#]*)");
+    c = document.location[location_part].match("(?:&|#|\\?)" + K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + "=([^&#]*)");
     if (c && c.length === 2) {
       e = c[1];
     } else {
@@ -2154,7 +2154,7 @@
     }
     if (e) {
       if (a.get(bc)) {
-        c = e[t](".");
+        c = e.indexOf(".");
         if (c === -1) {
           J(22);
         } else {
@@ -2195,7 +2195,7 @@
         a.data.set(Q, c);
       } else {
         J(8);
-        foo_val = n.round((new Date).getTime() / 1000);
+        foo_val = Math.round((new Date).getTime() / 1000);
         a.data.set(Q, [hd() ^ Mc() & 2147483647, foo_val].join("."));
       }
     }
@@ -2206,7 +2206,7 @@
     var b, c, ca, d, e, g, path_name, term_to_check, _i, _len;
     b = window.navigator;
     c = window.screen;
-    d = M.location;
+    d = document.location;
     a.set(lb, ya(a.get(ec)));
     if (d) {
       path_name = d.pathname || "";
@@ -2222,12 +2222,12 @@
     if (c) {
       a.set(pb, c.colorDepth + "-bit");
     }
-    c = M.documentElement;
-    e = M.body;
+    c = document.documentElement;
+    e = document.body;
     g = e && e.clientWidth && e.clientHeight;
     ca = [];
     if (c && c.clientWidth && c.clientHeight) {
-      if (M.compatMode === "CSS1Compat" || !g) {
+      if (document.compatMode === "CSS1Compat" || !g) {
         ca = [c.clientWidth, c.clientHeight];
       } else {
         if (g) {
@@ -2242,10 +2242,10 @@
     }
     a.set(rb, c);
     a.set(tb, fc());
-    a.set(ob, M.characterSet || M.charset);
+    a.set(ob, document.characterSet || document.charset);
     a.set(sb, b && "function" === typeof b.javaEnabled && b.javaEnabled() || false);
     a.set(nb, (b && (b.language || b.browserLanguage) || "").toLowerCase());
-    b = M.location.hash;
+    b = document.location.hash;
     if (d && a.get(cc) && b) {
       b = b.split(/[?&#]+/);
       d = [];
@@ -2270,7 +2270,7 @@
   };
 
   rc = function(a) {
-    if (M.visibilityState === "prerender") {
+    if (document.visibilityState === "prerender") {
       return false;
     }
     a();
@@ -2382,8 +2382,8 @@
       }
       return [b, "" + c, a];
     };
-    c = M.createElement("a");
-    Pc(c, M.location.href);
+    c = document.createElement("a");
+    Pc(c, document.location.href);
     protocol = (c.protocol || "").toLowerCase();
     d = protocol;
     e = b_func(c);
@@ -2403,7 +2403,7 @@
         if (!a || D(a, "?")) {
           a = ca + e[2] + (a || g);
         } else {
-          if (0 > a.split("/")[0][t](":")) {
+          if (0 > a.split("/")[0].indexOf(":")) {
             a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a;
           }
         }
@@ -2467,7 +2467,7 @@
               }
               if (ca) {
                 if (ca && 0 <= ca.indexOf("/")) {
-                  protocol = (_ref = Ba || "https:" === M.location.protocol) != null ? _ref : {
+                  protocol = (_ref = Ba || "https:" === document.location.protocol) != null ? _ref : {
                     "https:": "http:"
                   };
                   ca = "" + protocol + "//www.google-analytics.com/plugins/ua/" + ca;
@@ -2475,7 +2475,7 @@
                 l = ae(ca);
                 e = 0;
                 k = l.protocol;
-                w = M.location.protocol;
+                w = document.location.protocol;
                 if ("https:" === k || k === w) {
                   e = true;
                 } else {
@@ -2488,7 +2488,7 @@
                 Xd = e;
                 if (Xd) {
                   e = l;
-                  be = ae(M.location.href);
+                  be = ae(document.location.href);
                   if (e.G || 0 <= e.url.indexOf("?") || 0 <= e.path.indexOf("://")) {
                     Xd = false;
                   } else if (e.host === be.host && e.port === be.port) {
@@ -2636,12 +2636,12 @@
       b = Ya.prototype;
       X("get", b, b.get);
       X("set", b, b.set);
-      b = M.getElementsByTagName("script");
+      b = document.getElementsByTagName("script");
       c = 0;
       while (c < b.length && c < 100) {
         d = b[c].src;
         if (d) {
-          if (d[t]("https://www.google-analytics.com/analytics") !== 0) {
+          if (d.indexOf("https://www.google-analytics.com/analytics") !== 0) {
             d = false;
           } else {
             d = true;
