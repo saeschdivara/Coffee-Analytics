@@ -2481,8 +2481,10 @@ ano = () ->
     a = $.N
 
     if not rc(a)
+
         J(16)
         b = false
+
         c = () ->
             if not b and rc(a)
                 b = true
