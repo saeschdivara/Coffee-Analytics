@@ -1716,11 +1716,11 @@ Sd = (a) ->
 
 
 Kd = (a, b) ->
-    c = a.b;
+    c = a.b
     if not c.get("_rlsaLoaded")
         J(38)
 
-        b = b || {}
+        b = b or {}
 
         if b[U]
             d = Cc( b[U] )
@@ -2473,11 +2473,13 @@ $.N = () ->
 
 $.k = () ->
     a = $.K()
+
     for val in a
         val.get(V)
 
 ano = () ->
-    a = $.N;
+    a = $.N
+
     if not rc(a)
         J(16)
         b = false
@@ -2487,6 +2489,8 @@ ano = () ->
                 va(M, "visibilitychange", c)
 
         L(M, "visibilitychange", c)
+
+
 ano()
 
 La = (used_string) ->
