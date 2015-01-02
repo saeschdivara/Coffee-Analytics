@@ -149,13 +149,13 @@ sa = (a) ->
         ""
 
 # create_spy_image
-ta = (a) ->
-    b = document.createElement("img")
-    b.width = 1
-    b.height = 1
-    b.src = a;
+ta = (image_url) ->
+    image_element = document.createElement("img")
+    image_element.width = 1
+    image_element.height = 1
+    image_element.src = image_url
 
-    return b
+    return image_element
 
 # empty_function
 ua = () ->

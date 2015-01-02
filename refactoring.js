@@ -175,13 +175,13 @@
     }
   };
 
-  ta = function(a) {
-    var b;
-    b = document.createElement("img");
-    b.width = 1;
-    b.height = 1;
-    b.src = a;
-    return b;
+  ta = function(image_url) {
+    var image_element;
+    image_element = document.createElement("img");
+    image_element.width = 1;
+    image_element.height = 1;
+    image_element.src = image_url;
+    return image_element;
   };
 
   ua = function() {};
