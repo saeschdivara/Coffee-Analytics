@@ -121,7 +121,7 @@ J = (a) ->
     pa.set(a)
 
 # is_function
-ea = (a) ->
+is_function = (a) ->
     return typeof a is "function"
 
 is_object = (variable) ->
@@ -608,13 +608,13 @@ class Ha
             for foo_bar in @t
                 c = a.get(foo_bar)
                 if c
-                    ea(c)
+                    is_function(c)
                     c.call(window, a)
         catch d
 
         b = a.get(Ia)
         if b != ua
-            ea(b)
+            is_function(b)
             a.set(Ia, ua, true)
             ba(b, 10)
 
@@ -769,7 +769,7 @@ class Ya
         b = $a(a)
         c = @data.get(a)
         if b and 0 == c
-            if ea(b.defaultValue)
+            if is_function(b.defaultValue)
                 c = b.defaultValue()
             else
                 c = b.defaultValue
@@ -2106,7 +2106,7 @@ td = /^(?:(\w+)\.)?(?:(\w+):)?(\w+)$/
 
 sc = (main_function_arguments) ->
     # #4
-    if ea( main_function_arguments[0] )
+    if is_function( main_function_arguments[0] )
         @u = main_function_arguments[0]
     else
         b = td.exec( main_function_arguments[0] )
@@ -2143,7 +2143,7 @@ sc = (main_function_arguments) ->
         if @i and (not qa(b) or b is "")
             throw "abort"
 
-        if @g and (not qa(b) or "" == b or not ea(main_function_arguments))
+        if @g and (not qa(b) or "" == b or not is_function(main_function_arguments))
             throw "abort"
 
         if ud(@c) or ud(@e)
@@ -2173,7 +2173,7 @@ tc = (a, b, c) ->
 
     d = Yd.get(a)
 
-    if not ea(d)
+    if not is_function(d)
         return false
 
     b.plugins_ = b.plugins_ or new N
@@ -2272,7 +2272,7 @@ Z.J = (a) ->
                     e = d
                     g = e.a[0]
 
-                    if not ea(Yd.get(g)) and not $d.get(g)
+                    if not is_function(Yd.get(g)) and not $d.get(g)
 
                         Zd.hasOwnProperty(g) and J(Zd[g])
                         ca = e.X
