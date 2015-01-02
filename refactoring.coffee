@@ -552,7 +552,7 @@ Fa = (a, b) ->
     k = () ->
         if not(ca)
             try
-                if 9 < l or iframe_element.contentWindow[B][x] is M[B][x]
+                if 9 < l or iframe_element.contentWindow.location[x] is M.location[x]
                     ca = true
                     g()
                     remove_event_listener(O, "beforeunload", g)
@@ -829,16 +829,19 @@ ab = (a, b, c, d) ->
 bb = (a, b, c, d, e) ->
     fa(@, a)
 
-    @p = b;
-    @n = d;
-    @o = e;
+    @p = b
+    @n = d
+    @o = e
     @defaultValue = c
 
 $a = (a) ->
     b = Qa.get(a)
+
     if not(b)
+
         for d in Za
             e = d[0].exec(a)
+
             if e
                 b = d[1](e)
                 Qa.set(b.name, b);
@@ -1137,7 +1140,7 @@ gc = (a, b) ->
         Ec(c) or Fc(c)
         d = c[ga_l1]
 
-        if 0 == d || Infinity == d || isNaN(d)
+        if d == 0 or d == Infinity or isNaN(d)
             if 0 < d
                 Y(c, ga_l3)
                 Y(c, ga_l6)
@@ -1200,7 +1203,8 @@ Fc = (a) ->
 
 Y = (a, b) ->
     c = a[b]
-    if (isNaN(c) or Infinity == c or c < 0)
+
+    if isNaN(c) or c == Infinity or c < 0
         a[b] = 0
 
 Fd = (a) ->
@@ -2411,8 +2415,10 @@ $.K = () ->
     return $.P.slice(0)
 
 $.N = () ->
+
     if "ga" != gb
         set_meta_data(49)
+
     a = window[gb]
 
     if not a or a.answer != 42
@@ -2420,22 +2426,28 @@ $.N = () ->
         $.loaded = true
         b = window[gb] = $
 
+        # Set functions on b?
         X("create", b, b.create, 3)
         X("remove", b, b.remove)
         X("getByName", b, b.j, 5)
         X("getAll", b, b.K, 6)
+
         b = pc.prototype
+
         X("get", b, b.get, 7)
         X("set", b, b.set, 4)
         X("send", b, b.send, 2)
+
         b = Ya.prototype
+
         X("get", b, b.get)
         X("set", b, b.set)
 
-        b = document.getElementsByTagName("script")
+        script_elements = document.getElementsByTagName("script")
         c = 0
-        while c < b.length and c < 100
-            d = b[c].src
+
+        while c < script_elements.length and c < 100
+            d = script_elements[c].src
             if d
                 if d.indexOf("https://www.google-analytics.com/analytics") != 0
                     d = false
@@ -2449,7 +2461,7 @@ $.N = () ->
 
             c++
 
-        if "https:" != M[B][E] && !Ba && Ed()
+        if M.location.protocol != "https:" and not(Ba) and Ed()
             set_meta_data(36)
             Ba = true
 

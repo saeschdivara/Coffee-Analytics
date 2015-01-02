@@ -590,7 +590,7 @@
     k = function() {
       if (!ca) {
         try {
-          if (9 < l || iframe_element.contentWindow[B][x] === M[B][x]) {
+          if (9 < l || iframe_element.contentWindow.location[x] === M.location[x]) {
             ca = true;
             g();
             remove_event_listener(O, "beforeunload", g);
@@ -1307,7 +1307,7 @@
       c = {};
       Ec(c) || Fc(c);
       d = c[ga_l1];
-      if (0 === d || Infinity === d || isNaN(d)) {
+      if (d === 0 || d === Infinity || isNaN(d)) {
         if (0 < d) {
           Y(c, ga_l3);
           Y(c, ga_l6);
@@ -1376,7 +1376,7 @@
   Y = function(a, b) {
     var c;
     c = a[b];
-    if (isNaN(c) || Infinity === c || c < 0) {
+    if (isNaN(c) || c === Infinity || c < 0) {
       return a[b] = 0;
     }
   };
@@ -2621,7 +2621,7 @@
   };
 
   $.N = function() {
-    var a, b, c, d;
+    var a, b, c, d, script_elements;
     if ("ga" !== gb) {
       set_meta_data(49);
     }
@@ -2641,10 +2641,10 @@
       b = Ya.prototype;
       X("get", b, b.get);
       X("set", b, b.set);
-      b = document.getElementsByTagName("script");
+      script_elements = document.getElementsByTagName("script");
       c = 0;
-      while (c < b.length && c < 100) {
-        d = b[c].src;
+      while (c < script_elements.length && c < 100) {
+        d = script_elements[c].src;
         if (d) {
           if (d.indexOf("https://www.google-analytics.com/analytics") !== 0) {
             d = false;
@@ -2659,7 +2659,7 @@
         }
         c++;
       }
-      if ("https:" !== M[B][E] && !Ba && Ed()) {
+      if (M.location.protocol !== "https:" && !Ba && Ed()) {
         set_meta_data(36);
         Ba = true;
       }
