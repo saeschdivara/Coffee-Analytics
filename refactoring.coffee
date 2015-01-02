@@ -987,7 +987,7 @@ Hd = S("_j2", "gjid")
 cb("\\&(.*)", (a) ->
     b = new bb(a[0], a[1])
 
-    c = yc(a[0].substring(1))
+    c = yc( a[0].substring(1) )
 
     if c
         b.n = (a) ->
@@ -1126,7 +1126,8 @@ fc = () ->
     if flash_plugin
         a = flash_plugin.match(/[\d]+/g)
         if 3 <= a.length
-            b = a[0] + "." + a[1] + " r" + a[2]
+            flash_plugin = a[0] + "." + a[1] + " r" + a[2]
+            
     return flash_plugin or 0
 
 gc = (a, b) ->
@@ -1178,23 +1179,23 @@ Fc = (a) ->
     if (window.top != window)
         return false
 
-    b = window.external
-    c = b and b.onloadT
+    external = window.external
+    load_time = external and external.onloadT
 
-    if b
-        if not b.isValidLoadTime
-            c = 0
+    if external
+        if not external.isValidLoadTime
+            load_time = 0
 
-    if 2147483648 < c
-        c = 0
+    if 2147483648 < load_time
+        load_time = 0
 
-    if 0 < c
-        b.setPageReadyTime();
+    if 0 < load_time
+        external.setPageReadyTime();
 
-    if (0 == c)
+    if load_time == 0
         return false
 
-    a[Eb] = c
+    a[Eb] = load_time
 
     return true
 
@@ -1254,7 +1255,7 @@ mc = (a) ->
                 a.data.set(W, "auto")
 
 nc = (a) ->
-    if "cookie" == P(a, ac) and !hc and mc(a)
+    if P(a, ac) == "cookie" and not hc and mc(a)
         throw "abort"
 
 Yc = (a) ->
@@ -1301,12 +1302,15 @@ Gc = (a, b, c) ->
     else
         return e
 
+# remove_point
 lc = (a) ->
-    if 0 == a.indexOf(".")
+#    if 0 == a.indexOf(".")
+    if D(a, '.')
         return a.substr(1)
     else
         return a
 
+# get_splitted_length?
 ic = (a) ->
     return lc(a).split(".").length
 
@@ -1332,7 +1336,7 @@ jc = (a) ->
 
 
 Xc = (a, b, c) ->
-    if "none" == b
+    if b == "none"
         b = ""
 
     d = []
@@ -1398,9 +1402,9 @@ Ic = (a, b) ->
     ]
 
     d = window.navigator
-    e = d.plugins || []
+    plugins = d.plugins or []
 
-    for plugin in e
+    for plugin in plugins
         c.push(plugin.description)
 
     return La(c.join("."))
@@ -1453,16 +1457,17 @@ class Dc
         d = (c) ->
             try
                 c = c or window.event
-                g = c.target or c.srcElement
+                element = c.target or c.srcElement
 
                 d = null
                 c = 100
-                while g and c > 0
-                    if g.href && g.nodeName.match(/^a(?:rea)?$/i)
-                        d = g
+                while element and c > 0
+
+                    if element.href && element.nodeName.match(/^a(?:rea)?$/i)
+                        d = element
                         break
 
-                    g = g.parentNode
+                    element = element.parentNode
 
                     c--
                 d = {}
@@ -1470,6 +1475,7 @@ class Dc
                 if d.protocol is "http:" or d.protocol is "https:"
                     if sd(a, d.hostname or "") and d.href
                         Pc( d, qd(e, d.href, b) )
+
             catch w
                 J(26)
 
@@ -1485,8 +1491,10 @@ class Dc
             c = (b) ->
                 b = b or window.event
                 b = b.target or b.srcElement
+
                 if b.action
-                    foo_c = b.action[m](od)
+                    foo_c = b.action.match(od)
+
                     if foo_c
                         sd(a, foo_c[1])
                         rd(e, b)
@@ -1500,8 +1508,10 @@ class Dc
 
 qd = (a, b, c) ->
     d = pd.exec(b)
+
     if d and 3 <= d.length
         b = d[1]
+
         if d[3]
             b += d[2] + d[3]
         else
@@ -1529,25 +1539,30 @@ qd = (a, b, c) ->
 
     return b
 
-rd = (a, b) ->
-    if b and b.action
-        c = a.target.get("linkerParam").split("=")[1]
+rd = (a, form) ->
+    if form and form.action
+        linker_param_value = a.target.get("linkerParam").split("=")[1]
 
-        if "get" == b.method.toLowerCase()
-            d = b.childNodes || []
-            for node in d
+        if "get" == form.method.toLowerCase()
+
+            child_nodes = form.childNodes or []
+
+            for node in child_nodes
+                
                 if "_ga" is node.name
-                    node.setAttribute("value", c)
+                    node.setAttribute("value", linker_param_value)
                     return
 
-            d = document.createElement("input")
-            d.setAttribute("type", "hidden")
-            d.setAttribute("name", "_ga")
-            d.setAttribute("value", c)
-            b.appendChild(d)
+            hidden_ga_input = document.createElement("input")
+            hidden_ga_input.setAttribute("type", "hidden")
+            hidden_ga_input.setAttribute("name", "_ga")
+            hidden_ga_input.setAttribute("value", linker_param_value)
+            
+            form.appendChild(hidden_ga_input)
+
         else
-            if "post" == b.method.toLowerCase()
-                b.action = qd(a, b.action)
+            if form.method.toLowerCase() == "post"
+                form.action = qd(a, form.action)
 
 sd = (a, b) ->
     if (b is document.location.hostname)
@@ -1561,7 +1576,7 @@ sd = (a, b) ->
         else if (0 <= b.indexOf(val))
             return true
 
-    returnfalse
+    return false
 
 
 class Jd
@@ -1681,7 +1696,9 @@ fd = (a, b) ->
 Sd = (a) ->
     if a.get("dcLoaded")
         b = false
+
     else
+
         if a.get(ac) != 'cookie'
             b = false
         else
@@ -1876,11 +1893,11 @@ Jc = (a, b) ->
                 c = []
 
                 for val in d
-                    g = val[A](".")
+                    g = val.split(".")
                     ca = g.shift()
 
                     if (ca is "GA1" or ca is "1") and 1 < g.length
-                        ca = g.shift()[A]("-")
+                        ca = g.shift().split("-")
                         if 1 == ca.length
                             ca[1] = "1"
 
@@ -1907,12 +1924,12 @@ Jc = (a, b) ->
                     d = ic(P(a, W))
                     c = Gc(c, d, 0)
                     if 1 == c.length
-                        c = c[0].s;
+                        c = c[0].s
                         break
 
                     d = jc( P(a, Yb) )
                     c = Gc(c, d, 1)
-                    c = c[0] and c[0].s;
+                    c = c[0] and c[0].s
                     break
 
             c = 0
@@ -1942,14 +1959,18 @@ Jc = (a, b) ->
         location_part = 'search'
 
     c = document.location[location_part].match("(?:&|#|\\?)" + K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + "=([^&#]*)")
+
     if c and c.length is 2
         e = c[1]
     else
         e = ""
 
     if e
+
         if a.get(bc)
+
             c = e.indexOf(".")
+
             if c is -1
                 J(22)
             else
@@ -1957,8 +1978,10 @@ Jc = (a, b) ->
 
             if "1" != e.substring(0, c)
                 J(22)
+
             else
                 c = d.indexOf(".")
+
                 if c is -1
                     J(22)
                 else
@@ -1979,13 +2002,15 @@ Jc = (a, b) ->
         a.data.set(Q, K(b))
 
     if a.get(Q)
-        c = window.gaGlobal && window.gaGlobal.vid
+        c = window.gaGlobal and window.gaGlobal.vid
+
         if not(c and c.search(/^(?:utma\.)?\d+\.\d+$/) != -1)
             c = 0
 
         if c
             J(17)
             a.data.set(Q, c)
+            
         else
             J(8)
             foo_val = Math.round((new Date).getTime() / 1000)
@@ -1994,57 +2019,58 @@ Jc = (a, b) ->
     mc(a)
 
 Kc = (a) ->
-    b = window.navigator
-    c = window.screen
-    d = document.location
+    navigator = window.navigator
+    screen = window.screen
+    document_location = document.location
 
     a.set( lb, ya( a.get(ec) ) )
 
-    if d
-        path_name = d.pathname or ""
+    if document_location
+        path_name = document_location.pathname or ""
 
         if "/" != e.charAt(0)
             J(31)
             path_name = "/" + path_name
 
-        a.set(kb, d.protocol + "//" + d.hostname + path_name + d.search)
+        a.set(kb, document_location.protocol + "//" + document_location.hostname + path_name + document_location.search)
 
-    if c
-        a.set(qb, c.width + "x" + c.height)
+    if screen
+        a.set(qb, screen.width + "x" + screen.height)
 
-    if c
-        a.set(pb, c.colorDepth + "-bit")
+    if screen
+        a.set(pb, screen.colorDepth + "-bit")
 
-    c = document.documentElement
+    document_element = document.documentElement
     e = document.body
     g = e and e.clientWidth and e.clientHeight
     ca = []
 
-    if c and c.clientWidth and c.clientHeight
+    if document_element and document_element.clientWidth and document_element.clientHeight
 
         if document.compatMode is "CSS1Compat" or not g
-            ca = [c.clientWidth, c.clientHeight]
+            ca = [document_element.clientWidth, document_element.clientHeight]
         else
             if g
                 ca = [e.clientWidth, e.clientHeight]
 
     if 0 >= ca[0] or 0 >= ca[1]
-        c = ''
+        document_element = ''
     else
-        c = ca.join("x")
+        document_element = ca.join("x")
 
     a.set(rb, c)
     a.set( tb, fc() )
     a.set(ob, document.characterSet or document.charset)
-    a.set(sb, b and "function" is typeof b.javaEnabled and b.javaEnabled() or false)
-    a.set( nb, (b and (b.language or b.browserLanguage) or "").toLowerCase() )
+    a.set(sb, navigator and "function" is typeof navigator.javaEnabled and navigator.javaEnabled() or false)
+    a.set( nb, (b and (b.language or navigator.browserLanguage) or "").toLowerCase() )
 
-    b = document.location.hash
-    if d and a.get(cc) and b
-        b = b.split(/[?&#]+/)
+    location_hash = document.location.hash
+    if document_location and a.get(cc) and location_hash
+        location_hash = location_hash.split(/[?&#]+/)
         d = []
 
-        for term_to_check in b
+        for term_to_check in location_hash
+
             if  D(term_to_check, "utm_id") or
                 D(term_to_check, "utm_campaign") or
                 D(term_to_check, "utm_source") or
@@ -2059,8 +2085,8 @@ Kc = (a) ->
 
 
         if 0 < d.length
-            b = "#" + d.join("&")
-            a.set(kb, a.get(kb) + b)
+            location_hash = "#" + d.join("&")
+            a.set(kb, a.get(kb) + location_hash)
 
 qc =
     pageview: [mb]
@@ -2119,13 +2145,14 @@ sc = (a) ->
         if @g and (not qa(b) or "" == b or not ea(a))
             throw "abort"
 
-        if ud(@c) or ud(this.e)
+        if ud(@c) or ud(@e)
             throw "abort"
 
         if @g and @c != "t0"
             throw "abort"
 
 
+# starts_with_point_or_colon
 ud = (a) ->
     return a.indexOf(".") >= 0  or a.indexOf(":") >= 0
 
@@ -2137,6 +2164,7 @@ Zd =
     linkid: 47
 
 tc = (a, b, c) ->
+    
     if b is $
         J(35)
     else
@@ -2172,13 +2200,13 @@ ae = (a) ->
 
         return [b, "" + c, a]
 
-    c = document.createElement("a")
-    Pc(c, document.location.href)
+    link_element = document.createElement("a")
+    Pc(link_element, document.location.href)
 
-    protocol = (c.protocol or "").toLowerCase()
+    protocol = (link_element.protocol or "").toLowerCase()
     d = protocol
-    e = b_func(c)
-    g = c.search or ""
+    e = b_func(link_element)
+    link_search_string = link_element.search or ""
 
     if e[1]
         additional_bundle = ":" + e[1]
@@ -2195,20 +2223,20 @@ ae = (a) ->
             a = ca + a
         else
             if not a or D(a, "?")
-                a = ca + e[2] + (a or g)
+                a = ca + e[2] + (a or link_search_string)
             else
                 if 0 > a.split("/")[0].indexOf(":")
                     (a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a)
 
-    Pc(c, a)
-    d = b_func(c)
+    Pc(link_element, a)
+    d = b_func(link_element)
 
     return {
         protocol: protocol,
         host: d[0],
         port: d[1],
         path: d[2],
-        G: c[ga] or "",
+        G: link_element[ga] or "",
         url: a or ""
     }
 
@@ -2223,7 +2251,8 @@ Z.D = (a) ->
     b = Z.J.apply(Z, arguments)
     b = Z.f.concat(b)
     Z.f = []
-    while 0 < b.length and not Z.v(b[0]) and not(b.shift() || 0 < Z.f.length)
+
+    while 0 < b.length and not Z.v(b[0]) and not(b.shift() or 0 < Z.f.length)
         Z.f = Z.f.concat(b)
 
 Z.J = (a) ->
@@ -2242,7 +2271,7 @@ Z.J = (a) ->
 
                     if not ea(Yd.get(g)) and not $d.get(g)
 
-                        Zd.hasOwnProperty(g) && J(Zd[g])
+                        Zd.hasOwnProperty(g) and J(Zd[g])
                         ca = e.X
 
                         if not ca
@@ -2254,21 +2283,21 @@ Z.J = (a) ->
 
                         if ca
                             if ca and 0 <= ca.indexOf("/")
-                                protocol = (Ba || "https:" == document.location.protocol ? "https:" : "http:")
+                                protocol = (Ba or "https:" == document.location.protocol ? "https:" : "http:")
                                 ca = "#{protocol}//www.google-analytics.com/plugins/ua/#{ca}"
 
                             l = ae(ca)
                             e = 0
-                            k = l.protocol
-                            w = document.location.protocol
+                            protocol_from_l = l.protocol
+                            document_location_protocol = document.location.protocol
 
-                            if "https:" is k or k is w
+                            if "https:" is protocol_from_l or protocol_from_l is document_location_protocol
                                 e = true
                             else
-                                if "http:" != k
+                                if "http:" != protocol_from_l
                                     e = false
                                 else
-                                    e = "http:" == w
+                                    e = "http:" == document_location_protocol
 
                             Xd = e
 
@@ -2282,11 +2311,11 @@ Z.J = (a) ->
                                     Xd = true
                                 else
                                     if e.protocol
-                                        ce = 80
+                                        http_port = 80
                                     else
-                                        ce = 443
+                                        http_port = 443
 
-                                    if "www.google-analytics.com" is e.host and (e.port or ce) == ce and D(e.path, "/plugins/")
+                                    if "www.google-analytics.com" is e.host and (e.port or http_port) == http_port and D(e.path, "/plugins/")
                                         Xd = true
                                     else
                                         Xd = false
@@ -2442,7 +2471,7 @@ $.k = () ->
 ano = () ->
     a = $.N;
     if not rc(a)
-        J(16);
+        J(16)
         b = false
         c = () ->
             if not b and rc(a)
@@ -2455,7 +2484,8 @@ ano()
 La = (used_string) ->
     return_char = 1
     character = 0
-    if (used_string)
+
+    if used_string
         return_char = 0
         char_position = used_string.length - 1
 

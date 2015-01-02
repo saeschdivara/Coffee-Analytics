@@ -1294,7 +1294,7 @@
     if (flash_plugin) {
       a = flash_plugin.match(/[\d]+/g);
       if (3 <= a.length) {
-        b = a[0] + "." + a[1] + " r" + a[2];
+        flash_plugin = a[0] + "." + a[1] + " r" + a[2];
       }
     }
     return flash_plugin || 0;
@@ -1349,27 +1349,27 @@
   };
 
   Fc = function(a) {
-    var b, c;
+    var external, load_time;
     if (window.top !== window) {
       return false;
     }
-    b = window.external;
-    c = b && b.onloadT;
-    if (b) {
-      if (!b.isValidLoadTime) {
-        c = 0;
+    external = window.external;
+    load_time = external && external.onloadT;
+    if (external) {
+      if (!external.isValidLoadTime) {
+        load_time = 0;
       }
     }
-    if (2147483648 < c) {
-      c = 0;
+    if (2147483648 < load_time) {
+      load_time = 0;
     }
-    if (0 < c) {
-      b.setPageReadyTime();
+    if (0 < load_time) {
+      external.setPageReadyTime();
     }
-    if (0 === c) {
+    if (load_time === 0) {
       return false;
     }
-    a[Eb] = c;
+    a[Eb] = load_time;
     return true;
   };
 
@@ -1441,7 +1441,7 @@
   };
 
   nc = function(a) {
-    if ("cookie" === P(a, ac) && !hc && mc(a)) {
+    if (P(a, ac) === "cookie" && !hc && mc(a)) {
       throw "abort";
     }
   };
@@ -1502,7 +1502,7 @@
   };
 
   lc = function(a) {
-    if (0 === a.indexOf(".")) {
+    if (D(a, '.')) {
       return a.substr(1);
     } else {
       return a;
@@ -1537,7 +1537,7 @@
 
   Xc = function(a, b, c) {
     var ca, d, e, val, _i, _len;
-    if ("none" === b) {
+    if (b === "none") {
       b = "";
     }
     d = [];
@@ -1602,13 +1602,13 @@
   };
 
   Ic = function(a, b) {
-    var c, current_time, d, e, plugin, _i, _len;
+    var c, current_time, d, plugin, plugins, _i, _len;
     current_time = new Date;
     c = [a, d.userAgent, current_time.getTimezoneOffset(), current_time.getYear(), current_time.getDate(), current_time.getHours(), current_time.getMinutes() + b];
     d = window.navigator;
-    e = d.plugins || [];
-    for (_i = 0, _len = e.length; _i < _len; _i++) {
-      plugin = e[_i];
+    plugins = d.plugins || [];
+    for (_i = 0, _len = plugins.length; _i < _len; _i++) {
+      plugin = plugins[_i];
       c.push(plugin.description);
     }
     return La(c.join("."));
@@ -1648,18 +1648,18 @@
        */
       var d, e, form, _i, _len, _ref, _results;
       d = function(c) {
-        var g, w;
+        var element, w;
         try {
           c = c || window.event;
-          g = c.target || c.srcElement;
+          element = c.target || c.srcElement;
           d = null;
           c = 100;
-          while (g && c > 0) {
-            if (g.href && g.nodeName.match(/^a(?:rea)?$/i)) {
-              d = g;
+          while (element && c > 0) {
+            if (element.href && element.nodeName.match(/^a(?:rea)?$/i)) {
+              d = element;
               break;
             }
-            g = g.parentNode;
+            element = element.parentNode;
             c--;
           }
           d = {};
@@ -1686,7 +1686,7 @@
           b = b || window.event;
           b = b.target || b.srcElement;
           if (b.action) {
-            foo_c = b.action[m](od);
+            foo_c = b.action.match(od);
             if (foo_c) {
               sd(a, foo_c[1]);
               return rd(e, b);
@@ -1741,27 +1741,27 @@
     return b;
   };
 
-  rd = function(a, b) {
-    var c, d, node, _i, _len;
-    if (b && b.action) {
-      c = a.target.get("linkerParam").split("=")[1];
-      if ("get" === b.method.toLowerCase()) {
-        d = b.childNodes || [];
-        for (_i = 0, _len = d.length; _i < _len; _i++) {
-          node = d[_i];
+  rd = function(a, form) {
+    var child_nodes, hidden_ga_input, linker_param_value, node, _i, _len;
+    if (form && form.action) {
+      linker_param_value = a.target.get("linkerParam").split("=")[1];
+      if ("get" === form.method.toLowerCase()) {
+        child_nodes = form.childNodes || [];
+        for (_i = 0, _len = child_nodes.length; _i < _len; _i++) {
+          node = child_nodes[_i];
           if ("_ga" === node.name) {
-            node.setAttribute("value", c);
+            node.setAttribute("value", linker_param_value);
             return;
           }
         }
-        d = document.createElement("input");
-        d.setAttribute("type", "hidden");
-        d.setAttribute("name", "_ga");
-        d.setAttribute("value", c);
-        return b.appendChild(d);
+        hidden_ga_input = document.createElement("input");
+        hidden_ga_input.setAttribute("type", "hidden");
+        hidden_ga_input.setAttribute("name", "_ga");
+        hidden_ga_input.setAttribute("value", linker_param_value);
+        return form.appendChild(hidden_ga_input);
       } else {
-        if ("post" === b.method.toLowerCase()) {
-          return b.action = qd(a, b.action);
+        if (form.method.toLowerCase() === "post") {
+          return form.action = qd(a, form.action);
         }
       }
     }
@@ -1782,7 +1782,7 @@
         return true;
       }
     }
-    return returnfalse;
+    return false;
   };
 
   Jd = (function() {
@@ -2084,10 +2084,10 @@
           c = [];
           for (_j = 0, _len1 = d.length; _j < _len1; _j++) {
             val = d[_j];
-            g = val[A](".");
+            g = val.split(".");
             ca = g.shift();
             if ((ca === "GA1" || ca === "1") && 1 < g.length) {
-              ca = g.shift()[A]("-");
+              ca = g.shift().split("-");
               if (1 === ca.length) {
                 ca[1] = "1";
               }
@@ -2208,32 +2208,32 @@
   };
 
   Kc = function(a) {
-    var b, c, ca, d, e, g, path_name, term_to_check, _i, _len;
-    b = window.navigator;
-    c = window.screen;
-    d = document.location;
+    var ca, d, document_element, document_location, e, g, location_hash, navigator, path_name, screen, term_to_check, _i, _len;
+    navigator = window.navigator;
+    screen = window.screen;
+    document_location = document.location;
     a.set(lb, ya(a.get(ec)));
-    if (d) {
-      path_name = d.pathname || "";
+    if (document_location) {
+      path_name = document_location.pathname || "";
       if ("/" !== e.charAt(0)) {
         J(31);
         path_name = "/" + path_name;
       }
-      a.set(kb, d.protocol + "//" + d.hostname + path_name + d.search);
+      a.set(kb, document_location.protocol + "//" + document_location.hostname + path_name + document_location.search);
     }
-    if (c) {
-      a.set(qb, c.width + "x" + c.height);
+    if (screen) {
+      a.set(qb, screen.width + "x" + screen.height);
     }
-    if (c) {
-      a.set(pb, c.colorDepth + "-bit");
+    if (screen) {
+      a.set(pb, screen.colorDepth + "-bit");
     }
-    c = document.documentElement;
+    document_element = document.documentElement;
     e = document.body;
     g = e && e.clientWidth && e.clientHeight;
     ca = [];
-    if (c && c.clientWidth && c.clientHeight) {
+    if (document_element && document_element.clientWidth && document_element.clientHeight) {
       if (document.compatMode === "CSS1Compat" || !g) {
-        ca = [c.clientWidth, c.clientHeight];
+        ca = [document_element.clientWidth, document_element.clientHeight];
       } else {
         if (g) {
           ca = [e.clientWidth, e.clientHeight];
@@ -2241,28 +2241,28 @@
       }
     }
     if (0 >= ca[0] || 0 >= ca[1]) {
-      c = '';
+      document_element = '';
     } else {
-      c = ca.join("x");
+      document_element = ca.join("x");
     }
     a.set(rb, c);
     a.set(tb, fc());
     a.set(ob, document.characterSet || document.charset);
-    a.set(sb, b && "function" === typeof b.javaEnabled && b.javaEnabled() || false);
-    a.set(nb, (b && (b.language || b.browserLanguage) || "").toLowerCase());
-    b = document.location.hash;
-    if (d && a.get(cc) && b) {
-      b = b.split(/[?&#]+/);
+    a.set(sb, navigator && "function" === typeof navigator.javaEnabled && navigator.javaEnabled() || false);
+    a.set(nb, (b && (b.language || navigator.browserLanguage) || "").toLowerCase());
+    location_hash = document.location.hash;
+    if (document_location && a.get(cc) && location_hash) {
+      location_hash = location_hash.split(/[?&#]+/);
       d = [];
-      for (_i = 0, _len = b.length; _i < _len; _i++) {
-        term_to_check = b[_i];
+      for (_i = 0, _len = location_hash.length; _i < _len; _i++) {
+        term_to_check = location_hash[_i];
         if (D(term_to_check, "utm_id") || D(term_to_check, "utm_campaign") || D(term_to_check, "utm_source") || D(term_to_check, "utm_medium") || D(term_to_check, "utm_term") || D(term_to_check, "utm_content") || D(term_to_check, "gclid") || D(term_to_check, "dclid") || D(term_to_check, "gclsrc")) {
           d.push(term_to_check);
         }
       }
       if (0 < d.length) {
-        b = "#" + d.join("&");
-        return a.set(kb, a.get(kb) + b);
+        location_hash = "#" + d.join("&");
+        return a.set(kb, a.get(kb) + location_hash);
       }
     }
   };
@@ -2371,7 +2371,7 @@
   };
 
   ae = function(a) {
-    var additional_bundle, b_func, c, ca, d, e, g, protocol;
+    var additional_bundle, b_func, ca, d, e, link_element, link_search_string, protocol;
     b_func = function(a) {
       var b, c, _ref, _ref1;
       b = (a.hostname || "").split(":")[0].toLowerCase();
@@ -2387,12 +2387,12 @@
       }
       return [b, "" + c, a];
     };
-    c = document.createElement("a");
-    Pc(c, document.location.href);
-    protocol = (c.protocol || "").toLowerCase();
+    link_element = document.createElement("a");
+    Pc(link_element, document.location.href);
+    protocol = (link_element.protocol || "").toLowerCase();
     d = protocol;
-    e = b_func(c);
-    g = c.search || "";
+    e = b_func(link_element);
+    link_search_string = link_element.search || "";
     if (e[1]) {
       additional_bundle = ":" + e[1];
     } else {
@@ -2406,7 +2406,7 @@
         a = ca + a;
       } else {
         if (!a || D(a, "?")) {
-          a = ca + e[2] + (a || g);
+          a = ca + e[2] + (a || link_search_string);
         } else {
           if (0 > a.split("/")[0].indexOf(":")) {
             a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a;
@@ -2414,14 +2414,14 @@
         }
       }
     }
-    Pc(c, a);
-    d = b_func(c);
+    Pc(link_element, a);
+    d = b_func(link_element);
     return {
       protocol: protocol,
       host: d[0],
       port: d[1],
       path: d[2],
-      G: c[ga] || "",
+      G: link_element[ga] || "",
       url: a || ""
     };
   };
@@ -2447,7 +2447,7 @@
   };
 
   Z.J = function(a) {
-    var Xd, arg, b, be, ca, ce, d, de, e, g, k, l, protocol, w, _i, _len, _ref;
+    var Xd, arg, b, be, ca, d, de, document_location_protocol, e, g, http_port, l, protocol, protocol_from_l, _i, _len, _ref;
     b = [];
     for (_i = 0, _len = arguments.length; _i < _len; _i++) {
       arg = arguments[_i];
@@ -2479,15 +2479,15 @@
                 }
                 l = ae(ca);
                 e = 0;
-                k = l.protocol;
-                w = document.location.protocol;
-                if ("https:" === k || k === w) {
+                protocol_from_l = l.protocol;
+                document_location_protocol = document.location.protocol;
+                if ("https:" === protocol_from_l || protocol_from_l === document_location_protocol) {
                   e = true;
                 } else {
-                  if ("http:" !== k) {
+                  if ("http:" !== protocol_from_l) {
                     e = false;
                   } else {
-                    e = "http:" === w;
+                    e = "http:" === document_location_protocol;
                   }
                 }
                 Xd = e;
@@ -2500,11 +2500,11 @@
                     Xd = true;
                   } else {
                     if (e.protocol) {
-                      ce = 80;
+                      http_port = 80;
                     } else {
-                      ce = 443;
+                      http_port = 443;
                     }
-                    if ("www.google-analytics.com" === e.host && (e.port || ce) === ce && D(e.path, "/plugins/")) {
+                    if ("www.google-analytics.com" === e.host && (e.port || http_port) === http_port && D(e.path, "/plugins/")) {
                       Xd = true;
                     } else {
                       Xd = false;
