@@ -612,10 +612,10 @@ class Ha
                     c.call(window, a)
         catch d
 
-        b = a.get(Ia)
+        b = a.get(ga_hit_callback)
         if b != ua
             is_function(b)
-            a.set(Ia, ua, true)
+            a.set(ga_hit_callback, ua, true)
             ba(b, 10)
 
     #####################
@@ -623,11 +623,11 @@ class Ha
     #####################
 
 Ja = (a) ->
-    if 100 != a.get(Ka) and La( P(a, Q) ) % 10000 >= 100 * R(a, Ka)
+    if 100 != a.get(ga_sample_rate) and La( P(a, ga_client_id) ) % 10000 >= 100 * R(a, ga_sample_rate)
         throw "abort"
 
 Ma = (a) ->
-    if Aa( P(a, Na) )
+    if Aa( P(a, ga_tracking_id) )
         throw"abort"
 
 # check_protocol
@@ -663,12 +663,12 @@ Pa = (a) ->
     )
 
     c.push("z=" + Bd())
-    a.set(Ra, c.join("&"), true)
+    a.set(ga_hit_payload, c.join("&"), true)
 
 Sa = (a) ->
-    b = P(a, gd) or oc() + "/collect"
-    Ga(b, P(a, Ra), a.get(Ia), a.get(Vd))
-    a.set(Ia, ua, true)
+    b = P(a, ga_transport_url) or oc() + "/collect"
+    Ga(b, P(a, ga_hit_payload), a.get(ga_hit_callback), a.get(ga_use_beacon))
+    a.set(ga_hit_callback, ua, true)
 
 Hc = (a) ->
     ga_data = window.gaData
@@ -676,10 +676,10 @@ Hc = (a) ->
     if ga_data
 
         if ga_data.expId
-            a.set(Nc, ga_data.expId)
+            a.set(ga_exp_id, ga_data.expId)
 
         if ga_data.expVar
-            a.set(Oc, ga_data.expVar)
+            a.set(ga_exp_var, ga_data.expVar)
 
 # abort_on_preview ?
 cd = () ->
@@ -693,7 +693,7 @@ yd = (a) ->
         a.set("&did", ga_dev_ids.join(","), true)
 
 vb = (a) ->
-    if not( a.get(Na) )
+    if not( a.get(ga_tracking_id) )
         throw "abort"
 
 # get_random_?
@@ -711,34 +711,34 @@ Bd = () ->
         return hd()
 
 Ta = (a) ->
-    b = R(a, Ua)
+    b = R(a, ga_hc)
 
     if 500 <= b
         J(15)
 
-    c = P(a, Va)
+    c = P(a, ga_hit_type)
 
     if c != "transaction" and c != "item"
-        c = R(a, Wa)
+        c = R(a, ga_ti)
         # Returns the number of milliseconds between midnight, January 1, 1970
         current_miliseconds = (new Date).getTime()
-        e = R(a, Xa)
+        e = R(a, ga_ti)
 
         if 0 is e
-            a.set(Xa, current_miliseconds);
+            a.set(ga_ti, current_miliseconds);
 
         e = Math.round(2 * (current_miliseconds - e) / 1000)
 
         if 0 < e
             c = Math.min(c + e, 20)
-            a.set(Xa, current_miliseconds)
+            a.set(ga_ti, current_miliseconds)
 
         if 0 >= c
             throw "abort"
 
-        a.set(Wa, --c)
+        a.set(ga_ti, --c)
 
-    a.set(Ua, ++b)
+    a.set(ga_hc, ++b)
 
 
 class Ya
@@ -817,7 +817,7 @@ R = (a, b) ->
 ab = (a, b, c, d) ->
     if c != 0
         switch
-            when b is Na then wb[s](c)
+            when b is ga_tracking_id then wb[s](c)
             else null
 
     e = $a(b)
@@ -870,20 +870,20 @@ db = () ->
 
 gb = is_string(f.GoogleAnalyticsObject) and sa(f.GoogleAnalyticsObject) or "ga"
 Ba = false
-hb = T("apiVersion", "v")
-ib = T("clientVersion", "_v")
+ga_api_version = T("apiVersion", "v")
+ga_client_version = T("clientVersion", "_v")
 
 S("anonymizeIp", "aip")
 
-jb = S("adSenseId", "a")
-Va = S("hitType", "t")
-Ia = S("hitCallback")
-Ra = S("hitPayload")
+ga_ad_sense_id = S("adSenseId", "a")
+ga_hit_type = S("hitType", "t")
+ga_hit_callback = S("hitCallback")
+ga_hit_payload = S("hitPayload")
 
 S("nonInteraction", "ni")
 S("currencyCode", "cu")
 
-Vd = S("useBeacon", 0, false)
+ga_use_beacon = S("useBeacon", 0, false)
 
 S("dataSource", "ds")
 S("sessionControl", "sc", "")
@@ -894,14 +894,14 @@ Ac = S("_s", "_s")
 
 S("screenName", "cd")
 
-kb = S("location", "dl", "")
-lb = S("referrer", "dr")
-mb = S("page", "dp", "")
+ga_location = S("location", "dl", "")
+ga_referrer = S("referrer", "dr")
+ga_page = S("page", "dp", "")
 
 S("hostname", "dh")
 
-nb = S("language", "ul")
-ob = S("encoding", "de")
+ga_language = S("language", "ul")
+ga_encoding = S("encoding", "de")
 
 S("title", "dt", () ->
     return document.title or 0
@@ -911,11 +911,11 @@ cb("contentGroup([0-9]+)", (a) ->
     return new bb(a[0], "cg" + a[1])
 )
 
-pb = S("screenColors", "sd")
-qb = S("screenResolution", "sr")
-rb = S("viewportSize", "vp")
-sb = S("javaEnabled", "je")
-tb = S("flashVersion", "fl")
+ga_screen_colors = S("screenColors", "sd")
+ga_screen_resolution = S("screenResolution", "sr")
+ga_viewport_size = S("viewportSize", "vp")
+ga_java_enabled = S("javaEnabled", "je")
+ga_flash_version = S("flashVersion", "fl")
 
 S("campaignId", "ci")
 S("campaignName", "cn")
@@ -924,25 +924,25 @@ S("campaignMedium", "cm")
 S("campaignKeyword", "ck")
 S("campaignContent", "cc")
 
-ub = S("eventCategory", "ec")
-xb = S("eventAction", "ea")
-yb = S("eventLabel", "el")
-zb = S("eventValue", "ev")
-Bb = S("socialNetwork", "sn")
-Cb = S("socialAction", "sa")
-Db = S("socialTarget", "st")
-Eb = S("l1", "plt")
-Fb = S("l2", "pdt")
-Gb = S("l3", "dns")
-Hb = S("l4", "rrt")
-Ib = S("l5", "srt")
-Jb = S("l6", "tcp")
-Kb = S("l7", "dit")
-Lb = S("l8", "clt")
-Mb = S("timingCategory", "utc")
-Nb = S("timingVar", "utv")
-Ob = S("timingLabel", "utl")
-Pb = S("timingValue", "utt")
+ga_event_category = S("eventCategory", "ec")
+ga_event_action = S("eventAction", "ea")
+ga_event_label = S("eventLabel", "el")
+ga_event_value = S("eventValue", "ev")
+ga_social_network = S("socialNetwork", "sn")
+ga_social_action = S("socialAction", "sa")
+ga_social_target = S("socialTarget", "st")
+ga_l1 = S("l1", "plt")
+ga_l2 = S("l2", "pdt")
+ga_l3 = S("l3", "dns")
+ga_l4 = S("l4", "rrt")
+ga_l5 = S("l5", "srt")
+ga_l6 = S("l6", "tcp")
+ga_l7 = S("l7", "dit")
+ga_l8 = S("l8", "clt")
+ga_timing_category = S("timingCategory", "utc")
+ga_timing_var = S("timingVar", "utv")
+ga_timing_label = S("timingLabel", "utl")
+ga_timing_value = S("timingValue", "utt")
 
 S("appName", "an")
 S("appVersion", "av", "")
@@ -951,14 +951,14 @@ S("appInstallerId", "aiid", "")
 S("exDescription", "exd")
 S("exFatal", "exf")
 
-Nc = S("expId", "xid")
-Oc = S("expVar", "xvar")
-Rc = S("_utma", "_utma")
-Sc = S("_utmz", "_utmz")
-Tc = S("_utmht", "_utmht")
-Ua = S("_hc", 0, 0)
-Xa = S("_ti", 0, 0)
-Wa = S("_to", 0, 20)
+ga_exp_id = S("expId", "xid")
+ga_exp_var = S("expVar", "xvar")
+ga_ut_ma = S("_utma", "_utma")
+ga_ut_mz = S("_utmz", "_utmz")
+ga_ut_mht = S("_utmht", "_utmht")
+ga_hc = S("_hc", 0, 0)
+ga_ti = S("_ti", 0, 0)
+ga_ti = S("_to", 0, 20)
 
 cb("dimension([0-9]+)", (a) ->
     return new bb(a[0], "cd" + a[1])
@@ -981,8 +981,8 @@ S("forceSSL", 0, 0, () ->
     Ba = !!c
 )
 
-ed = S("_j1", "jid")
-Hd = S("_j2", "gjid")
+ga_j1 = S("_j1", "jid")
+ga_j2 = S("_j2", "gjid")
 
 cb("\\&(.*)", (a) ->
     b = new bb(a[0], a[1])
@@ -1001,38 +1001,38 @@ cb("\\&(.*)", (a) ->
     return b
 )
 
-Qb = T("_oot")
-dd = S("previewTask")
-Rb = S("checkProtocolTask")
-md = S("validationTask")
-Sb = S("checkStorageTask")
-Uc = S("historyImportTask")
-Tb = S("samplerTask")
-Vb = T("_rlt")
-Wb = S("buildHitTask")
-Xb = S("sendHitTask")
-Vc = S("ceTask")
-zd = S("devIdTask")
-Cd = S("timingTask")
-Ld = S("displayFeaturesTask")
-V = T("name")
-Q = T("clientId", "cid")
-Ad = S("userId", "uid")
-Na = T("trackingId", "tid")
-U = T("cookieName", 0, "_ga")
-W = T("cookieDomain")
-Yb = T("cookiePath", 0, "/")
-Zb = T("cookieExpires", 0, 63072000)
-$b = T("legacyCookieDomain")
-Wc = T("legacyHistoryImport", 0, true)
-ac = T("storage", 0, "cookie")
-bc = T("allowLinker", 0, false)
-cc = T("allowAnchor", 0, true)
-Ka = T("sampleRate", "sf", 100)
-dc = T("siteSpeedSampleRate", 0, 1)
-ec = T("alwaysSendReferrer", 0, false)
-gd = S("transportUrl")
-Md = S("_r", "_r")
+ga_oot = T("_oot")
+ga_preview_task = S("previewTask")
+ga_check_protocol_task = S("checkProtocolTask")
+ga_validation_task = S("validationTask")
+ga_check_storage_task = S("checkStorageTask")
+ga_history_import_task = S("historyImportTask")
+ga_sampler_task = S("samplerTask")
+ga_rlt = T("_rlt")
+ga_build_hit_task = S("buildHitTask")
+ga_send_hit_task = S("sendHitTask")
+ga_ce_task = S("ceTask")
+ga_dev_id_task = S("devIdTask")
+ga_timing_task = S("timingTask")
+ga_display_features_task = S("displayFeaturesTask")
+ga_name = T("name")
+ga_client_id = T("clientId", "cid")
+ga_user_id = S("userId", "uid")
+ga_tracking_id = T("trackingId", "tid")
+ga_cookie_name = T("cookieName", 0, "_ga")
+ga_cookie_domain = T("cookieDomain")
+ga_cookie_path = T("cookiePath", 0, "/")
+ga_cookie_expires = T("cookieExpires", 0, 63072000)
+ga_legacy_cookie_domain = T("legacyCookieDomain")
+ga_legacy_history_import = T("legacyHistoryImport", 0, true)
+ga_storage = T("storage", 0, "cookie")
+ga_allow_linker = T("allowLinker", 0, false)
+ga_allow_anchor = T("allowAnchor", 0, true)
+ga_sample_rate = T("sampleRate", "sf", 100)
+ga_site_speed_sample_rate = T("siteSpeedSampleRate", 0, 1)
+ga_always_send_referrer = T("alwaysSendReferrer", 0, false)
+ga_transport_url = S("transportUrl")
+ga_r = S("_r", "_r")
 
 X = (a, b, c, d) ->
     b[a] = () ->
@@ -1131,22 +1131,22 @@ fc = () ->
     return flash_plugin or 0
 
 gc = (a, b) ->
-    c = Math.min( R(a, dc), 100 )
+    c = Math.min( R(a, ga_site_speed_sample_rate), 100 )
 
-    if not(La(P(a, Q)) % 100 >= c)
+    if not(La(P(a, ga_client_id)) % 100 >= c)
         c = {}
         Ec(c) or Fc(c)
-        d = c[Eb]
+        d = c[ga_l1]
 
         if 0 == d || Infinity == d || isNaN(d)
             if 0 < d
-                Y(c, Gb)
-                Y(c, Jb)
-                Y(c, Ib)
-                Y(c, Fb)
-                Y(c, Hb)
-                Y(c, Kb)
-                Y(c, Lb)
+                Y(c, ga_l3)
+                Y(c, ga_l6)
+                Y(c, ga_l5)
+                Y(c, ga_l2)
+                Y(c, ga_l4)
+                Y(c, ga_l7)
+                Y(c, ga_l8)
                 b(c)
             else
                 L(window, "load", () ->
@@ -1164,14 +1164,14 @@ Ec = (a) ->
     if navigation_start == 0
         return false
 
-    a[Eb] = performance_timing.loadEventStart - navigation_start
-    a[Gb] = performance_timing.domainLookupEnd - performance_timing.domainLookupStart
-    a[Jb] = performance_timing.connectEnd - performance_timing.connectStart
-    a[Ib] = performance_timing.responseStart - performance_timing.requestStart
-    a[Fb] = performance_timing.responseEnd - performance_timing.responseStart
-    a[Hb] = performance_timing.fetchStart - navigation_start
-    a[Kb] = performance_timing.domInteractive - navigation_start
-    a[Lb] = performance_timing.domContentLoadedEventStart - navigation_start
+    a[ga_l1] = performance_timing.loadEventStart - navigation_start
+    a[ga_l3] = performance_timing.domainLookupEnd - performance_timing.domainLookupStart
+    a[ga_l6] = performance_timing.connectEnd - performance_timing.connectStart
+    a[ga_l5] = performance_timing.responseStart - performance_timing.requestStart
+    a[ga_l2] = performance_timing.responseEnd - performance_timing.responseStart
+    a[ga_l4] = performance_timing.fetchStart - navigation_start
+    a[ga_l7] = performance_timing.domInteractive - navigation_start
+    a[ga_l8] = performance_timing.domContentLoadedEventStart - navigation_start
 
     return true
 
@@ -1195,7 +1195,7 @@ Fc = (a) ->
     if load_time == 0
         return false
 
-    a[Eb] = load_time
+    a[ga_l1] = load_time
 
     return true
 
@@ -1206,7 +1206,7 @@ Y = (a, b) ->
 
 Fd = (a) ->
     return (b) ->
-        if b.get(Va) != 'pageview' or a.I
+        if b.get(ga_hit_type) != 'pageview' or a.I
             a.I = true
             gc(b, (b) ->
                 a.send("timing", b)
@@ -1214,14 +1214,14 @@ Fd = (a) ->
 
 hc = false
 mc = (a) ->
-    if P(a, ac) is "cookie"
+    if P(a, ga_storage) is "cookie"
 
-        b = P(a, U)
+        b = P(a, ga_cookie_name)
         c = nd(a)
-        d = kc(P(a, Yb))
-        e = lc(P(a, W))
-        g = 1000 * R(a, Zb)
-        ca = P(a, Na)
+        d = kc(P(a, ga_cookie_path))
+        e = lc(P(a, ga_cookie_domain))
+        g = 1000 * R(a, ga_cookie_expires)
+        ca = P(a, ga_tracking_id)
 
         if e != "auto"
             if zc(b, c, d, e, ca, g)
@@ -1245,38 +1245,38 @@ mc = (a) ->
                 l = c
 
                 for e in l
-                    a.data.set(W, e)
+                    a.data.set(ga_cookie_domain, e)
                     c = nd(a)
 
                     if zc(b, c, d, e, ca, g)
                         hc = true
                         return
 
-                a.data.set(W, "auto")
+                a.data.set(ga_cookie_domain, "auto")
 
 nc = (a) ->
-    if P(a, ac) == "cookie" and not hc and mc(a)
+    if P(a, ga_storage) == "cookie" and not hc and mc(a)
         throw "abort"
 
 Yc = (a) ->
-    if a.get(Wc)
-        b = P(a, W)
-        c = P(a, $b) or xa()
+    if a.get(ga_legacy_history_import)
+        b = P(a, ga_cookie_domain)
+        c = P(a, ga_legacy_cookie_domain) or xa()
         d = Xc("__utma", c, b)
 
         if d
             J(19)
-            a.set(Tc, (new Date).getTime(), true)
-            a.set(Rc, d.R)
+            a.set(ga_ut_mht, (new Date).getTime(), true)
+            a.set(ga_ut_ma, d.R)
             b = Xc("__utmz", c, b)
 
             if d.hash == b.hash
-                a.set(Sc, b.R)
+                a.set(ga_ut_mz, b.R)
 
 nd = (a) ->
-    b = Cc(P(a, Q))
-    c = ic(P(a, W))
-    a = jc(P(a, Yb))
+    b = Cc(P(a, ga_client_id))
+    c = ic(P(a, ga_cookie_domain))
+    a = jc(P(a, ga_cookie_path))
 
     if 1 < a
         c += "-" + a
@@ -1385,7 +1385,7 @@ od = new RegExp(/^https?:\/\/([^\/:]+)/)
 pd = /(.*)([?&#])(?:_ga=[^&#]*)(?:&?)(.*)/
 
 Bc = (a) ->
-    a = a.get(Q)
+    a = a.get(ga_client_id)
     b = Ic(a, 0)
     return "_ga=1." + K(b + "." + a)
 
@@ -1603,10 +1603,10 @@ class Jd
         # b = d # TODO: check if this is needed
 
         if b
-            b = P(a, V)
+            b = P(a, ga_name)
             if b and b != 't0'
                 if Wd[s](b)
-                    b = "_gat_" + Cc( P(a, Na) )
+                    b = "_gat_" + Cc( P(a, ga_tracking_id) )
                 else
                     b = "_gat_" + Cc(b)
             else
@@ -1619,17 +1619,17 @@ class Jd
     #####################
 
 Rd = (a, b) ->
-    c = b.get(Wb)
+    c = b.get(ga_build_hit_task)
 
-    b.set(Wb, (b) ->
+    b.set(ga_build_hit_task, (b) ->
         Pd(a, b)
         d = c(b)
         Qd(a, b)
         return d
     )
 
-    d = b.get(Xb)
-    b.set(Xb, (b) ->
+    d = b.get(ga_send_hit_task)
+    b.set(ga_send_hit_task, (b) ->
         c = d(b)
         Id(a, b)
         return c
@@ -1644,7 +1644,7 @@ Pd = (a, b) ->
 
 Qd = (a, b) ->
     if b.get(a.U)
-        zc(a.Y, "1", b.get(Yb) b.get(W), b.get(Na), 600000)
+        zc(a.Y, "1", b.get(ga_cookie_path) b.get(ga_cookie_domain), b.get(ga_tracking_id), 600000)
 
 Id = (a, b) ->
     if b.get(a.U)
@@ -1653,10 +1653,10 @@ Id = (a, b) ->
         d = (a) ->
             c.set($a(a).p, b.get(a))
 
-        d(hb)
-        d(ib)
-        d(Na)
-        d(Q)
+        d(ga_api_version)
+        d(ga_client_version)
+        d(ga_tracking_id)
+        d(ga_client_id)
         d(a.U)
         d(ld)
         e = a.aa
@@ -1684,10 +1684,10 @@ fd = (a, b) ->
 
         b = b || {}
 
-        if b[U]
-            d = Cc( b[U] )
+        if b[ga_cookie_name]
+            d = Cc( b[ga_cookie_name] )
 
-        d = new Jd(c, ed, "https://stats.g.doubleclick.net/collect?t=dc&aip=1&", d)
+        d = new Jd(c, ga_j1, "https://stats.g.doubleclick.net/collect?t=dc&aip=1&", d)
 
         Rd(d, c)
 
@@ -1699,20 +1699,20 @@ Sd = (a) ->
 
     else
 
-        if a.get(ac) != 'cookie'
+        if a.get(ga_storage) != 'cookie'
             b = false
         else
             b = true
 
     if b
         J(51)
-        b = new Jd(a, ed)
+        b = new Jd(a, ga_j1)
         Pd(b, a)
         Qd(b, a)
 
         if a.get(b.U)
-            a.set(Md, 1, true)
-            a.set(gd, oc() + "/r/collect", true)
+            a.set(ga_r, 1, true)
+            a.set(ga_transport_url, oc() + "/r/collect", true)
 
 
 Kd = (a, b) ->
@@ -1722,10 +1722,10 @@ Kd = (a, b) ->
 
         b = b or {}
 
-        if b[U]
-            d = Cc( b[U] )
+        if b[ga_cookie_name]
+            d = Cc( b[ga_cookie_name] )
 
-        d = new Jd(c, Hd, "https://www.google.com/ads/ga-audiences?t=sr&aip=1&", d)
+        d = new Jd(c, ga_j2, "https://www.google.com/ads/ga-audiences?t=sr&aip=1&", d)
 
         Rd(d, c)
 
@@ -1805,42 +1805,42 @@ class pc
         @b = new Ya
         @filters = new Ha
 
-        b(V, a[V])
-        b(Na, sa(a[Na]))
-        b(U, a[U])
-        b(W, a[W] or xa())
-        b(Yb, a[Yb])
-        b(Zb, a[Zb])
-        b($b, a[$b])
-        b(Wc, a[Wc])
-        b(bc, a[bc])
-        b(cc, a[cc])
-        b(Ka, a[Ka])
-        b(dc, a[dc])
-        b(ec, a[ec])
-        b(ac, a[ac])
-        b(Ad, a[Ad])
-        b(hb, 1)
-        b(ib, "j31")
-        c(Qb, Ma)
-        c(dd, cd)
-        c(Rb, Oa)
-        c(md, vb)
-        c(Sb, nc)
-        c(Uc, Yc)
-        c(Tb, Ja)
-        c(Vb, Ta)
-        c(Vc, Hc)
-        c(zd, yd)
-        c(Ld, Sd)
-        c(Wb, Pa)
-        c(Xb, Sa)
-        c( Cd, Fd(@) )
+        b(ga_name, a[ga_name])
+        b(ga_tracking_id, sa(a[ga_tracking_id]))
+        b(ga_cookie_name, a[ga_cookie_name])
+        b(ga_cookie_domain, a[ga_cookie_domain] or xa())
+        b(ga_cookie_path, a[ga_cookie_path])
+        b(ga_cookie_expires, a[ga_cookie_expires])
+        b(ga_legacy_cookie_domain, a[ga_legacy_cookie_domain])
+        b(ga_legacy_history_import, a[ga_legacy_history_import])
+        b(ga_allow_linker, a[ga_allow_linker])
+        b(ga_allow_anchor, a[ga_allow_anchor])
+        b(ga_sample_rate, a[ga_sample_rate])
+        b(ga_site_speed_sample_rate, a[ga_site_speed_sample_rate])
+        b(ga_always_send_referrer, a[ga_always_send_referrer])
+        b(ga_storage, a[ga_storage])
+        b(ga_user_id, a[ga_user_id])
+        b(ga_api_version, 1)
+        b(ga_client_version, "j31")
+        c(ga_oot, Ma)
+        c(ga_preview_task, cd)
+        c(ga_check_protocol_task, Oa)
+        c(ga_validation_task, vb)
+        c(ga_check_storage_task, nc)
+        c(ga_history_import_task, Yc)
+        c(ga_sampler_task, Ja)
+        c(ga_rlt, Ta)
+        c(ga_ce_task, Hc)
+        c(ga_dev_id_task, yd)
+        c(ga_display_features_task, Sd)
+        c(ga_build_hit_task, Pa)
+        c(ga_send_hit_task, Sa)
+        c( ga_timing_task, Fd(@) )
 
-        Jc(@b, a[Q])
+        Jc(@b, a[ga_client_id])
         Kc(@b)
-        @b.set( jb, Lc() )
-        bd(@b.get(Na), @b.get(W), @b.get(Yb))
+        @b.set( ga_ad_sense_id, Lc() )
+        bd(@b.get(ga_tracking_id), @b.get(ga_cookie_domain), @b.get(ga_cookie_path))
 
     get: (a) ->
         ###
@@ -1863,12 +1863,12 @@ class pc
                 b = arguments[0]
                 c = [].slice.call(arguments, 1)
             else
-                b = arguments[0] and arguments[0][Va]
+                b = arguments[0] and arguments[0][ga_hit_type]
                 c = arguments
 
             if b
                 c = za(qc[b] or [], c)
-                c[Va] = b
+                c[ga_hit_type] = b
 
                 @b.set(c, 0, true)
                 @filters.D(this.b)
@@ -1882,13 +1882,13 @@ class pc
 
 
 Jc = (a, b) ->
-    if P(a, ac) is "cookie"
+    if P(a, ga_storage) is "cookie"
         hc = false
 
         c = null
 
         for foo_noop in [0]
-            d = Ca( P(a, U) )
+            d = Ca( P(a, ga_cookie_name) )
             if d and not(1 > d.length)
                 c = []
 
@@ -1921,13 +1921,13 @@ Jc = (a, b) ->
                     J(12)
                 else
                     J(14)
-                    d = ic(P(a, W))
+                    d = ic(P(a, ga_cookie_domain))
                     c = Gc(c, d, 0)
                     if 1 == c.length
                         c = c[0].s
                         break
 
-                    d = jc( P(a, Yb) )
+                    d = jc( P(a, ga_cookie_path) )
                     c = Gc(c, d, 1)
                     c = c[0] and c[0].s
                     break
@@ -1936,8 +1936,8 @@ Jc = (a, b) ->
 
 
         if c
-            c = P(a, W)
-            d = P(a, $b) or xa()
+            c = P(a, ga_cookie_domain)
+            d = P(a, ga_legacy_cookie_domain) or xa()
             c = Xc("__utma", d, c)
 
             if c is 0
@@ -1948,10 +1948,10 @@ Jc = (a, b) ->
             if c
                 J(10)
         if c
-            a.data.set(Q, c)
+            a.data.set(ga_client_id, c)
             hc = true
 
-    c = a.get(cc)
+    c = a.get(ga_allow_anchor)
 
     if c
         location_part = 'href'
@@ -1967,7 +1967,7 @@ Jc = (a, b) ->
 
     if e
 
-        if a.get(bc)
+        if a.get(ga_allow_linker)
 
             c = e.indexOf(".")
 
@@ -1992,16 +1992,16 @@ Jc = (a, b) ->
                         J(23)
                     else
                         J(11)
-                        a.data.set(Q, c)
+                        a.data.set(ga_client_id, c)
 
     else
         J(21)
 
     if b
         J(9)
-        a.data.set(Q, K(b))
+        a.data.set(ga_client_id, K(b))
 
-    if a.get(Q)
+    if a.get(ga_client_id)
         c = window.gaGlobal and window.gaGlobal.vid
 
         if not(c and c.search(/^(?:utma\.)?\d+\.\d+$/) != -1)
@@ -2009,12 +2009,12 @@ Jc = (a, b) ->
 
         if c
             J(17)
-            a.data.set(Q, c)
+            a.data.set(ga_client_id, c)
             
         else
             J(8)
             foo_val = Math.round((new Date).getTime() / 1000)
-            a.data.set(Q, [hd() ^ Mc() & 2147483647, foo_val].join("."))
+            a.data.set(ga_client_id, [hd() ^ Mc() & 2147483647, foo_val].join("."))
 
     mc(a)
 
@@ -2023,7 +2023,7 @@ Kc = (a) ->
     screen = window.screen
     document_location = document.location
 
-    a.set( lb, ya( a.get(ec) ) )
+    a.set( ga_referrer, ya( a.get(ga_always_send_referrer) ) )
 
     if document_location
         path_name = document_location.pathname or ""
@@ -2032,13 +2032,13 @@ Kc = (a) ->
             J(31)
             path_name = "/" + path_name
 
-        a.set(kb, document_location.protocol + "//" + document_location.hostname + path_name + document_location.search)
+        a.set(ga_location, document_location.protocol + "//" + document_location.hostname + path_name + document_location.search)
 
     if screen
-        a.set(qb, screen.width + "x" + screen.height)
+        a.set(ga_screen_resolution, screen.width + "x" + screen.height)
 
     if screen
-        a.set(pb, screen.colorDepth + "-bit")
+        a.set(ga_screen_colors, screen.colorDepth + "-bit")
 
     document_element = document.documentElement
     e = document.body
@@ -2058,14 +2058,14 @@ Kc = (a) ->
     else
         document_element = ca.join("x")
 
-    a.set(rb, c)
-    a.set( tb, fc() )
-    a.set(ob, document.characterSet or document.charset)
-    a.set(sb, navigator and "function" is typeof navigator.javaEnabled and navigator.javaEnabled() or false)
-    a.set( nb, (b and (b.language or navigator.browserLanguage) or "").toLowerCase() )
+    a.set(ga_viewport_size, c)
+    a.set( ga_flash_version, fc() )
+    a.set(ga_encoding, document.characterSet or document.charset)
+    a.set(ga_java_enabled, navigator and "function" is typeof navigator.javaEnabled and navigator.javaEnabled() or false)
+    a.set( ga_language, (b and (b.language or navigator.browserLanguage) or "").toLowerCase() )
 
     location_hash = document.location.hash
-    if document_location and a.get(cc) and location_hash
+    if document_location and a.get(ga_allow_anchor) and location_hash
         location_hash = location_hash.split(/[?&#]+/)
         d = []
 
@@ -2086,13 +2086,13 @@ Kc = (a) ->
 
         if 0 < d.length
             location_hash = "#" + d.join("&")
-            a.set(kb, a.get(kb) + location_hash)
+            a.set(ga_location, a.get(ga_location) + location_hash)
 
 qc =
-    pageview: [mb]
-    event: [ub, xb, yb, zb]
-    social: [Bb, Cb, Db]
-    timing: [Mb, Nb, Pb, Ob]
+    pageview: [ga_page]
+    event: [ga_event_category, ga_event_action, ga_event_label, ga_event_value]
+    social: [ga_social_network, ga_social_action, ga_social_target]
+    timing: [ga_timing_category, ga_timing_var, ga_timing_value, ga_timing_label]
 
 rc = (a) ->
     if document.visibilityState is "prerender"
@@ -2171,7 +2171,7 @@ tc = (a, b, c) ->
     if b is $
         J(35)
     else
-        b.get(V)
+        b.get(ga_name)
 
     d = Yd.get(a)
 
@@ -2377,15 +2377,15 @@ $.P = []
 $.L = 0
 $.answer = 42
 
-uc = [Na, W, V]
+uc = [ga_tracking_id, ga_cookie_domain, ga_name]
 
 $.create = (a) ->
     b = za(uc, [].slice.call(arguments))
 
-    if b[V]
-        b[V] = "t0"
+    if b[ga_name]
+        b[ga_name] = "t0"
 
-    c = "" + b[V]
+    c = "" + b[ga_name]
 
     if $.h[c]
         return $.h[c]
@@ -2399,7 +2399,7 @@ $.create = (a) ->
 $.remove = (a) ->
     for val in $.P
 
-        if val.get(V) is a
+        if val.get(ga_name) is a
             $.P.splice(b, 1)
             $.h[a] = null
 
@@ -2475,7 +2475,7 @@ $.k = () ->
     a = $.K()
 
     for val in a
-        val.get(V)
+        val.get(ga_name)
 
 ano = () ->
     a = $.N
