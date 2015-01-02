@@ -135,7 +135,7 @@ ka = (a) ->
     return"[object Array]" == Object.prototype.toString.call(Object(a))
 
 # is_string ??
-qa = (a) ->
+is_string = (a) ->
     return 0 != a && -1 < (a.constructor + "").indexOf("String")
 
 # find ? starts_with ?
@@ -868,7 +868,7 @@ T = (a, b, c) ->
 
 db = () ->
 
-gb = qa(f.GoogleAnalyticsObject) and sa(f.GoogleAnalyticsObject) or "ga"
+gb = is_string(f.GoogleAnalyticsObject) and sa(f.GoogleAnalyticsObject) or "ga"
 Ba = false
 hb = T("apiVersion", "v")
 ib = T("clientVersion", "_v")
@@ -2131,7 +2131,7 @@ sc = (main_function_arguments) ->
                     @W = @a[2]
                 else
                     if @a[1]
-                        if qa(@a[1])
+                        if is_string(@a[1])
                             @X = @a[1]
                         else
                             @W = @a[1]
@@ -2142,10 +2142,10 @@ sc = (main_function_arguments) ->
         if not(@d)
             throw "abort"
 
-        if @i and (not qa(first_arg) or first_arg is "")
+        if @i and (not is_string(first_arg) or first_arg is "")
             throw "abort"
 
-        if @g and (not qa(first_arg) or "" == first_arg or not is_function(second_arg))
+        if @g and (not is_string(first_arg) or "" == first_arg or not is_function(second_arg))
             throw "abort"
 
         if ud(@c) or ud(@e)
