@@ -117,12 +117,11 @@ class FOO
 pa = new FOO()
 
 # set_meta_data ??
-J = (a) ->
+set_meta_data = (a) ->
     pa.set(a)
 
-# is_function
-is_function = (a) ->
-    return typeof a is "function"
+is_function = (variable) ->
+    return typeof variable is "function"
 
 is_object = (variable) ->
     return typeof variable is "object"
@@ -131,7 +130,7 @@ is_boolean = (variable) ->
     return typeof variable is "boolean"
 
 # is_array
-ka = (a) ->
+is_array = (a) ->
     return"[object Array]" == Object.prototype.toString.call(Object(a))
 
 # is_string ??
@@ -149,7 +148,7 @@ sa = (a) ->
         ""
 
 # create_spy_image
-ta = (image_url) ->
+create_spy_image = (image_url) ->
     image_element = document.createElement("img")
     image_element.width = 1
     image_element.height = 1
@@ -158,34 +157,34 @@ ta = (image_url) ->
     return image_element
 
 # empty_function
-ua = () ->
+empty_function = () ->
 
 K = (a) ->
-    if (aa instanceof Function)
+    if is_function(a)
         return aa(a)
 
-    J(28)
+    set_meta_data(28)
     return a
 
 # add_event_listener
-L = (a, b, c, d) ->
+add_event_listener = (a, b, c, d) ->
     try
         if a.addEventListener
             a.addEventListener(b, c, !!d)
         else
             a.attachEvent && a.attachEvent("on" + b, c)
     catch e
-        J(27)
+        set_meta_data(27)
 
 # remove_event_listener
-va = (a, b, c) ->
+remove_event_listener = (a, b, c) ->
     if a.removeEventListener
         a.removeEventListener(b, c, false)
     else
         a.detachEvent && a.detachEvent("on" + b, c)
 
 # insert_script_element
-wa = (script_url, element_id) ->
+insert_script_element = (script_url, element_id) ->
     if (script_url)
         script_element = document.createElement("script")
         script_element.type = "text/javascript"
@@ -211,7 +210,7 @@ xa = () ->
         return hostname
 
 # get_referrer
-ya = (a) ->
+get_referrer = (a) ->
     referrer = document.referrer
 
     if /^https?:\/\//i.test(referrer)
@@ -318,7 +317,7 @@ O = f
 M = document
 
 # call_func_async
-fb = (a) ->
+call_func_async = (a) ->
     setTimeout(a, 100)
 
 Mc = () ->
@@ -384,7 +383,7 @@ zc = (a, b, c, d, e, g) ->
 
     if b && 1200 < b[y]
         b = b.substring(0, 1200)
-        J(24)
+        set_meta_data(24)
 
     c = "#{a}=#{b}; path=#{c};"
 
@@ -437,7 +436,7 @@ Ea = (a) ->
     @message = a + "-2036"
 
 Ga = (url_string, data, c, d) ->
-    c = c or ua
+    c = c or empty_function
 
     if d
         d = c
@@ -466,7 +465,7 @@ Ga = (url_string, data, c, d) ->
 
 wc = (a, b, onload_callback) ->
     # create spy image element
-    d = ta("#{a}?#{b}")
+    d = create_spy_image("#{a}?#{b}")
 
     d.onload = d.onerror = () ->
         d.onload = null
@@ -522,7 +521,7 @@ wd = (url_string, data, callback) ->
 
 Fa = (a, b) ->
     if not(document.body)
-        fb(() ->
+        call_func_async(() ->
             Fa(a, b)
         )
 
@@ -547,7 +546,7 @@ Fa = (a, b) ->
         if iframe_element.parentNode
             iframe_element.parentNode.removeChild(iframe_element)
 
-    L(window, "beforeunload", g)
+    add_event_listener(window, "beforeunload", g)
     ca = false
     l = 0
     k = () ->
@@ -556,7 +555,7 @@ Fa = (a, b) ->
                 if 9 < l or iframe_element.contentWindow[B][x] is M[B][x]
                     ca = true
                     g()
-                    va(O, "beforeunload", g)
+                    remove_event_listener(O, "beforeunload", g)
                     b()
 
                     return
@@ -565,7 +564,7 @@ Fa = (a, b) ->
             l++
             ba(k, 200)
 
-    L(iframe_element, "load", k)
+    add_event_listener(iframe_element, "load", k)
     document.body.appendChild(iframe_element)
 
     iframe_element.src = e
@@ -613,9 +612,9 @@ class Ha
         catch d
 
         b = a.get(ga_hit_callback)
-        if b != ua
+        if b != empty_function
             is_function(b)
-            a.set(ga_hit_callback, ua, true)
+            a.set(ga_hit_callback, empty_function, true)
             ba(b, 10)
 
     #####################
@@ -640,12 +639,12 @@ Pa = (a) ->
     try
         if window.XMLHttpRequest
             if "withCredentials" in new window.XMLHttpRequest
-                J(40)
+                set_meta_data(40)
             else
                 if window.XDomainRequest
-                    J(41)
+                    set_meta_data(41)
                 if window.navigator.sendBeacon
-                    J(42)
+                    set_meta_data(42)
     catch b
 
     a.set(Ac, R(a, Ac) + 1)
@@ -668,7 +667,7 @@ Pa = (a) ->
 Sa = (a) ->
     b = P(a, ga_transport_url) or oc() + "/collect"
     Ga(b, P(a, ga_hit_payload), a.get(ga_hit_callback), a.get(ga_use_beacon))
-    a.set(ga_hit_callback, ua, true)
+    a.set(ga_hit_callback, empty_function, true)
 
 Hc = (a) ->
     ga_data = window.gaData
@@ -689,7 +688,7 @@ cd = () ->
 yd = (a) ->
     ga_dev_ids = window.gaDevIds
 
-    if ka(ga_dev_ids) and ga_dev_ids.length != 0
+    if is_array(ga_dev_ids) and ga_dev_ids.length != 0
         a.set("&did", ga_dev_ids.join(","), true)
 
 vb = (a) ->
@@ -714,7 +713,7 @@ Ta = (a) ->
     b = R(a, ga_hc)
 
     if 500 <= b
-        J(15)
+        set_meta_data(15)
 
     c = P(a, ga_hit_type)
 
@@ -977,7 +976,7 @@ ld = S("usage", "_u", 0, () ->
 S("forceSSL", 0, 0, () ->
     return Ba
 , (a, b, c) ->
-    J(34)
+    set_meta_data(34)
     Ba = !!c
 )
 
@@ -1038,7 +1037,7 @@ X = (a, b, c, d) ->
     b[a] = () ->
         try
             if d
-                J(d)
+                set_meta_data(d)
 
             return c.apply(@, arguments)
             
@@ -1149,7 +1148,7 @@ gc = (a, b) ->
                 Y(c, ga_l8)
                 b(c)
             else
-                L(window, "load", () ->
+                add_event_listener(window, "load", () ->
                     gc(a, b)
                 , false)
 
@@ -1228,7 +1227,7 @@ mc = (a) ->
                 hc = true
         else
             for __none in [1]
-                J(32)
+                set_meta_data(32)
                 c = []
 
                 e = xa().split(".")
@@ -1265,7 +1264,7 @@ Yc = (a) ->
         d = Xc("__utma", c, b)
 
         if d
-            J(19)
+            set_meta_data(19)
             a.set(ga_ut_mht, (new Date).getTime(), true)
             a.set(ga_ut_ma, d.R)
             b = Xc("__utmz", c, b)
@@ -1430,7 +1429,7 @@ class Dc
         ###
         ###
 
-        J(48)
+        set_meta_data(48)
         @target = a
         @T = false
 
@@ -1477,15 +1476,15 @@ class Dc
                         Pc( d, qd(e, d.href, b) )
 
             catch w
-                J(26)
+                set_meta_data(26)
 
         e = @
 
         if not @T
             @T = true
-            L(M, "mousedown", d, false)
-            L(M, "touchstart", d, false)
-            L(M, "keyup", d, false)
+            add_event_listener(M, "mousedown", d, false)
+            add_event_listener(M, "touchstart", d, false)
+            add_event_listener(M, "keyup", d, false)
 
         if c
             c = (b) ->
@@ -1500,7 +1499,7 @@ class Dc
                         rd(e, b)
 
             for form in document.forms
-                L(form, "submit", c)
+                add_event_listener(form, "submit", c)
 
     #####################
     ## PRIVATE METHODS ##
@@ -1668,7 +1667,7 @@ Id = (a, b) ->
 
         e += "z=" + hd()
 
-        ta(e)
+        create_spy_image(e)
 
         b.set(a.U, "", true)
 
@@ -1677,10 +1676,10 @@ Wd = /^gtm\d+$/
 fd = (a, b) ->
     c = a.b
     if not(c.get("dcLoaded"))
-        J(29)
+        set_meta_data(29)
 
         if window._gaq
-            J(52)
+            set_meta_data(52)
 
         b = b || {}
 
@@ -1705,7 +1704,7 @@ Sd = (a) ->
             b = true
 
     if b
-        J(51)
+        set_meta_data(51)
         b = new Jd(a, ga_j1)
         Pd(b, a)
         Qd(b, a)
@@ -1718,7 +1717,7 @@ Sd = (a) ->
 Kd = (a, b) ->
     c = a.b
     if not c.get("_rlsaLoaded")
-        J(38)
+        set_meta_data(38)
 
         b = b or {}
 
@@ -1768,7 +1767,7 @@ bd = (a, b, c) ->
             else
                 inpage_parameters = ''
                 
-            wa("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + inpage_parameters + hd(), "_gasojs")
+            insert_script_element("https://www.google.com/analytics/web/inpage/pub/inpage.js?" + inpage_parameters + hd(), "_gasojs")
 
         ad = true
 
@@ -1794,34 +1793,34 @@ class pc
         ###
         ###
 
-        b = (a, b_var) =>
-            @b.data.set(a, b_var)
+        set_data = (name, data) =>
+            @b.data.set(name, data)
 
-        c = (a, foo_var) =>
-            b(a, foo_var)
-            @filters.add(a)
+        c = (name, data) =>
+            set_data(name, data)
+            @filters.add(name)
 
         d = @
         @b = new Ya
         @filters = new Ha
 
-        b(ga_name, a[ga_name])
-        b(ga_tracking_id, sa(a[ga_tracking_id]))
-        b(ga_cookie_name, a[ga_cookie_name])
-        b(ga_cookie_domain, a[ga_cookie_domain] or xa())
-        b(ga_cookie_path, a[ga_cookie_path])
-        b(ga_cookie_expires, a[ga_cookie_expires])
-        b(ga_legacy_cookie_domain, a[ga_legacy_cookie_domain])
-        b(ga_legacy_history_import, a[ga_legacy_history_import])
-        b(ga_allow_linker, a[ga_allow_linker])
-        b(ga_allow_anchor, a[ga_allow_anchor])
-        b(ga_sample_rate, a[ga_sample_rate])
-        b(ga_site_speed_sample_rate, a[ga_site_speed_sample_rate])
-        b(ga_always_send_referrer, a[ga_always_send_referrer])
-        b(ga_storage, a[ga_storage])
-        b(ga_user_id, a[ga_user_id])
-        b(ga_api_version, 1)
-        b(ga_client_version, "j31")
+        set_data(ga_name, a[ga_name])
+        set_data(ga_tracking_id, sa(a[ga_tracking_id]))
+        set_data(ga_cookie_name, a[ga_cookie_name])
+        set_data(ga_cookie_domain, a[ga_cookie_domain] or xa())
+        set_data(ga_cookie_path, a[ga_cookie_path])
+        set_data(ga_cookie_expires, a[ga_cookie_expires])
+        set_data(ga_legacy_cookie_domain, a[ga_legacy_cookie_domain])
+        set_data(ga_legacy_history_import, a[ga_legacy_history_import])
+        set_data(ga_allow_linker, a[ga_allow_linker])
+        set_data(ga_allow_anchor, a[ga_allow_anchor])
+        set_data(ga_sample_rate, a[ga_sample_rate])
+        set_data(ga_site_speed_sample_rate, a[ga_site_speed_sample_rate])
+        set_data(ga_always_send_referrer, a[ga_always_send_referrer])
+        set_data(ga_storage, a[ga_storage])
+        set_data(ga_user_id, a[ga_user_id])
+        set_data(ga_api_version, 1)
+        set_data(ga_client_version, "j31")
         c(ga_oot, Ma)
         c(ga_preview_task, cd)
         c(ga_check_protocol_task, Oa)
@@ -1874,7 +1873,7 @@ class pc
                 @filters.D(this.b)
                 @b.data.m = {}
 
-                J(44)
+                set_meta_data(44)
 
     #####################
     ## PRIVATE METHODS ##
@@ -1913,14 +1912,14 @@ Jc = (a, b) ->
                         c.push(g)
 
                 if c.length is 1
-                    J(13)
+                    set_meta_data(13)
                     c = c[0].s
                     break
 
                 if 0 == c.length
-                    J(12)
+                    set_meta_data(12)
                 else
-                    J(14)
+                    set_meta_data(14)
                     d = ic(P(a, ga_cookie_domain))
                     c = Gc(c, d, 0)
                     if 1 == c.length
@@ -1946,7 +1945,7 @@ Jc = (a, b) ->
                 c = c.O[1] + "." + c.O[2]
 
             if c
-                J(10)
+                set_meta_data(10)
         if c
             a.data.set(ga_client_id, c)
             hc = true
@@ -1972,33 +1971,33 @@ Jc = (a, b) ->
             c = e.indexOf(".")
 
             if c is -1
-                J(22)
+                set_meta_data(22)
             else
                 d = e.substring(c + 1)
 
             if "1" != e.substring(0, c)
-                J(22)
+                set_meta_data(22)
 
             else
                 c = d.indexOf(".")
 
                 if c is -1
-                    J(22)
+                    set_meta_data(22)
                 else
                     e = d.substring(0, c)
                     c = d.substring(c + 1)
 
                     if e != Ic(c, 0) and e != Ic(c, -1) and e != Ic(c, -2)
-                        J(23)
+                        set_meta_data(23)
                     else
-                        J(11)
+                        set_meta_data(11)
                         a.data.set(ga_client_id, c)
 
     else
-        J(21)
+        set_meta_data(21)
 
     if b
-        J(9)
+        set_meta_data(9)
         a.data.set(ga_client_id, K(b))
 
     if a.get(ga_client_id)
@@ -2008,11 +2007,11 @@ Jc = (a, b) ->
             c = 0
 
         if c
-            J(17)
+            set_meta_data(17)
             a.data.set(ga_client_id, c)
             
         else
-            J(8)
+            set_meta_data(8)
             foo_val = Math.round((new Date).getTime() / 1000)
             a.data.set(ga_client_id, [hd() ^ Mc() & 2147483647, foo_val].join("."))
 
@@ -2023,13 +2022,13 @@ Kc = (a) ->
     screen = window.screen
     document_location = document.location
 
-    a.set( ga_referrer, ya( a.get(ga_always_send_referrer) ) )
+    a.set( ga_referrer, get_referrer( a.get(ga_always_send_referrer) ) )
 
     if document_location
         path_name = document_location.pathname or ""
 
         if "/" != e.charAt(0)
-            J(31)
+            set_meta_data(31)
             path_name = "/" + path_name
 
         a.set(ga_location, document_location.protocol + "//" + document_location.hostname + path_name + document_location.search)
@@ -2169,7 +2168,7 @@ Zd =
 tc = (a, b, c) ->
     
     if b is $
-        J(35)
+        set_meta_data(35)
     else
         b.get(ga_name)
 
@@ -2277,15 +2276,15 @@ Z.J = (a) ->
 
                     if not is_function(Yd.get(g)) and not $d.get(g)
 
-                        Zd.hasOwnProperty(g) and J(Zd[g])
+                        Zd.hasOwnProperty(g) and set_meta_data(Zd[g])
                         ca = e.X
 
                         if not ca
                             if Zd.hasOwnProperty(g)
-                                J(39)
+                                set_meta_data(39)
                                 ca = g + ".js"
                             else
-                                J(43)
+                                set_meta_data(43)
 
                         if ca
                             if ca and 0 <= ca.indexOf("/")
@@ -2327,7 +2326,7 @@ Z.J = (a) ->
                                         Xd = false
 
                             if Xd
-                                wa(l.url)
+                                insert_script_element(l.url)
                                 $d.set(g, true)
 
                 b.push(d)
@@ -2369,7 +2368,7 @@ Z.v = (a) ->
 # #1
 # Main function / class (not using argument a)
 $ = (a) ->
-    J(1)
+    set_meta_data(1)
     Z.D.apply(Z, [arguments])
 
 $.h = {}
@@ -2413,7 +2412,7 @@ $.K = () ->
 
 $.N = () ->
     if "ga" != gb
-        J(49)
+        set_meta_data(49)
     a = window[gb]
 
     if not a or a.answer != 42
@@ -2446,12 +2445,12 @@ $.N = () ->
                 d = false
 
             if d
-                J(33)
+                set_meta_data(33)
 
             c++
 
         if "https:" != M[B][E] && !Ba && Ed()
-            J(36)
+            set_meta_data(36)
             Ba = true
 
         window.gaplugins = window.gaplugins or {}
@@ -2466,10 +2465,10 @@ $.N = () ->
 
         a = a and a.q
 
-        if ka(a)
+        if is_array(a)
             Z.D.apply($, a)
         else
-            J(50)
+            set_meta_data(50)
 
 $.k = () ->
     a = $.K()
@@ -2482,15 +2481,15 @@ ano = () ->
 
     if not rc(a)
 
-        J(16)
+        set_meta_data(16)
         b = false
 
         c = () ->
             if not b and rc(a)
                 b = true
-                va(M, "visibilitychange", c)
+                remove_event_listener(M, "visibilitychange", c)
 
-        L(M, "visibilitychange", c)
+        add_event_listener(M, "visibilitychange", c)
 
 
 ano()
