@@ -2285,15 +2285,15 @@
   td = /^(?:(\w+)\.)?(?:(\w+):)?(\w+)$/;
 
   sc = function(main_function_arguments) {
-    var b;
+    var first_arg, search_results, second_arg;
     if (is_function(main_function_arguments[0])) {
       return this.u = main_function_arguments[0];
     } else {
-      b = td.exec(main_function_arguments[0]);
-      if (null !== b || 4 === b.length) {
-        this.c = b[1] || "t0";
-        this.e = b[2] || "";
-        this.d = b[3];
+      search_results = td.exec(main_function_arguments[0]);
+      if (search_results !== null || 4 === search_results.length) {
+        this.c = search_results[1] || "t0";
+        this.e = search_results[2] || "";
+        this.d = search_results[3];
         this.a = [].slice.call(main_function_arguments, 1);
         if (this.e) {
           this.A = this.d === "create";
@@ -2316,15 +2316,15 @@
           }
         }
       }
-      b = main_function_arguments[1];
-      main_function_arguments = main_function_arguments[2];
+      first_arg = main_function_arguments[1];
+      second_arg = main_function_arguments[2];
       if (!this.d) {
         throw "abort";
       }
-      if (this.i && (!qa(b) || b === "")) {
+      if (this.i && (!qa(first_arg) || first_arg === "")) {
         throw "abort";
       }
-      if (this.g && (!qa(b) || "" === b || !is_function(main_function_arguments))) {
+      if (this.g && (!qa(first_arg) || "" === first_arg || !is_function(second_arg))) {
         throw "abort";
       }
       if (ud(this.c) || ud(this.e)) {

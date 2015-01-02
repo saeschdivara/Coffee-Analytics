@@ -2109,12 +2109,14 @@ sc = (main_function_arguments) ->
     if is_function( main_function_arguments[0] )
         @u = main_function_arguments[0]
     else
-        b = td.exec( main_function_arguments[0] )
+        search_results = td.exec( main_function_arguments[0] )
 
-        if null != b or 4 is b.length
-            @c = b[1] or "t0"
-            @e = b[2] or ""
-            @d = b[3]
+        if search_results != null or 4 is search_results.length
+            @c = search_results[1] or "t0"
+            @e = search_results[2] or ""
+            @d = search_results[3]
+
+            # action arguments
             @a = [].slice.call(main_function_arguments, 1)
 
             if @e
@@ -2134,16 +2136,16 @@ sc = (main_function_arguments) ->
                         else
                             @W = @a[1]
 
-        b = main_function_arguments[1]
-        main_function_arguments = main_function_arguments[2]
+        first_arg = main_function_arguments[1]
+        second_arg = main_function_arguments[2]
 
         if not(@d)
             throw "abort"
 
-        if @i and (not qa(b) or b is "")
+        if @i and (not qa(first_arg) or first_arg is "")
             throw "abort"
 
-        if @g and (not qa(b) or "" == b or not is_function(main_function_arguments))
+        if @g and (not qa(first_arg) or "" == first_arg or not is_function(second_arg))
             throw "abort"
 
         if ud(@c) or ud(@e)
