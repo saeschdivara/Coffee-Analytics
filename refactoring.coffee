@@ -2104,17 +2104,18 @@ rc = (a) ->
 
 td = /^(?:(\w+)\.)?(?:(\w+):)?(\w+)$/
 
-sc = (a) ->
-    if ea( a[0] )
-        @u = a[0]
+sc = (main_function_arguments) ->
+    # #4
+    if ea( main_function_arguments[0] )
+        @u = main_function_arguments[0]
     else
-        b = td.exec( a[0] )
+        b = td.exec( main_function_arguments[0] )
 
         if null != b or 4 is b.length
             @c = b[1] or "t0"
             @e = b[2] or ""
             @d = b[3]
-            @a = [][ha][C](a, 1)
+            @a = [].slice.call(main_function_arguments, 1)
 
             if @e
                 @A  = @d is "create"
@@ -2133,8 +2134,8 @@ sc = (a) ->
                         else
                             @W = @a[1]
 
-        b = a[1]
-        a = a[2]
+        b = main_function_arguments[1]
+        main_function_arguments = main_function_arguments[2]
 
         if not(@d)
             throw "abort"
@@ -2142,7 +2143,7 @@ sc = (a) ->
         if @i and (not qa(b) or b is "")
             throw "abort"
 
-        if @g and (not qa(b) or "" == b or not ea(a))
+        if @g and (not qa(b) or "" == b or not ea(main_function_arguments))
             throw "abort"
 
         if ud(@c) or ud(@e)
@@ -2248,6 +2249,7 @@ Z = {
 Z.ga()
 
 Z.D = (a) ->
+    # #2
     b = Z.J.apply(Z, arguments)
     b = Z.f.concat(b)
     Z.f = []
@@ -2256,6 +2258,7 @@ Z.D = (a) ->
         Z.f = Z.f.concat(b)
 
 Z.J = (a) ->
+    # #3
     b = []
     for arg in arguments
         try
@@ -2333,7 +2336,7 @@ Z.J = (a) ->
 Z.v = (a) ->
     try
         if (a.u)
-            a.u[C](O, $.j("t0"))
+            a.u.call(window, $.j("t0"))
         else
             if gb is a.c
                 b = $
@@ -2350,7 +2353,7 @@ Z.v = (a) ->
             else if b
                 if a.i
                     if not tc(a.a[0], b, a.W)
-                        returntrue
+                        return true
             else if a.e
                 c = a.d
                 d = a.a
@@ -2360,6 +2363,8 @@ Z.v = (a) ->
                 b[a.d].apply(b, a.a)
     catch g
 
+# #1
+# Main function / class (not using argument a)
 $ = (a) ->
     J(1)
     Z.D.apply(Z, [arguments])
@@ -2372,7 +2377,7 @@ $.answer = 42
 uc = [Na, W, V]
 
 $.create = (a) ->
-    b = za(uc, [][ha][C](arguments))
+    b = za(uc, [].slice.call(arguments))
 
     if b[V]
         b[V] = "t0"

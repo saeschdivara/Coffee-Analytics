@@ -2284,17 +2284,17 @@
 
   td = /^(?:(\w+)\.)?(?:(\w+):)?(\w+)$/;
 
-  sc = function(a) {
+  sc = function(main_function_arguments) {
     var b;
-    if (ea(a[0])) {
-      return this.u = a[0];
+    if (ea(main_function_arguments[0])) {
+      return this.u = main_function_arguments[0];
     } else {
-      b = td.exec(a[0]);
+      b = td.exec(main_function_arguments[0]);
       if (null !== b || 4 === b.length) {
         this.c = b[1] || "t0";
         this.e = b[2] || "";
         this.d = b[3];
-        this.a = [][ha][C](a, 1);
+        this.a = [].slice.call(main_function_arguments, 1);
         if (this.e) {
           this.A = this.d === "create";
           this.i = this.d === "require";
@@ -2316,15 +2316,15 @@
           }
         }
       }
-      b = a[1];
-      a = a[2];
+      b = main_function_arguments[1];
+      main_function_arguments = main_function_arguments[2];
       if (!this.d) {
         throw "abort";
       }
       if (this.i && (!qa(b) || b === "")) {
         throw "abort";
       }
-      if (this.g && (!qa(b) || "" === b || !ea(a))) {
+      if (this.g && (!qa(b) || "" === b || !ea(main_function_arguments))) {
         throw "abort";
       }
       if (ud(this.c) || ud(this.e)) {
@@ -2531,7 +2531,7 @@
     var b, c, d, e, g;
     try {
       if (a.u) {
-        return a.u[C](O, $.j("t0"));
+        return a.u.call(window, $.j("t0"));
       } else {
         if (gb === a.c) {
           b = $;
@@ -2547,7 +2547,7 @@
         } else if (b) {
           if (a.i) {
             if (!tc(a.a[0], b, a.W)) {
-              return returntrue;
+              return true;
             }
           }
         } else if (a.e) {
@@ -2581,7 +2581,7 @@
 
   $.create = function(a) {
     var b, c;
-    b = za(uc, [][ha][C](arguments));
+    b = za(uc, [].slice.call(arguments));
     if (b[V]) {
       b[V] = "t0";
     }
