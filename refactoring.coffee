@@ -8,11 +8,10 @@ ba = setTimeout
 n = Math
 
 # set_href
-Pc = (a, b) ->
+set_href_of_element = (a, b) ->
     return a.href = b
 
-# set_name
-fa = (a, b) ->
+set_name_on_object = (a, b) ->
     return a.name = b
 
 Qc = "replace"
@@ -428,11 +427,11 @@ oc = () ->
     return "#{protocol}//www.google-analytics.com"
 
 Da = (a) ->
-    fa(@, "len");
+    set_name_on_object(@, "len");
     @message = a + "-8192"
 
 Ea = (a) ->
-    fa(@, "ff2post");
+    set_name_on_object(@, "ff2post");
     @message = a + "-2036"
 
 Ga = (url_string, data, c, d) ->
@@ -465,11 +464,11 @@ Ga = (url_string, data, c, d) ->
 
 wc = (a, b, onload_callback) ->
     # create spy image element
-    d = create_spy_image("#{a}?#{b}")
+    spy_image_element = create_spy_image("#{a}?#{b}")
 
-    d.onload = d.onerror = () ->
-        d.onload = null
-        d.onerror = null
+    spy_image_element.onload = spy_image_element.onerror = () ->
+        spy_image_element.onload = null
+        spy_image_element.onerror = null
         onload_callback()
 
 # send_cross_domain_request
@@ -532,7 +531,7 @@ Fa = (a, b) ->
         iframe_element = document.createElement('<iframe name="' + a + '"></iframe>')
     catch d
         iframe_element = document.createElement("iframe")
-        fa(iframe_element, a)
+        set_name_on_object(iframe_element, a)
 
     iframe_element.height = "0"
     iframe_element.width = "0"
@@ -552,7 +551,7 @@ Fa = (a, b) ->
     k = () ->
         if not(ca)
             try
-                if 9 < l or iframe_element.contentWindow.location[x] is M.location[x]
+                if 9 < l or iframe_element.contentWindow.location.host is document.location.host
                     ca = true
                     g()
                     remove_event_listener(O, "beforeunload", g)
@@ -622,12 +621,12 @@ class Ha
     #####################
 
 Ja = (a) ->
-    if 100 != a.get(ga_sample_rate) and La( P(a, ga_client_id) ) % 10000 >= 100 * R(a, ga_sample_rate)
+    if a.get(ga_sample_rate) != 100 and La( P(a, ga_client_id) ) % 10000 >= 100 * R(a, ga_sample_rate)
         throw "abort"
 
 Ma = (a) ->
     if Aa( P(a, ga_tracking_id) )
-        throw"abort"
+        throw "abort"
 
 # check_protocol
 Oa = () ->
@@ -827,7 +826,7 @@ ab = (a, b, c, d) ->
         a.data.set(b, c, d)
 
 bb = (a, b, c, d, e) ->
-    fa(@, a)
+    set_name_on_object(@, a)
 
     @p = b
     @n = d
@@ -844,7 +843,7 @@ $a = (a) ->
 
             if e
                 b = d[1](e)
-                Qa.set(b.name, b);
+                Qa.set(b.name, b)
                 break
     return b
 
@@ -1443,7 +1442,7 @@ class Dc
 
         if a.tagName
             if "a" == a.tagName.toLowerCase()
-                a.href && Pc(a, qd(this, a.href, b))
+                a.href && set_href_of_element(a, qd(this, a.href, b))
                 return
 
             if "form" == a.tagName.toLowerCase()
@@ -1477,7 +1476,7 @@ class Dc
 
                 if d.protocol is "http:" or d.protocol is "https:"
                     if sd(a, d.hostname or "") and d.href
-                        Pc( d, qd(e, d.href, b) )
+                        set_href_of_element( d, qd(e, d.href, b) )
 
             catch w
                 set_meta_data(26)
@@ -2207,7 +2206,7 @@ ae = (a) ->
         return [b, "" + c, a]
 
     link_element = document.createElement("a")
-    Pc(link_element, document.location.href)
+    set_href_of_element(link_element, document.location.href)
 
     protocol = (link_element.protocol or "").toLowerCase()
     d = protocol
@@ -2234,7 +2233,7 @@ ae = (a) ->
                 if 0 > a.split("/")[0].indexOf(":")
                     (a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a)
 
-    Pc(link_element, a)
+    set_href_of_element(link_element, a)
     d = b_func(link_element)
 
     return {
@@ -2461,7 +2460,7 @@ $.N = () ->
 
             c++
 
-        if M.location.protocol != "https:" and not(Ba) and Ed()
+        if document.location.protocol != "https:" and not(Ba) and Ed()
             set_meta_data(36)
             Ba = true
 
