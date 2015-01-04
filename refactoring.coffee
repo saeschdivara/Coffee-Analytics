@@ -315,7 +315,6 @@ class N
 O = f
 M = document
 
-# call_func_async
 call_func_async = (a) ->
     setTimeout(a, 100)
 
@@ -474,7 +473,6 @@ wc = (a, b, onload_callback) ->
         spy_image_element.onerror = null
         onload_callback()
 
-# send_cross_domain_request
 send_cross_domain_request = (url_string, data, callback) ->
 
     # This can only be used for internet explorer
@@ -496,7 +494,6 @@ send_cross_domain_request = (url_string, data, callback) ->
 
     return true
 
-# send_request
 send_plain_request = (url_string, data, callback) ->
     xml_http_request = window.XMLHttpRequest
 
@@ -541,8 +538,9 @@ create_invisible_iframe = (a, b) ->
     iframe_element.style.display = "none"
     iframe_element.style.visibility = "hidden"
 
-    e = document.location
-    e = get_analytics_address() + "/analytics_iframe.html#" + encodeURIComponent("#{e.protocol}//#{e.host}/favicon.ico")
+    doc_location = document.location
+    encoded_uri_fav_icon = encodeURIComponent("#{doc_location.protocol}//#{doc_location.host}/favicon.ico")
+    e = get_analytics_address() + "/analytics_iframe.html##{encoded_uri_fav_icon}"
     g = () ->
         iframe_element.src = ""
         if iframe_element.parentNode
@@ -564,7 +562,7 @@ create_invisible_iframe = (a, b) ->
 
             catch a
             l++
-            ba(k, 200)
+            setTimeout(k, 200)
 
     add_event_listener(iframe_element, "load", k)
     document.body.appendChild(iframe_element)
@@ -613,11 +611,11 @@ class Ha
                     c.call(window, a)
         catch d
 
-        b = a.get(ga_hit_callback)
-        if b != empty_function
-            is_function(b)
+        hit_callback = a.get(ga_hit_callback)
+
+        if hit_callback != empty_function and is_function(hit_callback)
             a.set(ga_hit_callback, empty_function, true)
-            ba(b, 10)
+            setTimeout(hit_callback, 10)
 
     #####################
     ## PRIVATE METHODS ##
@@ -631,8 +629,7 @@ Ma = (a) ->
     if Aa( P(a, ga_tracking_id) )
         throw "abort"
 
-# check_protocol
-Oa = () ->
+check_protocol = () ->
     protocol = document.location.protocol
     if protocol != "http:" and protocol != "https:"
         throw "abort"
@@ -818,7 +815,7 @@ R = (a, b) ->
 ab = (a, b, c, d) ->
     if c != 0
         switch
-            when b is ga_tracking_id then wb[s](c)
+            when b is ga_tracking_id then google_account_type_regex.test(c)
             else null
 
     e = $a(b)
@@ -1777,7 +1774,7 @@ bd = (a, b, c) ->
 
         ad = true
 
-wb = /^(UA|YT|MO|GP)-(\d+)-(\d+)$/
+google_account_type_regex = /^(UA|YT|MO|GP)-(\d+)-(\d+)$/
 
 
 class pc
@@ -1827,9 +1824,10 @@ class pc
         set_data(ga_user_id, a[ga_user_id])
         set_data(ga_api_version, 1)
         set_data(ga_client_version, "j31")
+
         c(ga_oot, Ma)
         c(ga_preview_task, cd)
-        c(ga_check_protocol_task, Oa)
+        c(ga_check_protocol_task, check_protocol)
         c(ga_validation_task, vb)
         c(ga_check_storage_task, nc)
         c(ga_history_import_task, Yc)
@@ -1963,7 +1961,11 @@ Jc = (a, b) ->
     else
         location_part = 'search'
 
-    c = document.location[location_part].match("(?:&|#|\\?)" + K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") + "=([^&#]*)")
+    c = document.location[location_part].match(
+            "(?:&|#|\\?)" +
+            K("_ga").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") +
+            "=([^&#]*)"
+    )
 
     if c and c.length is 2
         e = c[1]
