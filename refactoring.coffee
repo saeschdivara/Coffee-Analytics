@@ -372,15 +372,15 @@ zc = (a, b, c, d, e, g) ->
     if Aa(e)
         e = false
     else
-        if eb.test(document.location.hostname) or c is "/" && vc.test(d)
+        if double_click_regex.test(document.location.hostname) or c is "/" and google_regex.test(d)
             e = false
         else
             e = true
 
-    if !e
-        returnfalse
+    if not e
+        return false
 
-    if b && 1200 < b[y]
+    if b and 1200 < b[y]
         b = b.substring(0, 1200)
         set_meta_data(24)
 
@@ -403,10 +403,13 @@ zc = (a, b, c, d, e, g) ->
     else
         a = Ca(a)
         d = 0
+        
         for foo in a
+
             if b is foo
                 d = true
                 break
+
         d = false
 
     return d
@@ -414,8 +417,8 @@ zc = (a, b, c, d, e, g) ->
 Cc = (a) ->
     return K(a).replace(/\(/g, "%28").replace(/\)/g, "%29")
 
-vc = /^(www\.)?google(\.com?)?(\.[a-z]{2})?$/
-eb = /(^|\.)doubleclick\.net$/i
+google_regex = /^(www\.)?google(\.com?)?(\.[a-z]{2})?$/
+double_click_regex = /(^|\.)doubleclick\.net$/i
 
 # get_analytics_address
 get_analytics_address = () ->
@@ -434,11 +437,11 @@ Ea = (a) ->
     set_name_on_object(@, "ff2post");
     @message = a + "-2036"
 
-Ga = (url_string, data, c, d) ->
-    c = c or empty_function
+Ga = (url_string, data, callback, d) ->
+    callback = callback or empty_function
 
     if d
-        d = c
+        d = callback
         if window.navigator.sendBeacon
             if window.navigator.sendBeacon(url_string, data)
                 d()
@@ -450,14 +453,14 @@ Ga = (url_string, data, c, d) ->
 
     if not(d)
         if (2036 >= data.length)
-            wc(url_string, data, c)
+            wc(url_string, data, callback)
 
         else if (8192 >= data.length)
 
             if (0 <= window.navigator.userAgent.indexOf("Firefox") and ![].reduce)
                 throw new Ea(data.length)
 
-            send_plain_request(url_string, data, c) or send_cross_domain_request(url_string, data, c) or create_invisible_iframe(data, c) or c()
+            send_plain_request(url_string, data, callback) or send_cross_domain_request(url_string, data, callback) or create_invisible_iframe(data, callback) or callback()
 
         else
             throw new Da(data.length)
