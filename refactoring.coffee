@@ -418,7 +418,7 @@ vc = /^(www\.)?google(\.com?)?(\.[a-z]{2})?$/
 eb = /(^|\.)doubleclick\.net$/i
 
 # get_analytics_address
-oc = () ->
+get_analytics_address = () ->
     if Ba or "https:" is document.location.protocol
         protocol = "https:"
     else
@@ -457,7 +457,7 @@ Ga = (url_string, data, c, d) ->
             if (0 <= window.navigator.userAgent.indexOf("Firefox") and ![].reduce)
                 throw new Ea(data.length)
 
-            wd(url_string, data, c) or xd(url_string, data, c) or Fa(data, c) or c()
+            send_plain_request(url_string, data, c) or send_cross_domain_request(url_string, data, c) or create_invisible_iframe(data, c) or c()
 
         else
             throw new Da(data.length)
@@ -472,7 +472,7 @@ wc = (a, b, onload_callback) ->
         onload_callback()
 
 # send_cross_domain_request
-xd = (url_string, data, callback) ->
+send_cross_domain_request = (url_string, data, callback) ->
 
     # This can only be used for internet explorer
 
@@ -494,7 +494,7 @@ xd = (url_string, data, callback) ->
     return true
 
 # send_request
-wd = (url_string, data, callback) ->
+send_plain_request = (url_string, data, callback) ->
     xml_http_request = window.XMLHttpRequest
 
     if not(xml_http_request)
@@ -518,10 +518,10 @@ wd = (url_string, data, callback) ->
 
     return true
 
-Fa = (a, b) ->
+create_invisible_iframe = (a, b) ->
     if not(document.body)
         call_func_async(() ->
-            Fa(a, b)
+            create_invisible_iframe(a, b)
         )
 
         return true
@@ -539,7 +539,7 @@ Fa = (a, b) ->
     iframe_element.style.visibility = "hidden"
 
     e = document.location
-    e = oc() + "/analytics_iframe.html#" + encodeURIComponent("#{e.protocol}//#{e.host}/favicon.ico")
+    e = get_analytics_address() + "/analytics_iframe.html#" + encodeURIComponent("#{e.protocol}//#{e.host}/favicon.ico")
     g = () ->
         iframe_element.src = ""
         if iframe_element.parentNode
@@ -664,7 +664,7 @@ Pa = (a) ->
     a.set(ga_hit_payload, c.join("&"), true)
 
 Sa = (a) ->
-    b = P(a, ga_transport_url) or oc() + "/collect"
+    b = P(a, ga_transport_url) or get_analytics_address() + "/collect"
     Ga(b, P(a, ga_hit_payload), a.get(ga_hit_callback), a.get(ga_use_beacon))
     a.set(ga_hit_callback, empty_function, true)
 
@@ -1056,7 +1056,7 @@ X = (a, b, c, d) ->
 
                 ca.push("aip=1")
                 ca.push("z=" + hd())
-                Ga(oc() + "/collect", ca.join("&"))
+                Ga(get_analytics_address() + "/collect", ca.join("&"))
 
             throw b
 
@@ -1714,7 +1714,7 @@ Sd = (a) ->
 
         if a.get(b.U)
             a.set(ga_r, 1, true)
-            a.set(ga_transport_url, oc() + "/r/collect", true)
+            a.set(ga_transport_url, get_analytics_address() + "/r/collect", true)
 
 
 Kd = (a, b) ->
