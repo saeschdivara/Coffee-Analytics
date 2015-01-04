@@ -2101,11 +2101,11 @@ qc =
     social: [ga_social_network, ga_social_action, ga_social_target]
     timing: [ga_timing_category, ga_timing_var, ga_timing_value, ga_timing_label]
 
-rc = (a) ->
+call_func_when_no_pre_render = (call_func) ->
     if document.visibilityState is "prerender"
         return false
 
-    a()
+    call_func()
 
     return true
 
@@ -2493,22 +2493,24 @@ $.k = () ->
         val.get(ga_name)
 
 ano = () ->
+    # Call in this script
     a = $.N
 
-    if not rc(a)
+    # Check if visibilty is prerender
+    if not call_func_when_no_pre_render(a)
 
         set_meta_data(16)
-        b = false
 
-        c = () ->
-            if not b and rc(a)
-                b = true
-                remove_event_listener(M, "visibilitychange", c)
+        visibilty_is_not_prerender = false
 
-        add_event_listener(M, "visibilitychange", c)
+        on_visible_callback = () ->
+            if not visibilty_is_not_prerender and call_func_when_no_pre_render(a)
+                visibilty_is_not_prerender = true
 
+                # When visible we don't need this anymore
+                remove_event_listener(document, "visibilitychange", on_visible_callback)
 
-ano()
+        add_event_listener(document, "visibilitychange", on_visible_callback)
 
 La = (used_string) ->
     return_char = 1
@@ -2529,3 +2531,9 @@ La = (used_string) ->
             char_position--
 
     return return_char
+
+###################################
+## THIS IS WHERE THE GAME STARTS ##
+###################################
+
+ano()
