@@ -157,7 +157,7 @@ empty_function = () ->
 
 K = (a) ->
     if is_function(a)
-        return aa(a)
+        return encodeURI(a)
 
     set_meta_data(28)
     return a
@@ -195,17 +195,14 @@ insert_script_element = (script_url, element_id) ->
 
         return
 
-# get_clean_host_name ?
-xa = () ->
+get_clean_host_name = () ->
     hostname = "" + document.location.hostname
-    ##
-#    if hostname.indexOf("www.") == 0
+
     if starts_with(hostname, 'www.')
         return hostname.substring(4)
     else
         return hostname
 
-# get_referrer
 get_referrer = (a) ->
     referrer = document.referrer
 
@@ -249,7 +246,7 @@ za = (a, b) ->
     return c
 
 
-class N
+class GaHashMap
     ########################
     ## PRIVATE PROPERTIES ##
     ########################
@@ -289,9 +286,9 @@ class N
         ###
         
         if @m.hasOwnProperty(":" + a)
-            @m[":" + a]
+            return @m[":" + a]
         else
-            @w[":" + a]
+            return @w[":" + a]
 
 
     map: (a) ->
@@ -676,7 +673,7 @@ Hc = (a) ->
             a.set(ga_exp_var, ga_data.expVar)
 
 # abort_on_preview ?
-cd = () ->
+abort_on_preview = () ->
     if window.navigator and window.navigator.loadPurpose is "preview"
         throw "abort"
 
@@ -754,7 +751,7 @@ class Ya
         ###
         ###
 
-        @data = new N
+        @data = new GaHashMap
 
     get: (a) ->
         ###
@@ -789,7 +786,7 @@ class Ya
     ## PRIVATE METHODS ##
     #####################
 
-Qa = new N
+Qa = new GaHashMap
 Za = []
 
 P = (a, b) ->
@@ -1229,24 +1226,24 @@ mc = (a) ->
                 set_meta_data(32)
                 c = []
 
-                e = xa().split(".")
+                splitted_host_name = get_clean_host_name().split(".")
 
-                l = e[e.length - 1]
-                if (4 == e.length and parseInt(l, 10) == l)
+                l = splitted_host_name[splitted_host_name.length - 1]
+                if (splitted_host_name.length == 4 and  l == parseInt(l, 10))
                     l = ["none"]
                     break
 
-                for l in e by -1
-                    c.push( e.slice(l).join(".") )
+                for l in splitted_host_name by -1
+                    c.push( splitted_host_name.slice(l).join(".") )
 
                 c.push("none")
                 l = c
 
-                for e in l
-                    a.data.set(ga_cookie_domain, e)
+                for splitted_host_name in l
+                    a.data.set(ga_cookie_domain, splitted_host_name)
                     c = nd(a)
 
-                    if zc(b, c, d, e, ca, g)
+                    if zc(b, c, d, splitted_host_name, ca, g)
                         hc = true
                         return
 
@@ -1259,7 +1256,7 @@ nc = (a) ->
 Yc = (a) ->
     if a.get(ga_legacy_history_import)
         b = P(a, ga_cookie_domain)
-        c = P(a, ga_legacy_cookie_domain) or xa()
+        c = P(a, ga_legacy_cookie_domain) or get_clean_host_name()
         d = Xc("__utma", c, b)
 
         if d
@@ -1593,15 +1590,14 @@ class Jd
     ## PUBLIC METHODS ##
     ####################
 
-    constructor: (a, b, c, d) ->
+    constructor: (a, b, url, d) ->
         ###
         ###
 
         @U = b
-        @aa = c
-        # b = d # TODO: check if this is needed
+        @aa = url
 
-        if b
+        if d
             b = P(a, ga_name)
             if b and b != 't0'
                 if Wd[s](b)
@@ -1647,7 +1643,7 @@ Qd = (a, b) ->
 
 Id = (a, b) ->
     if b.get(a.U)
-        c = new N
+        c = new GaHashMap
 
         d = (a) ->
             c.set($a(a).p, b.get(a))
@@ -1681,7 +1677,7 @@ fd = (a, b) ->
         if window._gaq
             set_meta_data(52)
 
-        b = b || {}
+        b = b or {}
 
         if b[ga_cookie_name]
             d = Cc( b[ga_cookie_name] )
@@ -1807,7 +1803,7 @@ class pc
         set_data(ga_name, a[ga_name])
         set_data(ga_tracking_id, sa(a[ga_tracking_id]))
         set_data(ga_cookie_name, a[ga_cookie_name])
-        set_data(ga_cookie_domain, a[ga_cookie_domain] or xa())
+        set_data(ga_cookie_domain, a[ga_cookie_domain] or get_clean_host_name())
         set_data(ga_cookie_path, a[ga_cookie_path])
         set_data(ga_cookie_expires, a[ga_cookie_expires])
         set_data(ga_legacy_cookie_domain, a[ga_legacy_cookie_domain])
@@ -1823,7 +1819,7 @@ class pc
         set_data(ga_client_version, "j31")
 
         c(ga_oot, Ma)
-        c(ga_preview_task, cd)
+        c(ga_preview_task, abort_on_preview)
         c(ga_check_protocol_task, check_protocol)
         c(ga_validation_task, vb)
         c(ga_check_storage_task, nc)
@@ -1937,7 +1933,7 @@ Jc = (a, b) ->
 
         if c
             c = P(a, ga_cookie_domain)
-            d = P(a, ga_legacy_cookie_domain) or xa()
+            d = P(a, ga_legacy_cookie_domain) or get_clean_host_name()
             c = Xc("__utma", d, c)
 
             if c is 0
@@ -2163,8 +2159,8 @@ sc = (main_function_arguments) ->
 ud = (a) ->
     return a.indexOf(".") >= 0  or a.indexOf(":") >= 0
 
-Yd = new N
-$d = new N
+Yd = new GaHashMap
+$d = new GaHashMap
 Zd =
     ec: 45,
     ecommerce: 46,
@@ -2182,7 +2178,7 @@ tc = (a, b, c) ->
     if not is_function(d)
         return false
 
-    b.plugins_ = b.plugins_ or new N
+    b.plugins_ = b.plugins_ or new GaHashMap
 
     if b.plugins_.get(a)
         return true
@@ -2449,6 +2445,7 @@ $.N = () ->
 
         while c < script_elements.length and c < 100
             d = script_elements[c].src
+
             if d
                 if d.indexOf("https://www.google-analytics.com/analytics") != 0
                     d = false
