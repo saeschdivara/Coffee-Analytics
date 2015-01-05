@@ -128,16 +128,13 @@ is_object = (variable) ->
 is_boolean = (variable) ->
     return typeof variable is "boolean"
 
-# is_array
 is_array = (a) ->
     return"[object Array]" == Object.prototype.toString.call(Object(a))
 
-# is_string ??
 is_string = (a) ->
     return 0 != a && -1 < (a.constructor + "").indexOf("String")
 
-# find ? starts_with ?
-D = (a, b) ->
+starts_with = (a, b) ->
     return a.indexOf(b) == 0
 
 sa = (a) ->
@@ -203,7 +200,7 @@ xa = () ->
     hostname = "" + document.location.hostname
     ##
 #    if hostname.indexOf("www.") == 0
-    if D(hostname, 'www.')
+    if starts_with(hostname, 'www.')
         return hostname.substring(4)
     else
         return hostname
@@ -419,7 +416,6 @@ Cc = (a) ->
 google_regex = /^(www\.)?google(\.com?)?(\.[a-z]{2})?$/
 double_click_regex = /(^|\.)doubleclick\.net$/i
 
-# get_analytics_address
 get_analytics_address = () ->
     if Ba or "https:" is document.location.protocol
         protocol = "https:"
@@ -456,7 +452,7 @@ Ga = (url_string, data, callback, d) ->
 
         else if (8192 >= data.length)
 
-            if (0 <= window.navigator.userAgent.indexOf("Firefox") and ![].reduce)
+            if (0 <= window.navigator.userAgent.indexOf("Firefox") and not [].reduce)
                 throw new Ea(data.length)
 
             send_plain_request(url_string, data, callback) or send_cross_domain_request(url_string, data, callback) or create_invisible_iframe(data, callback) or callback()
@@ -1085,7 +1081,7 @@ Ed = () ->
     else
         return 0
 
-fc = () ->
+find_flash_version = () ->
     navigator = window.navigator
 
     plugin_list = null
@@ -1307,7 +1303,7 @@ Gc = (a, b, c) ->
 # remove_point
 lc = (a) ->
 #    if 0 == a.indexOf(".")
-    if D(a, '.')
+    if starts_with(a, '.')
         return a.substr(1)
     else
         return a
@@ -1374,7 +1370,7 @@ Zc = (a, b) ->
     else
         c = La(a)
 
-        if La( D(a, ".") )
+        if La( starts_with(a, ".") )
             d = a.substring(1)
         else
             d = "." + a
@@ -1436,34 +1432,35 @@ class Dc
         @target = a
         @T = false
 
-    Q: (a, b) ->
+    Q: (element, b) ->
         ###
         ###
 
-        if a.tagName
-            if "a" == a.tagName.toLowerCase()
-                a.href && set_href_of_element(a, qd(this, a.href, b))
+        if element.tagName
+            if "a" == element.tagName.toLowerCase()
+                if element.href
+                    set_href_of_element(element, qd(@, element.href, b))
                 return
 
-            if "form" == a.tagName.toLowerCase()
-                return rd(this, a)
+            if "form" == element.tagName.toLowerCase()
+                return add_ga_hidden_input_to_form(@, element)
 
-        if "string" == typeof a
-            return qd(this, a, b)
+        if is_string(element)
+            return qd(@, element, b)
 
 
     S: (a, b, c) ->
         ###
         ###
 
-        d = (c) ->
+        event_callback = (event) ->
             try
-                c = c or window.event
-                element = c.target or c.srcElement
+                event = event or window.event
+                element = event.target or event.srcElement
 
                 d = null
-                c = 100
-                while element and c > 0
+                counter = 100
+                while element and counter > 0
 
                     if element.href && element.nodeName.match(/^a(?:rea)?$/i)
                         d = element
@@ -1471,7 +1468,7 @@ class Dc
 
                     element = element.parentNode
 
-                    c--
+                    counter--
                 d = {}
 
                 if d.protocol is "http:" or d.protocol is "https:"
@@ -1485,37 +1482,37 @@ class Dc
 
         if not @T
             @T = true
-            add_event_listener(M, "mousedown", d, false)
-            add_event_listener(M, "touchstart", d, false)
-            add_event_listener(M, "keyup", d, false)
+            add_event_listener(document, "mousedown", event_callback, false)
+            add_event_listener(document, "touchstart", event_callback, false)
+            add_event_listener(document, "keyup", event_callback, false)
 
         if c
-            c = (b) ->
-                b = b or window.event
-                b = b.target or b.srcElement
+            callback = (event) ->
+                event = event or window.event
+                event = event.target or event.srcElement
 
-                if b.action
-                    foo_c = b.action.match(od)
+                if event.action
+                    foo_c = event.action.match(od)
 
                     if foo_c
                         sd(a, foo_c[1])
-                        rd(e, b)
+                        add_ga_hidden_input_to_form(e, event)
 
             for form in document.forms
-                add_event_listener(form, "submit", c)
+                add_event_listener(form, "submit", callback)
 
     #####################
     ## PRIVATE METHODS ##
     #####################
 
 qd = (a, b, c) ->
-    d = pd.exec(b)
+    matches = pd.exec(b)
 
-    if d and 3 <= d.length
-        b = d[1]
+    if matches and 3 <= matches.length
+        b = matches[1]
 
-        if d[3]
-            b += d[2] + d[3]
+        if matches[3]
+            b += matches[2] + matches[3]
         else
             b += ""
 
@@ -1541,7 +1538,7 @@ qd = (a, b, c) ->
 
     return b
 
-rd = (a, form) ->
+add_ga_hidden_input_to_form = (a, form) ->
     if form and form.action
         linker_param_value = a.target.get("linkerParam").split("=")[1]
 
@@ -2066,7 +2063,7 @@ Kc = (a) ->
         document_element = ca.join("x")
 
     a.set(ga_viewport_size, c)
-    a.set( ga_flash_version, fc() )
+    a.set( ga_flash_version, find_flash_version() )
     a.set(ga_encoding, document.characterSet or document.charset)
     a.set(ga_java_enabled, navigator and "function" is typeof navigator.javaEnabled and navigator.javaEnabled() or false)
     a.set( ga_language, (b and (b.language or navigator.browserLanguage) or "").toLowerCase() )
@@ -2078,15 +2075,15 @@ Kc = (a) ->
 
         for term_to_check in location_hash
 
-            if  D(term_to_check, "utm_id") or
-                D(term_to_check, "utm_campaign") or
-                D(term_to_check, "utm_source") or
-                D(term_to_check, "utm_medium") or
-                D(term_to_check, "utm_term") or
-                D(term_to_check, "utm_content") or
-                D(term_to_check, "gclid") or
-                D(term_to_check, "dclid") or
-                D(term_to_check, "gclsrc")
+            if  starts_with(term_to_check, "utm_id") or
+                starts_with(term_to_check, "utm_campaign") or
+                starts_with(term_to_check, "utm_source") or
+                starts_with(term_to_check, "utm_medium") or
+                starts_with(term_to_check, "utm_term") or
+                starts_with(term_to_check, "utm_content") or
+                starts_with(term_to_check, "gclid") or
+                starts_with(term_to_check, "dclid") or
+                starts_with(term_to_check, "gclsrc")
 
                     d.push(term_to_check)
 
@@ -2205,7 +2202,7 @@ ae = (a) ->
 
         a = a.pathname or ""
 
-        if D(a, "/")
+        if starts_with(a, "/")
             a = "/" + a
 
         return [b, "" + c, a]
@@ -2225,18 +2222,18 @@ ae = (a) ->
 
     ca = d + "//" + e[0] + additional_bundle
 
-    if D(a, "//")
+    if starts_with(a, "//")
         a = d + a
 
     else
-        if D(a, "/")
+        if starts_with(a, "/")
             a = ca + a
         else
-            if not a or D(a, "?")
+            if not a or starts_with(a, "?")
                 a = ca + e[2] + (a or link_search_string)
             else
                 if 0 > a.split("/")[0].indexOf(":")
-                    (a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a)
+                    a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a
 
     set_href_of_element(link_element, a)
     d = b_func(link_element)
@@ -2328,7 +2325,7 @@ Z.J = (a) ->
                                     else
                                         http_port = 443
 
-                                    if "www.google-analytics.com" is e.host and (e.port or http_port) == http_port and D(e.path, "/plugins/")
+                                    if "www.google-analytics.com" is e.host and (e.port or http_port) == http_port and starts_with(e.path, "/plugins/")
                                         Xd = true
                                     else
                                         Xd = false
