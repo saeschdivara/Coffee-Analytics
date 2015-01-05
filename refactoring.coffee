@@ -615,11 +615,11 @@ class Ha
     #####################
 
 Ja = (a) ->
-    if a.get(ga_sample_rate) != 100 and La( P(a, ga_client_id) ) % 10000 >= 100 * R(a, ga_sample_rate)
+    if a.get(ga_sample_rate) != 100 and La( get_string_value(a, ga_client_id) ) % 10000 >= 100 * R(a, ga_sample_rate)
         throw "abort"
 
 Ma = (a) ->
-    if Aa( P(a, ga_tracking_id) )
+    if Aa( get_string_value(a, ga_tracking_id) )
         throw "abort"
 
 check_protocol = () ->
@@ -657,8 +657,15 @@ Pa = (a) ->
     a.set(ga_hit_payload, c.join("&"), true)
 
 Sa = (a) ->
-    b = P(a, ga_transport_url) or get_analytics_address() + "/collect"
-    Ga(b, P(a, ga_hit_payload), a.get(ga_hit_callback), a.get(ga_use_beacon))
+    transport_url = get_string_value(a, ga_transport_url) or get_analytics_address() + "/collect"
+
+    Ga(
+        transport_url,
+        get_string_value(a, ga_hit_payload),
+        a.get(ga_hit_callback),
+        a.get(ga_use_beacon)
+    )
+
     a.set(ga_hit_callback, empty_function, true)
 
 Hc = (a) ->
@@ -707,7 +714,7 @@ Ta = (a) ->
     if 500 <= b
         set_meta_data(15)
 
-    c = P(a, ga_hit_type)
+    c = get_string_value(a, ga_hit_type)
 
     if c != "transaction" and c != "item"
         c = R(a, ga_ti)
@@ -789,13 +796,13 @@ class Ya
 Qa = new GaHashMap
 Za = []
 
-P = (a, b) ->
-    c = a.get(b)
+get_string_value = (store, attribute_name) ->
+    value = store.get(attribute_name)
 
-    if 0 == c
+    if value == 0
         return ""
     else
-        return "" + c
+        return "" + value
 
 R = (a, b) ->
     c = a.get(b)
@@ -1127,7 +1134,7 @@ find_flash_version = () ->
 gc = (a, b) ->
     c = Math.min( R(a, ga_site_speed_sample_rate), 100 )
 
-    if not(La(P(a, ga_client_id)) % 100 >= c)
+    if not(La(get_string_value(a, ga_client_id)) % 100 >= c)
         c = {}
         Ec(c) or Fc(c)
         d = c[ga_l1]
@@ -1209,14 +1216,14 @@ Fd = (a) ->
 
 hc = false
 mc = (a) ->
-    if P(a, ga_storage) is "cookie"
+    if get_string_value(a, ga_storage) is "cookie"
 
-        b = P(a, ga_cookie_name)
+        b = get_string_value(a, ga_cookie_name)
         c = nd(a)
-        d = kc(P(a, ga_cookie_path))
-        e = lc(P(a, ga_cookie_domain))
+        d = kc(get_string_value(a, ga_cookie_path))
+        e = lc(get_string_value(a, ga_cookie_domain))
         g = 1000 * R(a, ga_cookie_expires)
-        ca = P(a, ga_tracking_id)
+        ca = get_string_value(a, ga_tracking_id)
 
         if e != "auto"
             if zc(b, c, d, e, ca, g)
@@ -1250,13 +1257,13 @@ mc = (a) ->
                 a.data.set(ga_cookie_domain, "auto")
 
 nc = (a) ->
-    if P(a, ga_storage) == "cookie" and not hc and mc(a)
+    if get_string_value(a, ga_storage) == "cookie" and not hc and mc(a)
         throw "abort"
 
 Yc = (a) ->
     if a.get(ga_legacy_history_import)
-        b = P(a, ga_cookie_domain)
-        c = P(a, ga_legacy_cookie_domain) or get_clean_host_name()
+        b = get_string_value(a, ga_cookie_domain)
+        c = get_string_value(a, ga_legacy_cookie_domain) or get_clean_host_name()
         d = Xc("__utma", c, b)
 
         if d
@@ -1269,9 +1276,9 @@ Yc = (a) ->
                 a.set(ga_ut_mz, b.R)
 
 nd = (a) ->
-    b = Cc(P(a, ga_client_id))
-    c = ic(P(a, ga_cookie_domain))
-    a = jc(P(a, ga_cookie_path))
+    b = Cc(get_string_value(a, ga_client_id))
+    c = ic(get_string_value(a, ga_cookie_domain))
+    a = jc(get_string_value(a, ga_cookie_path))
 
     if 1 < a
         c += "-" + a
@@ -1598,10 +1605,10 @@ class Jd
         @aa = url
 
         if d
-            b = P(a, ga_name)
+            b = get_string_value(a, ga_name)
             if b and b != 't0'
                 if Wd[s](b)
-                    b = "_gat_" + Cc( P(a, ga_tracking_id) )
+                    b = "_gat_" + Cc( get_string_value(a, ga_tracking_id) )
                 else
                     b = "_gat_" + Cc(b)
             else
@@ -1878,13 +1885,13 @@ class pc
 
 
 Jc = (a, b) ->
-    if P(a, ga_storage) is "cookie"
+    if get_string_value(a, ga_storage) is "cookie"
         hc = false
 
         c = null
 
         for foo_noop in [0]
-            d = Ca( P(a, ga_cookie_name) )
+            d = Ca( get_string_value(a, ga_cookie_name) )
             if d and not(1 > d.length)
                 c = []
 
@@ -1917,13 +1924,13 @@ Jc = (a, b) ->
                     set_meta_data(12)
                 else
                     set_meta_data(14)
-                    d = ic(P(a, ga_cookie_domain))
+                    d = ic(get_string_value(a, ga_cookie_domain))
                     c = Gc(c, d, 0)
                     if 1 == c.length
                         c = c[0].s
                         break
 
-                    d = jc( P(a, ga_cookie_path) )
+                    d = jc( get_string_value(a, ga_cookie_path) )
                     c = Gc(c, d, 1)
                     c = c[0] and c[0].s
                     break
@@ -1932,8 +1939,8 @@ Jc = (a, b) ->
 
 
         if c
-            c = P(a, ga_cookie_domain)
-            d = P(a, ga_legacy_cookie_domain) or get_clean_host_name()
+            c = get_string_value(a, ga_cookie_domain)
+            d = get_string_value(a, ga_legacy_cookie_domain) or get_clean_host_name()
             c = Xc("__utma", d, c)
 
             if c is 0
@@ -2028,11 +2035,15 @@ Kc = (a) ->
     if document_location
         path_name = document_location.pathname or ""
 
-        if "/" != e.charAt(0)
+        # Check if we need to start the path with a slash
+        if path_name.charAt(0) != "/"
             set_meta_data(31)
             path_name = "/" + path_name
 
-        a.set(ga_location, document_location.protocol + "//" + document_location.hostname + path_name + document_location.search)
+        protocol = document_location.protocol
+        hostname = document_location.hostname
+        search_part = document_location.search
+        a.set(ga_location, "#{protocol}//#{hostname}#{path_name}#{search_part}")
 
     if screen
         a.set(ga_screen_resolution, screen.width + "x" + screen.height)
@@ -2041,8 +2052,8 @@ Kc = (a) ->
         a.set(ga_screen_colors, screen.colorDepth + "-bit")
 
     document_element = document.documentElement
-    e = document.body
-    g = e and e.clientWidth and e.clientHeight
+    document_body = document.body
+    g = document_body and document_body.clientWidth and document_body.clientHeight
     ca = []
 
     if document_element and document_element.clientWidth and document_element.clientHeight
@@ -2051,41 +2062,45 @@ Kc = (a) ->
             ca = [document_element.clientWidth, document_element.clientHeight]
         else
             if g
-                ca = [e.clientWidth, e.clientHeight]
+                ca = [document_body.clientWidth, document_body.clientHeight]
 
     if 0 >= ca[0] or 0 >= ca[1]
-        document_element = ''
+        screen_resolution = ''
     else
-        document_element = ca.join("x")
+        screen_resolution = ca.join("x")
 
-    a.set(ga_viewport_size, c)
+    browser_language = (navigator and (navigator.language or navigator.browserLanguage) or "").toLowerCase()
+    java_enabled = (navigator and is_function(navigator.javaEnabled) and navigator.javaEnabled() or false)
+    document_char_set = document.characterSet or document.charset
+
+    a.set(ga_viewport_size, screen_resolution)
     a.set( ga_flash_version, find_flash_version() )
-    a.set(ga_encoding, document.characterSet or document.charset)
-    a.set(ga_java_enabled, navigator and "function" is typeof navigator.javaEnabled and navigator.javaEnabled() or false)
-    a.set( ga_language, (b and (b.language or navigator.browserLanguage) or "").toLowerCase() )
+    a.set(ga_encoding, document_char_set)
+    a.set(ga_java_enabled, java_enabled)
+    a.set( ga_language, browser_language )
 
     location_hash = document.location.hash
     if document_location and a.get(ga_allow_anchor) and location_hash
-        location_hash = location_hash.split(/[?&#]+/)
-        d = []
+        splitted_location_hash = location_hash.split(/[?&#]+/)
+        location_part_list = []
 
-        for term_to_check in location_hash
+        for location_part in splitted_location_hash
 
-            if  starts_with(term_to_check, "utm_id") or
-                starts_with(term_to_check, "utm_campaign") or
-                starts_with(term_to_check, "utm_source") or
-                starts_with(term_to_check, "utm_medium") or
-                starts_with(term_to_check, "utm_term") or
-                starts_with(term_to_check, "utm_content") or
-                starts_with(term_to_check, "gclid") or
-                starts_with(term_to_check, "dclid") or
-                starts_with(term_to_check, "gclsrc")
+            if  starts_with(location_part, "utm_id") or
+                starts_with(location_part, "utm_campaign") or
+                starts_with(location_part, "utm_source") or
+                starts_with(location_part, "utm_medium") or
+                starts_with(location_part, "utm_term") or
+                starts_with(location_part, "utm_content") or
+                starts_with(location_part, "gclid") or
+                starts_with(location_part, "dclid") or
+                starts_with(location_part, "gclsrc")
 
-                    d.push(term_to_check)
+                    location_part_list.push(location_part)
 
 
-        if 0 < d.length
-            location_hash = "#" + d.join("&")
+        if 0 < location_part_list.length
+            location_hash = "#" + location_part_list.join("&")
             a.set(ga_location, a.get(ga_location) + location_hash)
 
 qc =
@@ -2188,58 +2203,62 @@ tc = (a, b, c) ->
 
     return true
 
-ae = (a) ->
-    b_func = (a) ->
-        b = (a.hostname or "").split(":")[0].toLowerCase()
+get_url_information = (a) ->
+    url_to_array_by_link_element = (link_element) ->
+        hostname = (link_element.hostname or "").split(":")[0].toLowerCase()
 
-        c = (a.protocol or "").toLowerCase()
+        protocol = (link_element.protocol or "").toLowerCase()
 
-        c = a.port or ("http:" == c ? 80 : "https:" == c ? 443 : "")
+        port = link_element.port or ("http:" == protocol ? 80 : "https:" == protocol ? 443 : "")
 
-        a = a.pathname or ""
+        path = link_element.pathname or ""
 
-        if starts_with(a, "/")
-            a = "/" + a
+        if starts_with(path, "/")
+            path = "/" + path
 
-        return [b, "" + c, a]
+        return [hostname, "" + port, path]
 
     link_element = document.createElement("a")
     set_href_of_element(link_element, document.location.href)
 
     protocol = (link_element.protocol or "").toLowerCase()
-    d = protocol
-    e = b_func(link_element)
+    e = url_to_array_by_link_element(link_element)
     link_search_string = link_element.search or ""
 
-    if e[1]
-        additional_bundle = ":" + e[1]
+    host = e[0]
+    port = e[1]
+    path = e[2]
+
+    if port
+        additional_bundle = ":" + port
     else
         additional_bundle = ''
 
-    ca = d + "//" + e[0] + additional_bundle
+    ca = protocol + "//" + host + additional_bundle
 
     if starts_with(a, "//")
-        a = d + a
+        a = protocol + a
 
     else
         if starts_with(a, "/")
             a = ca + a
         else
             if not a or starts_with(a, "?")
-                a = ca + e[2] + (a or link_search_string)
+                a = ca + path + (a or link_search_string)
             else
                 if 0 > a.split("/")[0].indexOf(":")
-                    a = ca + e[2][F](0, e[2].lastIndexOf("/")) + "/" + a
+                    a = ca + path.substring(0, path.lastIndexOf("/")) + "/" + a
 
     set_href_of_element(link_element, a)
-    d = b_func(link_element)
+
+    d = url_to_array_by_link_element(link_element)
 
     return {
         protocol: protocol,
         host: d[0],
         port: d[1],
         path: d[2],
-        G: link_element[ga] or "",
+        G: link_element.search or "",
         url: a or ""
     }
 
@@ -2292,7 +2311,7 @@ Z.J = (a) ->
                                 protocol = (Ba or "https:" == document.location.protocol ? "https:" : "http:")
                                 ca = "#{protocol}//www.google-analytics.com/plugins/ua/#{ca}"
 
-                            l = ae(ca)
+                            l = get_url_information(ca)
                             e = 0
                             protocol_from_l = l.protocol
                             document_location_protocol = document.location.protocol
@@ -2309,7 +2328,7 @@ Z.J = (a) ->
 
                             if Xd
                                 e = l
-                                be = ae(document.location.href)
+                                be = get_url_information(document.location.href)
 
                                 if e.G or 0 <= e.url.indexOf("?") or 0 <= e.path.indexOf("://")
                                     Xd = false
