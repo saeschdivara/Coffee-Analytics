@@ -1003,11 +1003,11 @@
     }};
     Z.ga();
     Z.ga_main_func = function (a) {
-        var b = Z.J[G](Z, arguments), b = Z.f.concat(b);
+        var b = Z.analyse_main_arguments[G](Z, arguments), b = Z.f.concat(b);
         for (Z.f = []; 0 < b[y] && !Z.v(b[0]) && !(b.shift(), 0 < Z.f[y]););
         Z.f = Z.f.concat(b)
     };
-    Z.J = function (a) {
+    Z.analyse_main_arguments = function (a) {
         for (var b = [], c = 0; c < arguments[y]; c++)try {
             var d = new sc(arguments[c]);
             if (d.g)Yd.set(d.a[0], d.a[1]); else {

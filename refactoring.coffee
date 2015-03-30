@@ -155,6 +155,7 @@ create_spy_image = (image_url) ->
 # empty_function
 empty_function = () ->
 
+# get_clean_uri_data ?
 K = (a) ->
     if is_function(a)
         return encodeURI(a)
@@ -1035,21 +1036,21 @@ ga_always_send_referrer = T("alwaysSendReferrer", 0, false)
 ga_transport_url = S("transportUrl")
 ga_r = S("_r", "_r")
 
-add_function_to_object = (a, b, c, d) ->
-    b[a] = () ->
+add_function_to_object = (function_name, storing_object, function_to_be_called, meta_data_number) ->
+    storing_object[function_name] = () ->
         try
-            if d
-                set_meta_data(d)
+            if meta_data_number
+                set_meta_data(meta_data_number)
 
-            return c.apply(@, arguments)
+            return function_to_be_called.apply(@, arguments)
             
-        catch b
-            g = b and b.name
+        catch exception_obj
+            g = exception_obj and exception_obj.name
             if not(1 <= 100 * Math.random() or Aa("?"))
                 ca = ["t=error", "_e=exc", "_v=j31", "sr=1"]
 
-                if a
-                    ca.push("_f=" + a)
+                if function_name
+                    ca.push("_f=" + function_name)
 
                 if g
                     ca.push("_m=" + K(g.substring(0, 100)))
@@ -1058,7 +1059,7 @@ add_function_to_object = (a, b, c, d) ->
                 ca.push("z=" + hd())
                 Ga(get_analytics_address() + "/collect", ca.join("&"))
 
-            throw b
+            throw exception_obj
 
 Od = () ->
     @V = 10000
@@ -1677,7 +1678,7 @@ Id = (a, b) ->
 
 Wd = /^gtm\d+$/
 
-fd = (a, b) ->
+displayfeatures_func = (a, b) ->
     c = a.b
     if not(c.get("dcLoaded"))
         set_meta_data(29)
@@ -1718,7 +1719,7 @@ Sd = (a) ->
             a.set(ga_transport_url, get_analytics_address() + "/r/collect", true)
 
 
-Kd = (a, b) ->
+adfeatures_func = (a, b) ->
     c = a.b
     if not c.get("_rlsaLoaded")
         set_meta_data(38)
@@ -2184,7 +2185,7 @@ Zd =
 
 tc = (a, b, c) ->
     
-    if b is $
+    if b is GoogleAnalyticsObjectClass
         set_meta_data(35)
     else
         b.get(ga_name)
@@ -2272,14 +2273,14 @@ Z.ga()
 
 Z.ga_main_func = (a) ->
     # #2
-    b = Z.J.apply(Z, arguments)
+    b = Z.analyse_main_arguments.apply(Z, arguments)
     b = Z.f.concat(b)
     Z.f = []
 
     while 0 < b.length and not Z.v(b[0]) and not(b.shift() or 0 < Z.f.length)
         Z.f = Z.f.concat(b)
 
-Z.J = (a) ->
+Z.analyse_main_arguments = (a) ->
     # #3
     b = []
     for arg in arguments
@@ -2359,19 +2360,19 @@ Z.J = (a) ->
 Z.v = (a) ->
     try
         if (a.u)
-            a.u.call(window, $.getByName("t0"))
+            a.u.call(window, GoogleAnalyticsObjectClass.getByName("t0"))
         else
             if gb is a.c
-                b = $
+                b = GoogleAnalyticsObjectClass
             else
-                b = $.getByName(a.c)
+                b = GoogleAnalyticsObjectClass.getByName(a.c)
 
             if a.A
                 if a.c is 't0'
-                    $.create.apply($, a.a)
+                    GoogleAnalyticsObjectClass.create.apply(GoogleAnalyticsObjectClass, a.a)
 
             else if a.ba
-                $.remove(a.c)
+                GoogleAnalyticsObjectClass.remove(a.c)
 
             else if b
                 if a.i
@@ -2385,21 +2386,22 @@ Z.v = (a) ->
             else
                 b[a.d].apply(b, a.a)
     catch g
+        console.log(g)
 
 # #1
 # Main function / class (not using argument a)
-$ = (a) ->
+GoogleAnalyticsObjectClass = (a) ->
     set_meta_data(1)
     Z.ga_main_func.apply(Z, [arguments])
 
-$.h = {}
-$.P = []
-$.L = 0
-$.answer = 42
+GoogleAnalyticsObjectClass.h = {}
+GoogleAnalyticsObjectClass.P = []
+GoogleAnalyticsObjectClass.L = 0
+GoogleAnalyticsObjectClass.answer = 42
 
 uc = [ga_tracking_id, ga_cookie_domain, ga_name]
 
-$.create = (a) ->
+GoogleAnalyticsObjectClass.create = (a) ->
     b = za(uc, [].slice.call(arguments))
 
     if b[ga_name]
@@ -2407,31 +2409,31 @@ $.create = (a) ->
 
     c = "" + b[ga_name]
 
-    if $.h[c]
-        return $.h[c]
+    if GoogleAnalyticsObjectClass.h[c]
+        return GoogleAnalyticsObjectClass.h[c]
 
     b = new pc(b)
-    $.h[c] = b
-    $.P[p](b)
+    GoogleAnalyticsObjectClass.h[c] = b
+    GoogleAnalyticsObjectClass.P[p](b)
 
     return b
 
-$.remove = (a) ->
-    for val in $.P
+GoogleAnalyticsObjectClass.remove = (a) ->
+    for val in GoogleAnalyticsObjectClass.P
 
         if val.get(ga_name) is a
-            $.P.splice(b, 1)
-            $.h[a] = null
+            GoogleAnalyticsObjectClass.P.splice(b, 1)
+            GoogleAnalyticsObjectClass.h[a] = null
 
             break
 
-$.getByName = (a) ->
-    return $.h[a]
+GoogleAnalyticsObjectClass.getByName = (a) ->
+    return GoogleAnalyticsObjectClass.h[a]
 
-$.getAll = () ->
-    return $.P.slice(0)
+GoogleAnalyticsObjectClass.getAll = () ->
+    return GoogleAnalyticsObjectClass.P.slice(0)
 
-$.on_visible = () ->
+GoogleAnalyticsObjectClass.on_visible = () ->
 
     if "ga" != gb
         set_meta_data(49)
@@ -2439,9 +2441,9 @@ $.on_visible = () ->
     ga_object = window[gb]
 
     if not ga_object or ga_object.answer != 42
-        $.L = ga_object and ga_object.l
-        $.loaded = true
-        b = window[gb] = $
+        GoogleAnalyticsObjectClass.L = ga_object and ga_object.l
+        GoogleAnalyticsObjectClass.loaded = true
+        b = window[gb] = GoogleAnalyticsObjectClass
 
         # Set functions on b?
         add_function_to_object("create", b, b.create, 3)
@@ -2461,23 +2463,24 @@ $.on_visible = () ->
         add_function_to_object("set", b, b.set)
 
         script_elements = document.getElementsByTagName("script")
-        c = 0
+        counter = 0
 
-        while c < script_elements.length and c < 100
-            d = script_elements[c].src
+        while counter < script_elements.length and counter < 100
+            script_src = script_elements[counter].src
 
-            if d
-                if not starts_with(d, "https://www.google-analytics.com/analytics")
-                    d = false
+            if script_src
+                if not starts_with(script_src, "https://www.google-analytics.com/analytics")
+                    boolean_flag = false
                 else
-                    d = true
+                    boolean_flag = true
             else
-                d = false
+                boolean_flag = false
 
-            if d
+            # Check if if there is a analytics script in the whole dom
+            if boolean_flag
                 set_meta_data(33)
 
-            c++
+            counter++
 
         if document.location.protocol != "https:" and not(Ba) and Ed()
             set_meta_data(36)
@@ -2490,18 +2493,19 @@ $.on_visible = () ->
         Yd.set("linker", GaPluginLinker)
         add_function_to_object("decorate", b, b.decorate, 20)
         add_function_to_object("autoLink", b, b.autoLink, 25)
-        Yd.set("displayfeatures", fd)
-        Yd.set("adfeatures", Kd)
+        Yd.set("displayfeatures", displayfeatures_func)
+        Yd.set("adfeatures", adfeatures_func)
 
-        ga_object = ga_object and ga_object.q
+        console.log(ga_object)
+        main_args = ga_object and ga_object.q
 
-        if is_array(ga_object)
-            Z.ga_main_func.apply($, ga_object)
+        if is_array(main_args)
+            Z.ga_main_func.apply(GoogleAnalyticsObjectClass, main_args)
         else
             set_meta_data(50)
 
-$.k = () ->
-    a = $.getAll()
+GoogleAnalyticsObjectClass.k = () ->
+    a = GoogleAnalyticsObjectClass.getAll()
 
     for val in a
         val.get(ga_name)
@@ -2509,13 +2513,13 @@ $.k = () ->
 on_start_up = () ->
     # Call in this script
     # Check if visibilty is prerender
-    if not call_func_when_no_pre_render($.on_visible)
+    if not call_func_when_no_pre_render(GoogleAnalyticsObjectClass.on_visible)
         set_meta_data(16)
 
         visibilty_is_not_prerender = false
 
         on_visible_callback = () ->
-            if not visibilty_is_not_prerender and call_func_when_no_pre_render($.on_visible)
+            if not visibilty_is_not_prerender and call_func_when_no_pre_render(GoogleAnalyticsObjectClass.on_visible)
                 visibilty_is_not_prerender = true
 
                 # When visible we don't need this anymore
