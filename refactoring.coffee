@@ -2128,7 +2128,7 @@ sc = (main_function_arguments) ->
     else
         search_results = td.exec( main_function_arguments[0] )
 
-        if search_results != null or 4 is search_results.length
+        if search_results != null or search_results.length is 4
             @c = search_results[1] or "t0"
             @e = search_results[2] or ""
             @d = search_results[3]
@@ -2136,7 +2136,8 @@ sc = (main_function_arguments) ->
             # action arguments
             @a = [].slice.call(main_function_arguments, 1)
 
-            if @e
+            # Empty string brings false
+            if not @e
                 @A  = @d is "create"
                 @i  = @d is "require"
                 @g  = @d is "provide"
@@ -2379,14 +2380,12 @@ Z.v = (a) ->
                     if not tc(a.a[0], b, a.W)
                         return true
             else if a.e
-                c = a.d
                 d = a.a
                 e = b.plugins_.get(a.e)
-                e[c].apply(e, d)
+                e[a.d].apply(e, d)
             else
                 b[a.d].apply(b, a.a)
     catch g
-        console.log(g)
 
 # #1
 # Main function / class (not using argument a)

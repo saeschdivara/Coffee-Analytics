@@ -2299,12 +2299,12 @@
       return this.u = main_function_arguments[0];
     } else {
       search_results = td.exec(main_function_arguments[0]);
-      if (search_results !== null || 4 === search_results.length) {
+      if (search_results !== null || search_results.length === 4) {
         this.c = search_results[1] || "t0";
         this.e = search_results[2] || "";
         this.d = search_results[3];
         this.a = [].slice.call(main_function_arguments, 1);
-        if (this.e) {
+        if (!this.e) {
           this.A = this.d === "create";
           this.i = this.d === "require";
           this.g = this.d === "provide";
@@ -2539,7 +2539,7 @@
   };
 
   Z.v = function(a) {
-    var b, c, d, e, g;
+    var b, d, e, g;
     try {
       if (a.u) {
         return a.u.call(window, GoogleAnalyticsObjectClass.getByName("t0"));
@@ -2562,17 +2562,15 @@
             }
           }
         } else if (a.e) {
-          c = a.d;
           d = a.a;
           e = b.plugins_.get(a.e);
-          return e[c].apply(e, d);
+          return e[a.d].apply(e, d);
         } else {
           return b[a.d].apply(b, a.a);
         }
       }
     } catch (_error) {
       g = _error;
-      return console.log(g);
     }
   };
 
