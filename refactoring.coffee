@@ -105,7 +105,7 @@ class FOO
         counter = -1
         while counter < b.length
             counter++
-            b[counter] = all_allowed_characters.charAt(b[counter] || 0)
+            b[counter] = all_allowed_characters.charAt(b[counter] or 0)
 
         return b.join("") + "~"
 
@@ -663,7 +663,7 @@ Pa = (a) ->
     c.push("z=" + Bd())
     a.set(ga_hit_payload, c.join("&"), true)
 
-Sa = (a) ->
+send_hit_data = (a) ->
     transport_url = get_string_value(a, ga_transport_url) or get_analytics_address() + "/collect"
 
     Ga(
@@ -1851,7 +1851,7 @@ class ClientDataStruct
         add_filter_and_set_data(ga_dev_id_task, yd)
         add_filter_and_set_data(ga_display_features_task, Sd)
         add_filter_and_set_data(ga_build_hit_task, Pa)
-        add_filter_and_set_data(ga_send_hit_task, Sa)
+        add_filter_and_set_data(ga_send_hit_task, send_hit_data)
         add_filter_and_set_data( ga_timing_task, Fd(@) )
 
         Jc(@b, a[ga_client_id])
@@ -2293,7 +2293,13 @@ Z.ga_main_func = (a) ->
     b = Z.f.concat(b)
     Z.f = []
 
-    while 0 < b.length and not Z.v(b[0]) and not(b.shift() or 0 < Z.f.length)
+    while 0 < b.length
+        res = Z.v(b[0])
+        if not res
+            break
+        if not ( b.shift() or 0 < Z.f.length )
+            break
+
         Z.f = Z.f.concat(b)
 
 Z.analyse_main_arguments = (a) ->
@@ -2420,7 +2426,7 @@ uc = [ga_tracking_id, ga_cookie_domain, ga_name]
 GoogleAnalyticsObjectClass.create = (a) ->
     b = za(uc, [].slice.call(arguments))
 
-    if b[ga_name]
+    if not b[ga_name]
         b[ga_name] = "t0"
 
     c = "" + b[ga_name]
