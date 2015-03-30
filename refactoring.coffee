@@ -171,6 +171,7 @@ add_event_listener = (a, b, c, d) ->
         else
             a.attachEvent && a.attachEvent("on" + b, c)
     catch e
+        console.log(e)
         set_meta_data(27)
 
 # remove_event_listener
@@ -341,6 +342,7 @@ Aa = (a) ->
         if window_external and window_external._gaUserPrefs and "oo" is window_external._gaUserPrefs
             return true
     catch d
+        console.log(d)
 
     return false
 
@@ -524,6 +526,7 @@ create_invisible_iframe = (a, b) ->
     try
         iframe_element = document.createElement('<iframe name="' + a + '"></iframe>')
     catch d
+        console.log(d)
         iframe_element = document.createElement("iframe")
         set_name_on_object(iframe_element, a)
 
@@ -555,6 +558,7 @@ create_invisible_iframe = (a, b) ->
                     return
 
             catch a
+                console.log(a)
             l++
             setTimeout(k, 200)
 
@@ -604,6 +608,7 @@ class Ha
                     is_function(c)
                     c.call(window, a)
         catch d
+            console.log(d)
 
         hit_callback = a.get(ga_hit_callback)
 
@@ -639,6 +644,7 @@ Pa = (a) ->
                 if window.navigator.sendBeacon
                     set_meta_data(42)
     catch b
+        console.log(b)
 
     a.set(Ac, R(a, Ac) + 1)
     c = []
@@ -707,6 +713,7 @@ Bd = () ->
 
         return a[0] & 2147483647
     catch b
+        console.log(b)
         return hd()
 
 Ta = (a) ->
@@ -1045,6 +1052,7 @@ add_function_to_object = (function_name, storing_object, function_to_be_called, 
             return function_to_be_called.apply(@, arguments)
             
         catch exception_obj
+            console.log(exception_obj)
             g = exception_obj and exception_obj.name
             if not(1 <= 100 * Math.random() or Aa("?"))
                 ca = ["t=error", "_e=exc", "_v=j31", "sr=1"]
@@ -1110,6 +1118,7 @@ find_flash_version = () ->
             a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7")
             b = a.GetVariable("$version")
         catch g
+            console.log(g)
 
     if not(flash_plugin)
         try
@@ -1118,12 +1127,14 @@ find_flash_version = () ->
             a.AllowScriptAccess = "always"
             b = a.GetVariable("$version")
         catch ca
+            console.log(ca)
 
     if not(flash_plugin)
         try
             a = new ActiveXObject("ShockwaveFlash.ShockwaveFlash")
             b = a.GetVariable("$version")
         catch l
+            console.log(l)
 
     if flash_plugin
         a = flash_plugin.match(/[\d]+/g)
@@ -1481,6 +1492,7 @@ class GaPluginLinker
                         set_href_of_element( d, qd(e, d.href, b) )
 
             catch w
+                console.log(w)
                 set_meta_data(26)
 
         e = @
@@ -1779,7 +1791,7 @@ bd = (a, b, c) ->
 google_account_type_regex = /^(UA|YT|MO|GP)-(\d+)-(\d+)$/
 
 
-class pc
+class ClientDataStruct
     ########################
     ## PRIVATE PROPERTIES ##
     ########################
@@ -1801,14 +1813,14 @@ class pc
         set_data = (name, data) =>
             @b.data.set(name, data)
 
-        c = (name, data) =>
+        add_filter_and_set_data = (name, data) =>
             set_data(name, data)
             @filters.add(name)
 
-        d = @
         @b = new Ya
         @filters = new Ha
 
+        # Set data
         set_data(ga_name, a[ga_name])
         set_data(ga_tracking_id, sa(a[ga_tracking_id]))
         set_data(ga_cookie_name, a[ga_cookie_name])
@@ -1827,24 +1839,26 @@ class pc
         set_data(ga_api_version, 1)
         set_data(ga_client_version, "j31")
 
-        c(ga_oot, Ma)
-        c(ga_preview_task, abort_on_preview)
-        c(ga_check_protocol_task, check_protocol)
-        c(ga_validation_task, vb)
-        c(ga_check_storage_task, nc)
-        c(ga_history_import_task, Yc)
-        c(ga_sampler_task, Ja)
-        c(ga_rlt, Ta)
-        c(ga_ce_task, Hc)
-        c(ga_dev_id_task, yd)
-        c(ga_display_features_task, Sd)
-        c(ga_build_hit_task, Pa)
-        c(ga_send_hit_task, Sa)
-        c( ga_timing_task, Fd(@) )
+        add_filter_and_set_data(ga_oot, Ma)
+        add_filter_and_set_data(ga_preview_task, abort_on_preview)
+        add_filter_and_set_data(ga_check_protocol_task, check_protocol)
+        add_filter_and_set_data(ga_validation_task, vb)
+        add_filter_and_set_data(ga_check_storage_task, nc)
+        add_filter_and_set_data(ga_history_import_task, Yc)
+        add_filter_and_set_data(ga_sampler_task, Ja)
+        add_filter_and_set_data(ga_rlt, Ta)
+        add_filter_and_set_data(ga_ce_task, Hc)
+        add_filter_and_set_data(ga_dev_id_task, yd)
+        add_filter_and_set_data(ga_display_features_task, Sd)
+        add_filter_and_set_data(ga_build_hit_task, Pa)
+        add_filter_and_set_data(ga_send_hit_task, Sa)
+        add_filter_and_set_data( ga_timing_task, Fd(@) )
 
         Jc(@b, a[ga_client_id])
         Kc(@b)
+
         @b.set( ga_ad_sense_id, Lc() )
+
         bd(@b.get(ga_tracking_id), @b.get(ga_cookie_domain), @b.get(ga_cookie_path))
 
     get: (a) ->
@@ -1887,6 +1901,7 @@ class pc
 
 
 Jc = (a, b) ->
+    # Test if we store in a cookie
     if get_string_value(a, ga_storage) is "cookie"
         hc = false
 
@@ -2355,6 +2370,7 @@ Z.analyse_main_arguments = (a) ->
                 b.push(d)
 
         catch de
+            console.log(de)
 
     return b
 
@@ -2386,6 +2402,7 @@ Z.v = (a) ->
             else
                 b[a.d].apply(b, a.a)
     catch g
+        console.log(g)
 
 # #1
 # Main function / class (not using argument a)
@@ -2411,9 +2428,9 @@ GoogleAnalyticsObjectClass.create = (a) ->
     if GoogleAnalyticsObjectClass.h[c]
         return GoogleAnalyticsObjectClass.h[c]
 
-    b = new pc(b)
+    b = new ClientDataStruct(b)
     GoogleAnalyticsObjectClass.h[c] = b
-    GoogleAnalyticsObjectClass.P[p](b)
+    GoogleAnalyticsObjectClass.P.push(b)
 
     return b
 
@@ -2450,7 +2467,7 @@ GoogleAnalyticsObjectClass.on_visible = () ->
         add_function_to_object("getByName", b, b.getByName, 5)
         add_function_to_object("getAll", b, b.getAll, 6)
         
-        b = pc.prototype
+        b = ClientDataStruct.prototype
 
         add_function_to_object("get", b, b.get, 7)
         add_function_to_object("set", b, b.set, 4)
@@ -2495,7 +2512,6 @@ GoogleAnalyticsObjectClass.on_visible = () ->
         Yd.set("displayfeatures", displayfeatures_func)
         Yd.set("adfeatures", adfeatures_func)
 
-        console.log(ga_object)
         main_args = ga_object and ga_object.q
 
         if is_array(main_args)
