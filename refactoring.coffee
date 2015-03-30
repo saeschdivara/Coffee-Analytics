@@ -592,7 +592,7 @@ class Ha
         
         @t.push(a)
 
-    D: (a) ->
+    ga_main_func: (a) ->
         ###
         ###
 
@@ -1035,7 +1035,7 @@ ga_always_send_referrer = T("alwaysSendReferrer", 0, false)
 ga_transport_url = S("transportUrl")
 ga_r = S("_r", "_r")
 
-X = (a, b, c, d) ->
+add_function_to_object = (a, b, c, d) ->
     b[a] = () ->
         try
             if d
@@ -1413,7 +1413,7 @@ Ic = (a, b) ->
 
 
 
-class Dc
+class GaPluginLinker
     ########################
     ## PRIVATE PROPERTIES ##
     ########################
@@ -1436,7 +1436,7 @@ class Dc
         @target = a
         @T = false
 
-    Q: (element, b) ->
+    decorate: (element, b) ->
         ###
         ###
 
@@ -1453,7 +1453,7 @@ class Dc
             return qd(@, element, b)
 
 
-    S: (a, b, c) ->
+    autoLink: (a, b, c) ->
         ###
         ###
 
@@ -1568,6 +1568,7 @@ add_ga_hidden_input_to_form = (a, form) ->
                 form.action = qd(a, form.action)
 
 sd = (a, b) ->
+    console.log("#{a} => #{b}")
     if (b is document.location.hostname)
         return false
 
@@ -1874,7 +1875,7 @@ class pc
                 c[ga_hit_type] = b
 
                 @b.set(c, 0, true)
-                @filters.D(this.b)
+                @filters.ga_main_func(this.b)
                 @b.data.m = {}
 
                 set_meta_data(44)
@@ -2269,7 +2270,7 @@ Z = {
 
 Z.ga()
 
-Z.D = (a) ->
+Z.ga_main_func = (a) ->
     # #2
     b = Z.J.apply(Z, arguments)
     b = Z.f.concat(b)
@@ -2358,12 +2359,12 @@ Z.J = (a) ->
 Z.v = (a) ->
     try
         if (a.u)
-            a.u.call(window, $.j("t0"))
+            a.u.call(window, $.getByName("t0"))
         else
             if gb is a.c
                 b = $
             else
-                b = $.j(a.c)
+                b = $.getByName(a.c)
 
             if a.A
                 if a.c is 't0'
@@ -2389,7 +2390,7 @@ Z.v = (a) ->
 # Main function / class (not using argument a)
 $ = (a) ->
     set_meta_data(1)
-    Z.D.apply(Z, [arguments])
+    Z.ga_main_func.apply(Z, [arguments])
 
 $.h = {}
 $.P = []
@@ -2424,40 +2425,40 @@ $.remove = (a) ->
 
             break
 
-$.j = (a) ->
+$.getByName = (a) ->
     return $.h[a]
 
-$.K = () ->
+$.getAll = () ->
     return $.P.slice(0)
 
-$.N = () ->
+$.on_visible = () ->
 
     if "ga" != gb
         set_meta_data(49)
 
-    a = window[gb]
+    ga_object = window[gb]
 
-    if not a or a.answer != 42
-        $.L = a and a.l
+    if not ga_object or ga_object.answer != 42
+        $.L = ga_object and ga_object.l
         $.loaded = true
         b = window[gb] = $
 
         # Set functions on b?
-        X("create", b, b.create, 3)
-        X("remove", b, b.remove)
-        X("getByName", b, b.j, 5)
-        X("getAll", b, b.K, 6)
-
+        add_function_to_object("create", b, b.create, 3)
+        add_function_to_object("remove", b, b.remove)
+        add_function_to_object("getByName", b, b.getByName, 5)
+        add_function_to_object("getAll", b, b.getAll, 6)
+        
         b = pc.prototype
 
-        X("get", b, b.get, 7)
-        X("set", b, b.set, 4)
-        X("send", b, b.send, 2)
+        add_function_to_object("get", b, b.get, 7)
+        add_function_to_object("set", b, b.set, 4)
+        add_function_to_object("send", b, b.send, 2)
 
         b = Ya.prototype
 
-        X("get", b, b.get)
-        X("set", b, b.set)
+        add_function_to_object("get", b, b.get)
+        add_function_to_object("set", b, b.set)
 
         script_elements = document.getElementsByTagName("script")
         c = 0
@@ -2466,7 +2467,7 @@ $.N = () ->
             d = script_elements[c].src
 
             if d
-                if d.indexOf("https://www.google-analytics.com/analytics") != 0
+                if not starts_with(d, "https://www.google-analytics.com/analytics")
                     d = false
                 else
                     d = true
@@ -2483,41 +2484,38 @@ $.N = () ->
             Ba = true
 
         window.gaplugins = window.gaplugins or {}
-        window.gaplugins.Linker = Dc
+        window.gaplugins.Linker = GaPluginLinker
 
-        b = Dc.prototype
-        Yd.set("linker", Dc)
-        X("decorate", b, b.Q, 20)
-        X("autoLink", b, b.S, 25)
+        b = GaPluginLinker.prototype
+        Yd.set("linker", GaPluginLinker)
+        add_function_to_object("decorate", b, b.decorate, 20)
+        add_function_to_object("autoLink", b, b.autoLink, 25)
         Yd.set("displayfeatures", fd)
         Yd.set("adfeatures", Kd)
 
-        a = a and a.q
+        ga_object = ga_object and ga_object.q
 
-        if is_array(a)
-            Z.D.apply($, a)
+        if is_array(ga_object)
+            Z.ga_main_func.apply($, ga_object)
         else
             set_meta_data(50)
 
 $.k = () ->
-    a = $.K()
+    a = $.getAll()
 
     for val in a
         val.get(ga_name)
 
-ano = () ->
+on_start_up = () ->
     # Call in this script
-    a = $.N
-
     # Check if visibilty is prerender
-    if not call_func_when_no_pre_render(a)
-
+    if not call_func_when_no_pre_render($.on_visible)
         set_meta_data(16)
 
         visibilty_is_not_prerender = false
 
         on_visible_callback = () ->
-            if not visibilty_is_not_prerender and call_func_when_no_pre_render(a)
+            if not visibilty_is_not_prerender and call_func_when_no_pre_render($.on_visible)
                 visibilty_is_not_prerender = true
 
                 # When visible we don't need this anymore
@@ -2549,4 +2547,4 @@ La = (used_string) ->
 ## THIS IS WHERE THE GAME STARTS ##
 ###################################
 
-ano()
+on_start_up()
